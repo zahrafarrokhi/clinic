@@ -8,11 +8,14 @@ module.exports = {
     colors: {
       primary: "#3fa9f5",
       primary__contrastText: "#fff",
-      primary__200: "#e5e5e5",
 
+      background: "#eff6ff",
       secondary: "#858fad",
       secondary__contrastText: "#fff",
-      secondary__200: "#e5e5e5",
+
+      white: "#ffffff",
+
+      border: "#d6cfcf",
     },
     extend: {},
   },
