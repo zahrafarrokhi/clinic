@@ -56,3 +56,9 @@ Add this to tailwind config in order to disabled preflight(it styles tags like b
 
 npm install @mui/material @emotion/react @emotion/styled @emotion/server
 ```
+
+#### MUI rtl
+
+[Mui RTL config](https://mui.com/material-ui/guides/right-to-left/)
+
+
