@@ -57,8 +57,80 @@ Add this to tailwind config in order to disabled preflight(it styles tags like b
 npm install @mui/material @emotion/react @emotion/styled @emotion/server
 ```
 
+Be sure to add(or just don't remove it in the first place) `globals.css` to _app.js
+
+```jsx
+import "../styles/globals.css";
+```
+
 #### MUI rtl
 
 [Mui RTL config](https://mui.com/material-ui/guides/right-to-left/)
 
 
+#### Importing tailwind colors to mui
+
+Sample:
+```js
+
+
+tailwind = {
+  primary: 'blue',
+  primary__contrastText: 'white',
+  secondary: 'red',
+  secondary__contrastText: 'yellow',
+}
+console.log(
+  Object.keys(tailwind))
+
+console.log(
+  Object.keys(tailwind).reduce((prev, cur) => {
+    return ({...prev, [cur]: '1'})
+  }, {}))
+
+console.log(
+  Object.keys(tailwind).reduce((prev, cur) => {
+    const main = cur.split('__')[0]
+    const secondary = cur.split('__').length > 1 ? cur.split('__').slice(1).join('__') : 'main'
+
+    console.log(main, secondary)
+    return ({...prev, [cur]: '1'})
+  }, {}))
+
+  console.log(
+    Object.keys(tailwind).reduce((prev, cur) => {
+      const main = cur.split('__')[0]
+      const secondary = cur.split('__').length > 1 ? cur.split('__').slice(1).join('__') : 'main'
+  
+      console.log(main, secondary)
+      return ({...prev, [main]: {
+        ...prev[main],
+        [secondary]: tailwind[cur]
+      }})
+    }, {}))
+  
+```
+
+`theme.js`
+
+```jsx
+
+const theme = createTheme({
+  direction: "rtl",
+  palette: {
+    ...Object.keys(tailwindConfig.theme.colors).reduce((prev, cur) => {
+      const primary = cur.split('__')[0]
+      const secondary = cur.split('__').length > 1 ? cur.split('__').slice(1).join('__') : 'main'
+      return (
+      {
+        ...prev, 
+        [primary]: {
+          ...prev[primary],
+          [secondary]: tailwindConfig.theme.colors[cur]
+        }
+      }
+    )
+    }, {})
+  },
+});
+```
