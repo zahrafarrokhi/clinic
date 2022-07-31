@@ -22,6 +22,21 @@ const theme = createTheme({
     )
     }, {})
   },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-input': {
+            paddingTop: '12px',
+            paddingBottom: '12px',
+          },
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderRadius: '.6em',
+          },
+        },
+      },
+    },
+  }
 });
 
 export default theme;
