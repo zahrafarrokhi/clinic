@@ -8,7 +8,7 @@
 
 # install
 ```bash
-npm create-next-app frontend
+npx create-next-app frontend
 cd frontend
 rm -rdf .git
 
