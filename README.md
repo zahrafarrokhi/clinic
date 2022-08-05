@@ -423,3 +423,91 @@ const nextConfig = {
 };
 module.exports = nextConfig;
 ```
+### Add icons package
+```bash
+npm i @mui/icons-material
+npm i react-icons
+```
+
+### axios
+```bash
+npm i axios
+npm i axios-auth-refresh
+```
+create lib folder
+`lib\axios.js`
+```jsx
+import axios from 'axios';
+import createAuthRefreshInterceptor from 'axios-auth-refresh';
+
+const axiosInstance = axios.create({
+  withCredentials: true,
+  headers: {
+    common: {
+      'Accept-Language': 'ir',
+    },
+  },
+});
+
+export const setupInterceptors = (store) => {
+  createAuthRefreshInterceptor(axiosInstance, (failedRequest) => axiosInstance
+    .post('/api/auth/refresh/', {
+      user_id: store.getState().authReducer?.username,
+      refresh: store.getState().authReducer?.refreshToken,
+    })
+    .then((resp) => {
+      const { access_tok: accessToken } = resp.data;
+      const bearer = `${
+        process.env.JWT_AUTH_HEADER ?? 'Bearer'
+      } ${accessToken}`;
+      console.log(accessToken);
+      axiosInstance.defaults.headers.common.Authorization = bearer;
+
+      failedRequest.response.config.headers.Authorization = bearer;
+      return Promise.resolve();
+    }), { statusCodes: [401, 403] });
+};
+
+// Create axios interceptor
+export default axiosInstance;
+
+```
+and 
+`lib\utils.js`
+```jsx
+import axios from './axios';
+
+export const preventLettersTyping = (x) => x.replace(/[^\d]/g, '');
+
+export const persianToEnglishDigits = (digit) => String(digit)
+  .replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+  .replace(/[۰-۹]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+
+export const Android = () => {
+  const ua = window.navigator.userAgent.toLowerCase();
+  return ua.indexOf('android') > -1;
+};
+
+export const IOS = () => [
+  'iPad Simulator',
+  'iPhone Simulator',
+  'iPod Simulator',
+  'iPad',
+  'iPhone',
+  'iPod',
+].includes(window.navigator.platform)
+  // iPad on iOS 13 detection
+  || (window.navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+
+
+export const logout = (dispatch) => {
+  /* eslint-disable import/no-named-as-default-member, global-require */
+  dispatch(require('./slices/auth').reset());
+
+  delete axios.defaults.headers.Authorization;
+  /* eslint-enable import/no-named-as-default-member */
+};
+
+```
+
+
