@@ -71,9 +71,6 @@ import "../styles/globals.css";
 
 ```
 
-#### MUI rtl
-
-[Mui RTL config](https://mui.com/material-ui/guides/right-to-left/)
 
 #### How to use Material-UI with Next.js ?
 ### NEXTJS MUI
@@ -245,6 +242,11 @@ npm run dev
 
 out => Welcome to Next.js! integrated with Material-UI!
 ```
+
+#### MUI rtl
+
+[Mui RTL config](https://mui.com/material-ui/guides/right-to-left/)
+
 #### eslint config
 ```jsx
 {
