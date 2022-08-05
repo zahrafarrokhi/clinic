@@ -8,7 +8,7 @@
 
 # install
 ```bash
-npm create-next-app frontend
+npx create-next-app frontend
 cd frontend
 rm -rdf .git
 
@@ -49,25 +49,66 @@ Add this to tailwind config in order to disabled preflight(it styles tags like b
 @tailwind utilities;
 
 ```
+## Installing mui
+[mui](https://mui.com/material-ui/getting-started/installation/)
 
-### NEXTJS MUI
-[mui](https://www.geeksforgeeks.org/how-to-use-material-ui-with-next-js/)
 ```jsx
+cd frontend
 
-npm install @mui/material @emotion/react @emotion/styled @emotion/server
+npm install @mui/material @emotion/react @emotion/styled @emotion/server @emotion/cache
+
+* @mui/material
+* @emotion/react
+* @emotion/server
+* @emotion/styled
+* @emotion/cache
 ```
 
 Be sure to add(or just don't remove it in the first place) `globals.css` to _app.js
 
 ```jsx
 import "../styles/globals.css";
+
 ```
 
-#### MUI rtl
 
-[Mui RTL config](https://mui.com/material-ui/guides/right-to-left/)
+#### How to use Material-UI with Next.js ?
+### NEXTJS MUI
+[material-ui-with-next-js](https://www.geeksforgeeks.org/how-to-use-material-ui-with-next-js/)
+[Next.Js + MUI v5 tutorial](https://dev.to/hajhosein/nextjs-mui-v5-tutorial-2k35)
 
+##### Step 1: Create a custom file /pages/\_document.js
 
+##### Step 2: Create  src folder, add theme.js and createEmotionCache.js
+
+```jsx
+// theme.js
+import { createTheme } from '@mui/material/styles';
+import { red } from '@mui/material/colors';
+
+// Create a theme instance.
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#556cd6',
+        },
+        secondary: {
+            main: '#19857b',
+        },
+        error: {
+            main: red.A400,
+        },
+    },
+});
+
+export default theme;
+//createEmotionCache.js
+import createCache from '@emotion/cache';
+
+export default function createEmotionCache() {
+    return createCache({ key: 'css', prepend: true });
+}
+```
 #### Importing tailwind colors to mui
 
 Sample:
@@ -134,4 +175,426 @@ const theme = createTheme({
   },
 });
 ```
+##### Step 3: Update the file /pages/\_app.js
+#### import '../styles/globals.scss'; (npm i sass)
+
+```jsx
+// import '../styles/globals.css'
+import "../styles/globals.scss";
+// import 'tailwindcss/tailwind.css';
+import theme from "../src/theme";
+import createEmotionCache from "../src/createEmotionCache";
+import { CacheProvider } from "@emotion/react";
+import { ThemeProvider } from "@mui/system";
+
+const clientSideEmotionCache = createEmotionCache();
+
+function MyApp({
+  Component,
+  pageProps,
+  emotionCache = clientSideEmotionCache,
+}) {
+  const getLayout = Component.getLayout ?? ((page) => page);
+  return (
+    <CacheProvider value={emotionCache}>
+      <ThemeProvider theme={theme}>
+        {getLayout(<Component {...pageProps} />)}
+      </ThemeProvider>
+    </CacheProvider>
+  );
+}
+
+export default MyApp;
+```
+##### Step 4: Update the file /pages/index.js
+
+```jsx
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
+
+export default function Home() {
+  return (
+    <div className={styles.container}>
+      <Head>
+        <title>Create Next App</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <main className={styles.main}>
+        <h1 className={styles.title}>
+          Welcome to <a href="https://nextjs.org">Next.js!</a> integrated with{" "}
+          <a href="https://mui.com/">Material-UI!</a>
+        </h1>
+        <p className={styles.description}>
+          Get started by editing{" "}
+          <code className={styles.code}>pages/index.js</code>
+        </p>
+      </main>
+    </div>
+  );
+}
+```
+
+##### Steps to run the application: To run the app, type the following command in the terminal.
+
+```jsx
+npm run dev
+
+out => Welcome to Next.js! integrated with Material-UI!
+```
+
+#### MUI rtl
+
+[Mui RTL config](https://mui.com/material-ui/guides/right-to-left/)
+
+#### eslint config
+```jsx
+{
+	"env": {
+		"browser": true,
+		"es6": true
+	},
+	"extends": [
+		"eslint:recommended", "plugin:react/recommended", "next",
+		"next/core-web-vitals", "airbnb"
+	],
+	"settings": {
+		"react": {
+			"version": "detect"
+		}
+	},
+	"parserOptions": {
+		"ecmaFeatures": {
+			"jsx": true
+		},
+		"ecmaVersion": 2018,
+		"sourceType": "module"
+	},
+	"plugins": [
+		"react"
+	],
+	"rules":  {
+		"react/react-in-jsx-scopre": "off"
+	}
+}
+
+
+```
+##### add fonts
+
+```jsx
+1_puplic/fonts
+2_styles/_fonts.scss
+3_styles/globals.scss
+@import "fonts";
+html,
+body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+
+  font-family: "IRANSansMobile" !important;
+  @screen md {
+    font-family: "IRANSans" !important;
+  }
+}
+```
+4_
+// tailwind.config.js
+ extend: {
+      fontFamily: {
+        iranSansWeb: 'iranSansWeb',
+        iranSansMobile: 'iranSansMobile',
+        iranSansLight: 'iranSansLight',
+        iranSansBold: 'iranSansBold',
+        hack: 'HACK',
+        hackwin: 'HACKWIN',
+        anonymice: 'anonymice',
+        anonymiceWin: 'anonymice-win',
+      },}
+```
+```jsx
+// test
+//index.js
+<h1 className="text-3xl font-bold underline bg-secondary font-['hackwin']">
+                   Hello world!
+</h1>
+// console.log
+.font-\[\'hackwin\'\] {
+    font-family: 'hackwin';
+}
+```
+##### add ar config
+
+```jsx
+// next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  reactStrictMode: true,
+  i18n: {
+    // These are all the locales you want to support in
+    // your application
+    locales: ["ar"],
+    // This is the default locale you want to be used when visiting
+    // a non-locale prefixed path e.g. `/hello`
+    defaultLocale: "ar",
+    // This is a list of locale domains and the default locale they
+    // should handle (these are only required when setting up domain routing)
+    // Note: subdomains must be included in the domain value to be matched e.g. "fr.example.com".
+    // domains: [
+    //   {
+    //     domain: 'example.com',
+    //     defaultLocale: 'en-US',
+    //   },
+    // ],
+  },
+};
+
+module.exports = nextConfig;
+
+//
+// pages/_document.js
+// Done! (with install mui)
+```
+
+##### globals.scss
+
+```jsx
+#__next {
+  height: 100%;
+  width: 100vw;
+}
+```
+#### add svg config
+
+```jsx
+npm i @svgr/webpack
+```
+```jsx
+// next.config.js
+/** @type {import('next').NextConfig} */
+const path = require("path");
+const nextConfig = {
+  reactStrictMode: true,
+  sassOptions: {
+    includePaths: [path.join(__dirname, "node_modules")],
+  },
+   i18n: {
+    // These are all the locales you want to support in
+    // your application
+    locales: ["ar"],
+    // This is the default locale you want to be used when visiting
+    // a non-locale prefixed path e.g. `/hello`
+    defaultLocale: "ar",
+    // This is a list of locale domains and the default locale they
+    // should handle (these are only required when setting up domain routing)
+    // Note: subdomains must be included in the domain value to be matched e.g. "fr.example.com".
+    // domains: [
+    //   {
+    //     domain: 'example.com',
+    //     defaultLocale: 'en-US',
+    //   },
+    // ],
+  },
+    exclude: /\.svg$/,
+  poweredByHeader: false,
+  inlineImageLimit: false,
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.svg$/,
+      issuer: {
+        and: [/\.(js|ts)x?$/],
+        // test: /\.(js|ts)x?$/,
+      },
+      use: [
+        {
+          loader: "@svgr/webpack",
+          options: {
+            prettier: false,
+            svgo: true,
+            titleProp: true,
+          },
+        },
+      ],
+    });
+    return config;
+  },
+};
+module.exports = nextConfig;
+```
+### Add icons package
+```bash
+npm i @mui/icons-material
+npm i react-icons
+```
+
+### axios
+```bash
+npm i axios axios-auth-refresh
+ 
+```
+create lib folder
+`lib\axios.js`
+```jsx
+import axios from 'axios';
+import createAuthRefreshInterceptor from 'axios-auth-refresh';
+
+const axiosInstance = axios.create({
+  withCredentials: true,
+  headers: {
+    common: {
+      'Accept-Language': 'ir',
+    },
+  },
+});
+
+export const setupInterceptors = (store) => {
+  createAuthRefreshInterceptor(axiosInstance, (failedRequest) => axiosInstance
+    .post('/api/auth/refresh/', {
+      user_id: store.getState().authReducer?.username,
+      refresh: store.getState().authReducer?.refreshToken,
+    })
+    .then((resp) => {
+      const { access_tok: accessToken } = resp.data;
+      const bearer = `${
+        process.env.JWT_AUTH_HEADER ?? 'Bearer'
+      } ${accessToken}`;
+      console.log(accessToken);
+      axiosInstance.defaults.headers.common.Authorization = bearer;
+
+      failedRequest.response.config.headers.Authorization = bearer;
+      return Promise.resolve();
+    }), { statusCodes: [401, 403] });
+};
+
+// Create axios interceptor
+export default axiosInstance;
+
+```
+### add .env 
+
+```jsx
+BACKEND_BASE_URL=http://localhost:8000
+```
+and 
+`lib\utils.js`
+```jsx
+import axios from './axios';
+
+export const preventLettersTyping = (x) => x.replace(/[^\d]/g, '');
+
+export const persianToEnglishDigits = (digit) => String(digit)
+  .replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+  .replace(/[۰-۹]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+
+export const Android = () => {
+  const ua = window.navigator.userAgent.toLowerCase();
+  return ua.indexOf('android') > -1;
+};
+
+export const IOS = () => [
+  'iPad Simulator',
+  'iPhone Simulator',
+  'iPod Simulator',
+  'iPad',
+  'iPhone',
+  'iPod',
+].includes(window.navigator.platform)
+  // iPad on iOS 13 detection
+  || (window.navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+
+
+export const logout = (dispatch) => {
+  /* eslint-disable import/no-named-as-default-member, global-require */
+  dispatch(require('./slices/auth').reset());
+
+  delete axios.defaults.headers.Authorization;
+  /* eslint-enable import/no-named-as-default-member */
+};
+
+```
+### Add redux
+```bash 
+npm i redux react-redux redux-persist redux-thunk @reduxjs/toolkit next-redux-wrapper
+```
+`lib\store.js`
+```jsx
+import {
+  configureStore,
+  combineReducers,
+} from '@reduxjs/toolkit';
+import thunk from 'redux-thunk';
+// import { compose } from 'redux';
+import { createWrapper, MakeStore, HYDRATE } from 'next-redux-wrapper';
+import { persistStore } from 'redux-persist';
+//auth  example
+// import { authSlice } from './slices/auth';
+
+
+const makeStore = (initialState) => {
+  let store;
+  const isClient = typeof window !== 'undefined';
+
+  if (isClient) {
+    const { persistReducer } = require('redux-persist');
+    const storage = require('redux-persist/lib/storage').default;
+
+    // const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+    const combinedReducers = combineReducers({
+      //auth example
+      // authReducer: authSlice.reducer,
+      
+    });
+
+    const rootReducer = (state, action) => {
+      if (action.type === HYDRATE) {
+        const nextState = {
+          ...state,
+          ...action.payload,
+        };
+        return nextState;
+      }
+      return combinedReducers(state, action);
+    };
+
+    const persistConfig = {
+      key: 'root',
+      storage,
+    };
+
+    const persistedReducers = persistReducer(persistConfig, rootReducer); // Wrapper reducers: if incoming actions are persist actions, run persist commands otherwise use rootReducer to update the state
+
+    store = configureStore({
+      reducer: persistedReducers, preloadedState: initialState, middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }).concat(thunk), devTools: { shouldStartLocked: false },
+    });
+
+    store.__PERSISTOR = persistStore(store);
+  } else {
+    const combinedReducers = combineReducers({
+      //auth example
+      // authReducer: authSlice.reducer,
+      
+    });
+
+    const rootReducer = (state, action) => {
+      if (action.type === HYDRATE) {
+        const nextState = {
+          ...state,
+          ...action.payload,
+        };
+        return nextState;
+      }
+      return combinedReducers(state, action);
+    };
+    store = configureStore({ reducer: rootReducer, preloadedState: initialState, middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk) });
+  }
+  return store;
+};
+export const wrapper = createWrapper(makeStore, { storeKey: 'key' });
+
+
+```
+
 
