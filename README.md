@@ -472,6 +472,11 @@ export const setupInterceptors = (store) => {
 export default axiosInstance;
 
 ```
+### add .env 
+
+```jsx
+BACKEND_BASE_URL=http://localhost:8000
+```
 and 
 `lib\utils.js`
 ```jsx
@@ -507,6 +512,88 @@ export const logout = (dispatch) => {
   delete axios.defaults.headers.Authorization;
   /* eslint-enable import/no-named-as-default-member */
 };
+
+```
+### Add redux
+```bash 
+npm i redux react-redux redux-persist redux-thunk @reduxjs/toolkit next-redux-wrapper
+```
+`lib\store.js`
+```jsx
+import {
+  configureStore,
+  combineReducers,
+} from '@reduxjs/toolkit';
+import thunk from 'redux-thunk';
+// import { compose } from 'redux';
+import { createWrapper, MakeStore, HYDRATE } from 'next-redux-wrapper';
+import { persistStore } from 'redux-persist';
+//auth  example
+// import { authSlice } from './slices/auth';
+
+
+const makeStore = (initialState) => {
+  let store;
+  const isClient = typeof window !== 'undefined';
+
+  if (isClient) {
+    const { persistReducer } = require('redux-persist');
+    const storage = require('redux-persist/lib/storage').default;
+
+    // const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+    const combinedReducers = combineReducers({
+      //auth example
+      // authReducer: authSlice.reducer,
+      
+    });
+
+    const rootReducer = (state, action) => {
+      if (action.type === HYDRATE) {
+        const nextState = {
+          ...state,
+          ...action.payload,
+        };
+        return nextState;
+      }
+      return combinedReducers(state, action);
+    };
+
+    const persistConfig = {
+      key: 'root',
+      storage,
+    };
+
+    const persistedReducers = persistReducer(persistConfig, rootReducer); // Wrapper reducers: if incoming actions are persist actions, run persist commands otherwise use rootReducer to update the state
+
+    store = configureStore({
+      reducer: persistedReducers, preloadedState: initialState, middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }).concat(thunk), devTools: { shouldStartLocked: false },
+    });
+
+    store.__PERSISTOR = persistStore(store);
+  } else {
+    const combinedReducers = combineReducers({
+      //auth example
+      // authReducer: authSlice.reducer,
+      
+    });
+
+    const rootReducer = (state, action) => {
+      if (action.type === HYDRATE) {
+        const nextState = {
+          ...state,
+          ...action.payload,
+        };
+        return nextState;
+      }
+      return combinedReducers(state, action);
+    };
+    store = configureStore({ reducer: rootReducer, preloadedState: initialState, middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk) });
+  }
+  return store;
+};
+export const wrapper = createWrapper(makeStore, { storeKey: 'key' });
+
 
 ```
 
