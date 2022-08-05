@@ -82,7 +82,7 @@ import "../styles/globals.css";
 
 ##### Step 1: Create a custom file /pages/\_document.js
 
-##### Step 2: Create an lib folder, add theme.js and createEmotionCache.js
+##### Step 2: Create  src folder, add theme.js and createEmotionCache.js
 
 ```jsx
 // theme.js
@@ -185,8 +185,8 @@ const theme = createTheme({
 // import '../styles/globals.css'
 import "../styles/globals.scss";
 // import 'tailwindcss/tailwind.css';
-import theme from "../lib/theme";
-import createEmotionCache from "../lib/createEmotionCache";
+import theme from "../src/theme";
+import createEmotionCache from "../src/createEmotionCache";
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider } from "@mui/system";
 
