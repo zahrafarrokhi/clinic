@@ -431,8 +431,8 @@ npm i react-icons
 
 ### axios
 ```bash
-npm i axios
-npm i axios-auth-refresh
+npm i axios axios-auth-refresh
+ 
 ```
 create lib folder
 `lib\axios.js`
