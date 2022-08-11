@@ -16,7 +16,7 @@ def generate_uuid():
 
 
 # Create your models here.
-class CustomUserManager(BaseUserManager):
+class UserManager(BaseUserManager):
     """
     Custom user model manager where email is the unique identifiers
     for authentication instead of usernames.
@@ -79,7 +79,7 @@ class User(AbstractUser):
   email_verified = models.BooleanField(default=False)
   
   USERNAME_FIELD = 'unique_id'
-  objects = CustomUserManager()
+  objects = UserManager()
 
   def __str__(self):
       username = self.phone_number if self.phone_number else self.email
