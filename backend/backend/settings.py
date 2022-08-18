@@ -152,3 +152,9 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+# 
+AUTHENTICATION_BACKENDS = [
+    'authentication.backends.CustomUserBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
