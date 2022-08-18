@@ -300,6 +300,7 @@ body {
 }
 ```
 4_
+```
 // tailwind.config.js
  extend: {
       fontFamily: {
@@ -323,6 +324,19 @@ body {
 .font-\[\'hackwin\'\] {
     font-family: 'hackwin';
 }
+```
+5_ mui
+```jsx
+`theme.js`
+
+// Create a theme instance.
+let theme = createTheme({
+  ...
+  typography: {
+    fontFamily: 'IRANSans',
+  },
+
+});
 ```
 ##### add ar config
 
