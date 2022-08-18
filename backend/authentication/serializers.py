@@ -1,7 +1,7 @@
 from .models import User, OTP, Token
 from rest_framework import serializers
 from django.utils import timezone
-from rest_framework_simplejwt.serializer import TokenObtainSerializer
+from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserSerializer(serializers.ModelSerializer):

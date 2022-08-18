@@ -1,5 +1,5 @@
 from .settings import api_settings
-from django.conf.settings import Ghasedak_APIKEY
+from backend.settings import Ghasedak_APIKEY
 import ghasedakpack
 from .utils import create_callback_token_for_user
 
