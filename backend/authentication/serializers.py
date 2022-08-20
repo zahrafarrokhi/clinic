@@ -30,7 +30,7 @@ class AbstractOtpObtain(serializers.Serializer):
 
 
   def get_user(self, *args, **kwargs):
-    alias = self.data[self.alias_type]
+    alias = self.initial_data[self.alias_type]
     values = {self.alias_type:alias}
     user = None
     try:

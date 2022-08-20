@@ -18,8 +18,8 @@ DEFAULTS = {
 
 
 
-    'OTP_EMAIL_CALLBACK': 'authenticatoin.services.EmailService.send_otp_email',
-    'OTP_SMS_CALLBACK': 'authenticatoin.services.SmsService.send_otp_sms',
+    'OTP_EMAIL_CALLBACK': 'authentication.services.EmailService',
+    'OTP_SMS_CALLBACK': 'authentication.services.SmsService',
 
 }
 

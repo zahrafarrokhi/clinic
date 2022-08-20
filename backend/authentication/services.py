@@ -2,6 +2,10 @@ from .settings import api_settings
 from backend.settings import Ghasedak_APIKEY
 import ghasedakpack
 from .utils import create_callback_token_for_user
+from django.utils.module_loading import import_string
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.utils.html import strip_tags
 
 
 class TokenService():
@@ -16,7 +20,7 @@ class TokenService():
         elif alias_type == 'phone_number':
             send_action = import_string(api_settings.OTP_SMS_CALLBACK)
 
-        success = send_action(user, token, **message_payload)
+        success = send_action.send_otp(user, token, **message_payload)
 
         return success
 
@@ -31,29 +35,31 @@ class EmailService:
                 message), from_email=None, recipient_list=recipient_list, fail_silently=False)
         except Exception as e:
             raise e
-    
+
     @staticmethod
-    def send_otp_email(user, token, **message_payload):
-      EmailService.send_email([user.email], variables={'username': user.email, 'otp': token.value}, **message_payload)
+    def send_otp(user, token, **message_payload):
+        EmailService.send_email([user.email], variables={
+                                'username': user.email, 'otp': token.value}, **message_payload)
 
 
 class SmsService:
-  @staticmethod
-  def send_otp_sms(user, token,template):
-    sms = ghasedakpack.Ghasedak(Ghasedak_APIKEY)
-    
-    sms.verification({'receptor': user.phone_number,'type': '1','template': template,'param1':token.value})
-    return True
-    
-    # payload ={
-    #   'to':mobile,
-    #   'args':args,
-    #   'bodyId':int(body_id)
+    @staticmethod
+    def send_otp(user, token, template):
+        sms = ghasedakpack.Ghasedak(Ghasedak_APIKEY)
 
-    # }
-    # try:
-    #   response = requests.post(f'', json=payload)
-    #   res = response.json()
+        sms.verification({'receptor': user.phone_number, 'type': '1',
+                         'template': template, 'param1': token.value})
+        return True
 
-    #   return len(str(res['recId']))>=15
-    # except Exception as e:
+        # payload ={
+        #   'to':mobile,
+        #   'args':args,
+        #   'bodyId':int(body_id)
+
+        # }
+        # try:
+        #   response = requests.post(f'', json=payload)
+        #   res = response.json()
+
+        #   return len(str(res['recId']))>=15
+        # except Exception as e:
