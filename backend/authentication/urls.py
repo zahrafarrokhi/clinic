@@ -9,5 +9,6 @@ router.register(r'email', views.EmailView, basename='email')
 
 urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('confirm/', views.Login.as_view(), name='confirm'),
     path('login/', include(router.urls)),
 ]

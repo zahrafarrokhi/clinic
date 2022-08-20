@@ -98,8 +98,12 @@ class validateOtpSerializer(serializers.Serializer):
     return attrs
 
 
-class TokenObtainPairSerializer(TokenObtainSerializer):
+class TokenObtainPairSerializer(serializers.Serializer):
     token_class = RefreshToken
+
+    @classmethod
+    def get_token(cls, user):
+        return cls.token_class.for_user(user)
 
     def validate(self, data):
         refresh = self.get_token(self.user)
