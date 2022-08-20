@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  django:
+    build: .
+    volumes:
+      - static:/app/static
+      - media:/app/media 
+    env_file:
+      - ./backend/.env
+    entryopint: ./entrypoint_django.sh
+  celery:
+    build: .
+    volumes:
+      - static:/app/static
+      - media:/app/media 
+    env_file:
+      - ./backend/.env
+    entryopint: /app/entrypoint_celery.sh
+
+
+volumes:
+  static:
+  media:
