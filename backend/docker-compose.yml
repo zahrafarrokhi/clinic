@@ -20,6 +20,8 @@ services:
       - media:/app/media 
     env_file:
       - ./backend/.env
+    ports:
+      - 8000:8000
     entrypoint: ./entrypoint_django.sh
     depends_on:
       - postgres_db
