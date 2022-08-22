@@ -1,24 +1,53 @@
 version: "3.9"
 
 services:
+  init:
+    build: .
+    image: creativity-backend
+    volumes:
+      - static:/app/static
+      - media:/app/media 
+    env_file:
+      - ./backend/.env
+    entrypoint: ./entrypoint_init.sh
+    depends_on:
+      - postgres_db
   django:
     build: .
+    image: creativity-backend
     volumes:
       - static:/app/static
       - media:/app/media 
     env_file:
       - ./backend/.env
-    entryopint: ./entrypoint_django.sh
+    entrypoint: ./entrypoint_django.sh
+    depends_on:
+      - postgres_db
   celery:
     build: .
+    image: creativity-backend
     volumes:
       - static:/app/static
       - media:/app/media 
     env_file:
       - ./backend/.env
-    entryopint: /app/entrypoint_celery.sh
+    entrypoint: ./entrypoint_celery.sh
 
+  postgres_db:
+    image: postgres:12-alpine3.16
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - ./postgres-entrypoints/:/docker-entrypoint-initdb.d/
+    env_file:
+      - ./backend/.env
+    ports:
+      - 666:5432
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      DJANGO_DATABASE: ${DATABASE_NAME:-django}
 
 volumes:
   static:
   media:
+  postgres_data:
