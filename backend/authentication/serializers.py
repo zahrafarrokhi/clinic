@@ -3,6 +3,7 @@ from rest_framework import serializers
 from django.utils import timezone
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.db.models import Q
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -82,10 +83,12 @@ class PhoneSerializer(AbstractOtpObtain):
 class validateOtpSerializer(serializers.Serializer):
   phoneNumber = serializers.CharField(max_length=11)
   otp = serializers.CharField(max_length=10)
+  email = serializers.EmailField()
 
   def validate(self, attrs):
     try:
-      user = User.objects.get(phone_number=attrs['phoneNumber'])
+      # model,get attrs
+      user = User.objects.get(Q(phone_number=attrs['phoneNumber']) | Q(email=attrs['email']) )
       otp= OTP.objects.get(user=user,is_active=True,value=attrs['otp'],exp_date__gte=timezone.now())
       otp.is_active = False
       otp.save()
