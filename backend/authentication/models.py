@@ -90,6 +90,7 @@ class OTP(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     EMAIL = 'email'
     SMS = 'sms'
+    # db(front), admin
     OTP_CHOICES = ((EMAIL, 'E-Mail'), (SMS, 'SMS'),)
     type = models.CharField(max_length=10, choices=OTP_CHOICES, default=SMS)
     created_at = models.DateTimeField(auto_now_add=True)
