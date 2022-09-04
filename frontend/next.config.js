@@ -2,7 +2,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  reactStrictMode: true,
+  trailingSlash: true,
+
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*/",
+        destination: `${process.env.BACKEND_BASE_URL}/api/:path*/`,
+      },
+    ];
+  },
   i18n: {
     // These are all the locales you want to support in
     // your application

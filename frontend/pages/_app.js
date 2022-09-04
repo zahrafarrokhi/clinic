@@ -7,17 +7,23 @@ import { CacheProvider } from "@emotion/react";
 import theme from "../src/theme";
 import createEmotionCache from "../src/createEmotionCache";
 import "../styles/globals.css";
+import { wrapper } from "../lib/store";
+import { useStore } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 // Client-side cache shared for the whole session
 // of the user in the browser.
 
 const clientSideEmotionCache = createEmotionCache();
-
-export default function MyApp(props) {
+function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   const getLayout = Component.getLayout || ((page) => page);
+  const store = useStore();
+
 
   return (
+    <PersistGate persistor={store.__PERSISTOR} loading={null}>
+
     <CacheProvider value={emotionCache}>
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
@@ -30,7 +36,9 @@ export default function MyApp(props) {
         <CssBaseline />
         {getLayout(<Component {...pageProps} />)}
       </ThemeProvider>
-    </CacheProvider>
+      </CacheProvider>
+      </PersistGate>
+
   );
 }
 
@@ -39,3 +47,6 @@ MyApp.propTypes = {
   emotionCache: PropTypes.object,
   pageProps: PropTypes.object.isRequired,
 };
+
+
+export default wrapper.withRedux(MyApp)
