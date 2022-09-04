@@ -83,14 +83,14 @@ class PhoneSerializer(AbstractOtpObtain):
 
 
 class validateOtpSerializer(serializers.Serializer):
-  phoneNumber = serializers.CharField(max_length=11)
+  phoneNumber = serializers.CharField(max_length=11, required=False)
   otp = serializers.CharField(max_length=10)
-  email = serializers.EmailField()
+  email = serializers.EmailField(required=False)
 
   def validate(self, attrs):
     try:
       # model,get attrs
-      user = User.objects.get(Q(phone_number=attrs['phoneNumber']) | Q(email=attrs['email']) )
+      user = User.objects.get(Q(phone_number=attrs.get('phoneNumber', 'xxx')) | Q(email=attrs.get('email', 'yyy')) )
       otp= OTP.objects.get(user=user,is_active=True,value=attrs['otp'],exp_date__gte=timezone.now())
       otp.is_active = False
       otp.save()
