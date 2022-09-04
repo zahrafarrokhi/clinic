@@ -36,8 +36,10 @@ class AbstractOtpObtain(serializers.Serializer):
     try:
       # user = User.objects.filter(email=alias).first() if self.alias_type == 'email' else User.objects.filter(phone_number=alias).first()
       # user = User.objects.filter(**{self.alias_type:alias}).first()
-      user = User.objects.filter(**values).first()
+      user = User.objects.get(**values)
+      print("user exists")
     except User.DoesNotExist:
+      print("doesnt exist", values)
       user = User(**values)
       user.set_unusable_password()
       user.save()
