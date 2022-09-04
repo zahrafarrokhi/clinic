@@ -4,11 +4,14 @@ import VerificationInput from "react-verification-input";
 // import { persianToEnglishDigits } from "../../lib/utils";
 import { Button } from "@mui/material";
 import { GrRefresh } from "react-icons/gr";
+import { useDispatch, useSelector } from 'react-redux';
+import { confirm } from '../../lib/slices/auth';
 
 const CODE_LENGTH = 4;
 const EXP_TIME = 120;
 
 const Confirm = () => {
+  //code 
   const [code, setCode] = useState("");
     // timer (setInterval)
     const [time, setTime] = useState(EXP_TIME);
@@ -30,16 +33,52 @@ const Confirm = () => {
         if (timerRef.current) clearInterval(timerRef.current);
       };
     }, []);
+  // redux
+  const dispatch = useDispatch();
+  const username = useSelector(state => state.authReducer?.username)
+  const method = useSelector(state=>state.authReducer?.method)
+
+    const submit = async () => {
+    try {
+      if (method === 'phone') {
+        await dispatch(
+          confirm({
+            //PhoneSerializer
+            phoneNumber: username,
+            otp:code,
+          }),
+        ).unwrap();
+      }
+      else {
+        await dispatch(
+          confirm({
+            //EamilSerializer
+            email: username,
+            otp:code,
+          }),
+        ).unwrap();
+      }
+  
+         
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+
   return ( 
     <div className="flex flex-col items-center justify-center md:justify-around grow py-8">
       <div className="flex flex-col items-center ">
         <div
           className={`flex flex-row text-black font-bold text-sm text-center `}
         >
-          لطفا کد ارسال شده به شماره
+          لطفا کد ارسال شده به 
+        {' '}
+          {method==='phone'?'شماره':'ایمیل'}
         </div>
         <div className={`flex flex-row text-primary font-semibold `}>
-          {"09122222277"}
+          
+          {username}
         </div>
         <div
           className={`flex flex-row  text-black font-bold text-sm text-center`}
@@ -64,6 +103,8 @@ const Confirm = () => {
               characterInactive: `rounded-lg m-1 border border-border `,
               characterSelected: `rounded-lg m-1 border border-borderColor  `,
             }}
+          value={code}
+          onChange={(e)=>setCode(e)}
             />
       
             </div>
@@ -74,7 +115,7 @@ const Confirm = () => {
             variant="contained"
             className="w-[240px] md:w-[400px] h-[3.5em] rounded-[10px] p-3"
             color="primary"
-            // onClick={submit}
+            onClick={submit}
             //validation
             disabled={time === 0 || code.length !== 4}
           >

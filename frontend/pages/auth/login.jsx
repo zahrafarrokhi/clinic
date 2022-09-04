@@ -10,13 +10,52 @@ import {
 } from "@mui/material";
 import LoginLayout from "../../components/LoginLayout";
 import { useTheme } from "@emotion/react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginWithEmail, loginWithSms } from "../../lib/slices/auth";
+import { useRouter } from "next/router";
 
 const PHONENUMBER = "phone_number";
 const EMAIL = "email";
 
 export default function Login() {
   const [selected, setSelected] = useState(PHONENUMBER);
+  const [username, setUsername] = useState("");
   const theme = useTheme();
+  const router = useRouter();
+    // redux
+  const dispatch = useDispatch();
+    const submit = async () => {
+    try {
+      if (selected === PHONENUMBER) {
+        await dispatch(
+          loginWithSms({
+            //PhoneSerializer
+            phone_number:username
+          }),
+        ).unwrap();
+      }
+      // else {
+      //   await dispatch(
+      //     loginWithEmail({
+      //       //EmailSerializer
+      //       email:username
+      //     }),
+      //   ).unwrap();
+      // }
+      //2
+      else {
+        await dispatch(
+          loginWithEmail(username),
+        ).unwrap();
+      }
+
+      router.push("/auth/confirm/")
+         
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-evenly md:justify-around flex-grow py-6 md:my-4">
       <div className="flex w-full justify-center">
@@ -56,6 +95,8 @@ export default function Login() {
           {selected === PHONENUMBER ? "تلفن همراه" : "ایمیل"}
         </FormLabel>
         <TextField
+          value={username}
+          onChange={(e)=>setUsername(e.target.value)}
         // label={selected === PHONENUMBER ? "تلفن همراه" : "ایمیل"}
         ></TextField>
       </FormControl>
@@ -64,7 +105,8 @@ export default function Login() {
           variant="contained"
           className="w-[240px] md:w-[400px] h-[3.2em] rounded-[10px] text-lg "
           color="primary"
-          // onClick={submit}
+          onClick={submit }
+
         >
           مرحله‌ بعد
         </Button>

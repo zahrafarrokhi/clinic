@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 import { createWrapper, MakeStore, HYDRATE } from 'next-redux-wrapper';
 import { persistStore } from 'redux-persist';
 //auth  example
-// import { authSlice } from './slices/auth';
+import { authSlice } from './slices/auth';
 
 
 const makeStore = (initialState) => {
@@ -22,7 +22,7 @@ const makeStore = (initialState) => {
 
     const combinedReducers = combineReducers({
       //auth example
-      // authReducer: authSlice.reducer,
+      authReducer: authSlice.reducer,
       
     });
 
