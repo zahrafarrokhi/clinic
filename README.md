@@ -246,7 +246,18 @@ out => Welcome to Next.js! integrated with Material-UI!
 #### MUI rtl
 
 [Mui RTL config](https://mui.com/material-ui/guides/right-to-left/)
+```jsx
+1._document.js =><Html lang="en" dir="rtl"></html>
 
+2.theme
+import { createTheme } from '@mui/material/styles';
+
+const theme = createTheme({
+  direction: 'rtl',
+});
+3.npm install stylis stylis-plugin-rtl
+4.createCache => stylisPlugins: [prefixer, rtlPlugin],
+```
 #### eslint config
 ```jsx
 {
