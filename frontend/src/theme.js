@@ -23,7 +23,7 @@ let theme = createTheme({
     }, {})
   },
   typography: {
-    fontFamily: 'IRANSans',
+    fontFamily: 'IRANSansMobile',
   },
   components: {
    
