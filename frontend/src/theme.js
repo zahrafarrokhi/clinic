@@ -81,6 +81,10 @@ let theme = createTheme({
         },
       ],
       styleOverrides: {
+        root: {
+          borderRadius: '0.5rem',
+          padding: '0.75rem',
+        },
 
         contained: {
           boxShadow: '-6px -6px 6px rgba(255, 255, 255, 0.5), 6px 6px 10px rgba(109, 129, 161, 0.25)',
@@ -88,6 +92,32 @@ let theme = createTheme({
         }
       },
     },
+    MuiToggleButton: {
+      variants: [
+        {
+          props: { variant: "list" },
+          style: ({ theme, ownerState }) => {
+            return (
+              {
+                borderRadius: '0.5rem',
+              }
+            )
+          }
+        },
+        {
+          props: { variant: "list", selected: true },
+          style: ({ theme, ownerState }) => {
+            return (
+              {
+                borderRadius: '0.5rem',
+                // borderWidth: '2px',
+                borderColor: theme.palette[ownerState.color].light
+              }
+            )
+          }
+        },
+      ]
+    }
   }
 });
 
