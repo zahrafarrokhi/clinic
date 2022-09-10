@@ -57,7 +57,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-evenly md:justify-around flex-grow py-6 md:my-4">
+    <div className="flex flex-col items-center justify-evenly md:justify-around flex-grow md:py-6 md:my-4">
       <div className="flex w-full justify-center">
         <ToggleButtonGroup
           value={selected}
@@ -65,6 +65,7 @@ export default function Login() {
           //   if(val)
           //     setSelected(val)
           // }}
+          color="primary"
           onChange={(e, val) => val && setSelected(val)}
           // Fix newValue.splice error
           exclusive
@@ -83,6 +84,10 @@ export default function Login() {
                 width: "12em",
               },
             },
+            '& .MuiToggleButton-root': {
+              fontWeight: 400,
+              fontSize: '1rem',
+            }
           }}
           // color="primary"
         >
@@ -90,22 +95,33 @@ export default function Login() {
           <ToggleButton value={EMAIL}>ایمیل</ToggleButton>
         </ToggleButtonGroup>
       </div>
-      <FormControl>
+      {/* <FormControl>
         <FormLabel>
           {selected === PHONENUMBER ? "تلفن همراه" : "ایمیل"}
-        </FormLabel>
+        </FormLabel> */}
         <TextField
           value={username}
           onChange={(e)=>setUsername(e.target.value)}
-        // label={selected === PHONENUMBER ? "تلفن همراه" : "ایمیل"}
+        label={selected === PHONENUMBER ? "تلفن همراه" : "ایمیل"}
+        placeholder={selected === PHONENUMBER ? '*********09' : 'email@example.com'}
+        InputProps={{
+          sx: {
+            textAlign: 'center',
+          }
+        }}
         ></TextField>
-      </FormControl>
+      {/* </FormControl> */}
       <div className="flex flex-col   ">
         <Button
           variant="contained"
           className="w-[240px] md:w-[400px] h-[3.2em] rounded-[10px] text-lg "
           color="primary"
-          onClick={submit }
+          onClick={submit}
+          // sx={{
+          //   backgroundColor: 'primary.main',
+          //   backgroundColor: theme.palette.primary.main
+          // }}
+          
 
         >
           مرحله‌ بعد

@@ -12,6 +12,8 @@ module.exports = {
       background: "#eff6ff",
       secondary: "#858fad",
       secondary__contrastText: "#fff",
+      // secondary__light: "#fff",
+      // secondary__200: "#fff",
 
       white: "#ffffff",
 
@@ -57,11 +59,22 @@ module.exports = {
       lightBlue: '#d5e1eb',
 
     },
-    extend: {},
+    extend: {
+      boxShadow: {
+        inner: '#586C8A30 2px 2px 4px inset, white -3px -3px 4px inset',
+        'inner-sm': '#586C8A30 1px 1px 4px inset, #18B5D12F -1.5px -1.5px 4px inset',
+        navbtn: '4px 4px 7px rgba(0, 0, 0, 0.07), -4px -4px 13px #FFFFFF, 6px 6px 36px rgba(0, 0, 0, 0.06)',
+        icnbtn: '-6px -6px 6px rgba(255, 255, 255, 0.5), 6px 6px 10px rgba(109, 129, 161, 0.25)',
+        breadcrumb: '#586C8A30 1px -1px 4px inset, #586C8A30 4px 2px 4px inset, white -2px 0px 4px inset',
+        btn: '2.74576px 2.74576px 4.80508px rgba(0, 0, 0, 0.07), -2.74576px -2.74576px 8.92373px #FFFFFF, 4.11864px 4.11864px 24.7119px rgba(0, 0, 0, 0.06)',
+      },
+
+    },
   },
   plugins: [],
 
   corePlugins: {
     preflight: false,
   },
+
 };
