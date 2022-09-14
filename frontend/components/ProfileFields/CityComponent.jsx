@@ -20,7 +20,7 @@ const CityComponent = (props) => {
     getCities()
   }, []);
 
-  const { value, onChange, label } = props;
+  const { value, onChange, label, state } = props;
   return (
     <FormControl
       // fullWidth
@@ -35,7 +35,7 @@ const CityComponent = (props) => {
       onChange={(e)=>onChange(e,e.target.value)}
       >
         {/* handle with redux */}
-        {cities?.map((city) => <MenuItem value={city.id}>{city.fa_name}</MenuItem>)} 
+        {cities?.filter(c=>c.parent==state.province).map((city) => <MenuItem value={city.id}>{city.fa_name}</MenuItem>)} 
         {/* if Province => map on cities */}
       {/* {cities?.filter(city=>city.parent!==null).map((city)=> <MenuItem value={city.id}>{city.name }</MenuItem>)}  */}
       
