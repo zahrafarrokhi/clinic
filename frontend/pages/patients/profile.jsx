@@ -1,6 +1,7 @@
 import { useState } from "react";
 import LoginLayout from "../../components/LoginLayout";
 import CityComponent from "../../components/ProfileFields/CityComponent";
+import Insurance from "../../components/ProfileFields/Insurance";
 import ProvinceComponent from "../../components/ProfileFields/ProvinceComponent";
 import SelectField from "../../components/ProfileFields/SelectField";
 import TextField from "../../components/ProfileFields/TextField";
@@ -9,25 +10,22 @@ const FIELDS = [
   //field
   {
     id: "national_id",    
-    defaultValue: '0123456789',
     label: "کد ملی",
-    editable: true,
+    // editable: true,
     component: TextField,
   },
   {
     id: "first_name",
-    defaultValue: 'test',
     label: "نام",
     required: true,
-    editable: false,
+    // editable: false,
     component: TextField,
   },
   {
     id: "last_name",
-    defaultValue: 'last test',
     label: "نام خانوادگی",
     required: true,
-    editable: false,
+    // editable: false,
     component: TextField,
   },
   {
@@ -40,10 +38,10 @@ const FIELDS = [
     id: "gender",
     label: "جنسیت",
     required: true,
-    editable: false,
+    // editable: false,
     component: SelectField,
     options: [{
-      //id:backend
+      //value of id:backend
       id: "f",
       name:"زن"
     },
@@ -57,43 +55,52 @@ const FIELDS = [
     id: "province",
     label: "استان",
     type: "province",
-    editable: false,
+    // editable: false,
     component: ProvinceComponent,
   },
   {
     id: "city",
     label: "شهر",
     type: "city",
-    editable: false,
+    // editable: false,
     component: CityComponent,
   },
   {
     id: 'insurance',
     label: 'بیمه تامین اجتماعی',
-    editable: false,
+    defaultValue: 'none',
+    // editable: false,
     component: SelectField,
-    options: [{
-      //id:backend
-      id: true,
-      name:"بله",
-    },
-    {
-      id: false,
-      name:"خیر",
-    },
-    ]
+    options: [
+      {
+        id: 'none',
+        name: 'هیچ کدام',
+      },
+      {
+        id: 'tamin',
+        name: 'تامین اجتماعی',
+      },
+      {
+        id: 'salamat',
+        name: 'سلامت',
+      },
+      {
+        id: 'mosalah',
+        name: 'نیروهای مسلح',
+      },
+      {
+        id: 'other',
+        name: 'متفرقه',
+      },
+    ],
+
 
   },
-  // {
-  //   id: "insurance",
-  //   label: "بیمه",
-  //   editable: false,
-  //   component: InputInsuranceComponent,
-  // },
+
   {
     id: "hasSupIns",
     label: "بیمه تکمیلی",
-    editable: false,
+    // editable: false,
     component: SelectField,
     options: [{
       //id:backend
@@ -107,12 +114,12 @@ const FIELDS = [
     ]
 
   },
-  // {
-  //   id: "supplementary_insurance",
-  //   label: "بیمه گذار",
-  //   editable: false,
-  //   component: InputSupplementaryInsurance,
-  // },
+  {
+    id: "supplementary_insurance",
+    label: "بیمه گذار",
+    // editable: false,
+    component: Insurance,
+  },
 ];
 
 const PatientInfo = () => {
@@ -121,6 +128,7 @@ const PatientInfo = () => {
     //
     FIELDS.reduce((obj, field) => ({...obj , [field.id]: field.defaultValue}), {})
   );
+
   return(
     <div className="flex flex-col justify-center items-center w-full px-8">
       <div className="flex justify-start items-start gap-3 flex-wrap self-stretch m-4">
@@ -137,6 +145,7 @@ const PatientInfo = () => {
              onChange={(e, val) => setState({ ...state, [field.id]: val })}
              label={field.label}
              options={field.options}
+             state={state}
         ></field.component>))}
 
     </div>
