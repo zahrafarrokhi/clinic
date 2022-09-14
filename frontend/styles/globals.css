@@ -29,6 +29,7 @@
 * {
   font-family: IRANSansMobile;
   font-weight: 400;
+  font-size: 16px;
 }
 
 @tailwind base;
