@@ -8,6 +8,7 @@ import { createWrapper, MakeStore, HYDRATE } from 'next-redux-wrapper';
 import { persistStore } from 'redux-persist';
 //auth  example
 import { authSlice } from './slices/auth';
+import { constantDataSlice } from './slices/constant_data';
 
 
 const makeStore = (initialState) => {
@@ -23,6 +24,7 @@ const makeStore = (initialState) => {
     const combinedReducers = combineReducers({
       //auth example
       authReducer: authSlice.reducer,
+      constantDataReducer: constantDataSlice.reducer,
       
     });
 
