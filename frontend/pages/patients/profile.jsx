@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 import { useState } from "react";
 import LoginLayout from "../../components/LoginLayout";
 import CityComponent from "../../components/ProfileFields/CityComponent";
@@ -5,6 +6,7 @@ import Insurance from "../../components/ProfileFields/Insurance";
 import ProvinceComponent from "../../components/ProfileFields/ProvinceComponent";
 import SelectField from "../../components/ProfileFields/SelectField";
 import TextField from "../../components/ProfileFields/TextField";
+import { NotNull, OnlyDigits, StringLength } from "../../components/ProfileFields/validators";
 
 const FIELDS = [
   //field
@@ -12,12 +14,21 @@ const FIELDS = [
     id: "national_id",    
     label: "کد ملی",
     // editable: true,
+    validators: [NotNull, StringLength(10), OnlyDigits],
+    component: TextField,
+  },
+  {
+    id: "phone_number",    
+    label: "شماره‌ی همراه",
+    // editable: true,
+    validators: [NotNull, OnlyDigits, StringLength(11)],
     component: TextField,
   },
   {
     id: "first_name",
     label: "نام",
     required: true,
+    validators: [NotNull],
     // editable: false,
     component: TextField,
   },
@@ -130,8 +141,8 @@ const PatientInfo = () => {
   );
 
   return(
-    <div className="flex flex-col justify-center items-center w-full px-8">
-      <div className="flex justify-start items-start gap-3 flex-wrap self-stretch m-4">
+    <div className="flex flex-col justify-center items-center w-full px-3 md:px-8 py-8">
+      <div className="flex justify-start items-start gap-9 flex-wrap self-stretch m-4">
         {/* {[...Array(15)].map((f, i) => (
           <TextField
             value={state[i]}
@@ -140,15 +151,20 @@ const PatientInfo = () => {
         ></TextField>))} */}
 
          {FIELDS.map((field) => (
-          <field.component
+           <field.component
+      className="basis-full md:basis-[30%] flex-grow flex-shrink-0 md:max-w-[calc(33%-1.5rem)] my-2"
             value={state[field.id]}
              onChange={(e, val) => setState({ ...state, [field.id]: val })}
              label={field.label}
              options={field.options}
+             validators={field.validators}
              state={state}
         ></field.component>))}
 
-    </div>
+      </div>
+      <Button variant="contained" className="w-full md:w-[400px] p-5 mt-8 mb-2 text-lg font-bold ">
+        تکمیل ثبت نام
+      </Button>
 
     </div>)
  }
