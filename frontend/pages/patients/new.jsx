@@ -26,7 +26,7 @@ export default function NewPatient() {
     }
   };
   return(
-  <div className="flex flex-col justify-center items-center w-full">
+  <div className="flex flex-col justify-center items-center w-full pb-6 md:pb-0">
 
 <div className="flex justify-center items-center p-4">
         <div className="text-lg self-center text-center">
@@ -34,7 +34,7 @@ export default function NewPatient() {
        
         </div>
     </div>
-    <div className="flex flex-col p-3 gap-4 items-center">
+    <div className="flex flex-col p-3 my-4 md:my-0 gap-4 items-center">
 
     <TextField
           value={nationalId}

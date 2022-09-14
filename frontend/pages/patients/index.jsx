@@ -32,8 +32,8 @@ export default function Patients() {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center w-full">
-      <div className="flex justify-center items-center p-4">
+    <div className="flex flex-col justify-center items-center w-full px-6 pb-8 md:pb-0">
+      <div className="flex justify-center items-stretch md:items-center p-4">
         <div className="text-lg self-center text-center">
           خوش‌آمدید، با انتخاب هر یک از کاربران قبلی وارد
           <br/>
@@ -42,7 +42,7 @@ export default function Patients() {
         </div>
       </div>
       {/* flex-col items-center => horizental min-width ,then blow btn get width So  horizental min-width = width btn*/}
-      <div className="flex flex-col p-3 items-center">
+      <div className="flex flex-col py-12 md:py-3 self-stretch md:self-auto items-stretch md:items-center">
         {/* {['mohamadi', 'alizade', 'set'] */}
         {[0, 1, 2]
           .map((i) => ({
@@ -54,7 +54,7 @@ export default function Patients() {
            
             <ToggleButton
               variant="list"
-              className="m-2"
+              className="my-2"
               fullWidth
               color="primary"
               key={p.id}
@@ -68,14 +68,14 @@ export default function Patients() {
              
               </ToggleButton>
           ))}
-        <Button variant="outlined" color="primary" className="w-[320px] my-2"
+        <Button variant="outlined" color="primary" className="w-full md:w-[320px] my-2"
            onClick={newPatient}
         >
           
         <AiOutlinePlus  className="mx-2" />
           بیمار جدید</Button>
       </div>
-      <Button variant="contained" color="primary" className="w-[320px] md:w-[400px] my-4 text-lg"
+      <Button variant="contained" color="primary" className="self-strech md:self-center w-full md:w-[400px] mx-6 my-4 text-lg"
        onClick={submit}
        disabled={selectedPatient === null}
       >ورود</Button>

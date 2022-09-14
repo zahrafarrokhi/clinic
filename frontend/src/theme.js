@@ -27,10 +27,22 @@ let theme = createTheme({
     fontSize: 16,
   },
   components: {
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+
+          fontSize: '1rem'
+        }
+      }
+    },
    
-    MuiTextField: {
+    MuiOutlinedInput: {
       styleOverrides: {
         root: ({ theme }) => ({
+          '& .MuiSelect-select': {
+            fontSize: '1rem',
+
+          },
           '& .MuiInputBase-root': {
             borderRadius: '10px',
             background: '#FFFFFF',

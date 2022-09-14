@@ -20,11 +20,11 @@ const CityComponent = (props) => {
     getCities()
   }, []);
 
-  const { value, onChange, label, state } = props;
+  const { value, onChange, label, state, className } = props;
   return (
     <FormControl
+      className={className}
       // fullWidth
-      className="basis-[30%] flex-grow flex-shrink-0"
     >
       <InputLabel id="demo-simple-select-label">{label}</InputLabel>
     <Select

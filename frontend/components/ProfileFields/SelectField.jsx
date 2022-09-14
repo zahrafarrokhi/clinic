@@ -2,11 +2,11 @@ import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/mater
 
 
 const SelectField = (props) => {
-  const { value, onChange, label ,options} = props;
+  const { value, onChange, label ,options, className} = props;
   return (
     <FormControl
       // fullWidth
-      className="basis-[30%] flex-grow flex-shrink-0"
+      className={className}
     >
       <InputLabel id="demo-simple-select-label">{label}</InputLabel>
     <Select

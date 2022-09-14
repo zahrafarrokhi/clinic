@@ -20,12 +20,12 @@ const Insurance = (props) => {
     getInsurance()
   }, []);
 
-  const { value, onChange, label, state } = props;
+  const { value, onChange, label, state, className } = props;
   return (
     <FormControl
       // fullWidth
       disabled={state.hasSupIns !== true}
-      className="basis-[30%] flex-grow flex-shrink-0"
+      className={className}
     >
       <InputLabel id="demo-simple-select-label">{label}</InputLabel>
     <Select
