@@ -34,7 +34,7 @@ export default function Patients() {
   return (
     <div className="flex flex-col justify-center items-center w-full">
       <div className="flex justify-center items-center p-4">
-        <div className="text-base self-center text-center">
+        <div className="text-lg self-center text-center">
           خوش‌آمدید، با انتخاب هر یک از کاربران قبلی وارد
           <br/>
           همان پروفایل شوید یا
