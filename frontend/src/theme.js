@@ -24,6 +24,7 @@ let theme = createTheme({
   },
   typography: {
     fontFamily: 'IRANSansMobile',
+    fontSize: 16,
   },
   components: {
    
