@@ -19,10 +19,9 @@ class Patient(models.Model):
     FEMALE = 'f'
     GENDER_TYPES = ((MALE, 'male'), (FEMALE, 'female'))
     gender = models.CharField(max_length=1, choices=GENDER_TYPES)
-    # city = models.ForeignKey('constant_data.City', on_delete=models.CASCADE,
-    #                          null=True, blank=True)
+    city = models.ForeignKey('constant_data.City', on_delete=models.CASCADE,
+                             null=True, blank=True)
 
-    # has_social_security_insurance = models.BooleanField(null=True, blank=True)
     INS_TAMIN = 'tamin'
     INS_SALAMAT = 'salamat'
     INS_MOSALAH = 'mosalah'
@@ -38,8 +37,8 @@ class Patient(models.Model):
         (INS_NONE, 'none'),
     )
     insurance = models.CharField(choices=INSURANCES, max_length=20, default=INS_NONE)
-    # supplementary_insurance = models.ForeignKey('constant_data.SupplementaryInsurance', on_delete=models.SET_NULL,
-    #                                             null=True, blank=True)
+    supplementary_insurance = models.ForeignKey('constant_data.SupplementaryInsurance', on_delete=models.SET_NULL,
+                                                null=True, blank=True)
 
     # rocket_chat = GenericRelation('chat.RocketChatToken', related_query_name="patient",
     #                               content_type_field='refrence_type', object_id_field='refrence_id')
