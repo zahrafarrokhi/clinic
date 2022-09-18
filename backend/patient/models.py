@@ -18,7 +18,7 @@ class Patient(models.Model):
     MALE = 'm'
     FEMALE = 'f'
     GENDER_TYPES = ((MALE, 'male'), (FEMALE, 'female'))
-    gender = models.CharField(max_length=1, choices=GENDER_TYPES)
+    gender = models.CharField(max_length=1, choices=GENDER_TYPES, null=True, blank=True,)
     city = models.ForeignKey('constant_data.City', on_delete=models.CASCADE,
                              null=True, blank=True)
 
