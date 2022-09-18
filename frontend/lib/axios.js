@@ -12,12 +12,12 @@ const axiosInstance = axios.create({
 
 export const setupInterceptors = (store) => {
   createAuthRefreshInterceptor(axiosInstance, (failedRequest) => axiosInstance
-    .post('/api/auth/refresh/', {
+    .post('/api/auth/token/refresh/', {
       user_id: store.getState().authReducer?.username,
-      refresh: store.getState().authReducer?.refreshToken,
+      refresh: store.getState().authReducer?.refresh,
     })
     .then((resp) => {
-      const { access_tok: accessToken } = resp.data;
+      const { access: accessToken } = resp.data;
       const bearer = `${
         process.env.JWT_AUTH_HEADER ?? 'Bearer'
       } ${accessToken}`;
