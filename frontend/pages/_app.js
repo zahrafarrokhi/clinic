@@ -10,6 +10,7 @@ import "../styles/globals.css";
 import { wrapper } from "../lib/store";
 import { useStore } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
+import { setupInterceptors } from "../lib/axios";
 
 // Client-side cache shared for the whole session
 // of the user in the browser.
@@ -20,6 +21,7 @@ function MyApp(props) {
   const getLayout = Component.getLayout || ((page) => page);
   const store = useStore();
 
+  setupInterceptors(store)
 
   return (
     <PersistGate persistor={store.__PERSISTOR} loading={null}>
