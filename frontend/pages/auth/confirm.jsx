@@ -6,6 +6,7 @@ import { Button } from "@mui/material";
 import { GrRefresh } from "react-icons/gr";
 import { useDispatch, useSelector } from 'react-redux';
 import { confirm } from '../../lib/slices/auth';
+import { useRouter } from 'next/router';
 
 const CODE_LENGTH = 4;
 const EXP_TIME = 120;
@@ -37,7 +38,8 @@ const Confirm = () => {
   const dispatch = useDispatch();
   const username = useSelector(state => state.authReducer?.username)
   const method = useSelector(state=>state.authReducer?.method)
-
+//router
+    const router = useRouter()
     const submit = async () => {
     try {
       if (method === 'phone') {
@@ -59,7 +61,7 @@ const Confirm = () => {
         ).unwrap();
       }
   
-         
+     router.push('/patients/')    
     } catch (error) {
       console.log(error)
     }
