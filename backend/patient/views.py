@@ -12,11 +12,11 @@ class PatientView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Patient.obejcts.filter(user=self.request.user)
+        return Patient.objects.filter(user=self.request.user)
 
 class AddressView(viewsets.ModelViewSet) :
     serializer_class = serializers.AddressSerializers
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Address.obejcts.filter(user=self.request.user)
+        return Address.objects.filter(user=self.request.user)
