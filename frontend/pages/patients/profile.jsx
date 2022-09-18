@@ -1,5 +1,7 @@
 import { Button } from "@mui/material";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import LoginLayout from "../../components/LoginLayout";
 import CityComponent from "../../components/ProfileFields/CityComponent";
 import Insurance from "../../components/ProfileFields/Insurance";
@@ -7,6 +9,7 @@ import ProvinceComponent from "../../components/ProfileFields/ProvinceComponent"
 import SelectField from "../../components/ProfileFields/SelectField";
 import TextField from "../../components/ProfileFields/TextField";
 import { NotNull, OnlyDigits, StringLength } from "../../components/ProfileFields/validators";
+import { updatePatient } from "../../lib/slices/patients";
 
 const FIELDS = [
   //field
@@ -17,13 +20,13 @@ const FIELDS = [
     validators: [NotNull, StringLength(10), OnlyDigits],
     component: TextField,
   },
-  {
-    id: "phone_number",    
-    label: "شماره‌ی همراه",
-    // editable: true,
-    validators: [NotNull, OnlyDigits, StringLength(11)],
-    component: TextField,
-  },
+  // {
+  //   id: "phone_number",    
+  //   label: "شماره‌ی همراه",
+  //   // editable: true,
+  //   validators: [NotNull, OnlyDigits, StringLength(11)],
+  //   component: TextField,
+  // },
   {
     id: "first_name",
     label: "نام",
@@ -134,11 +137,38 @@ const FIELDS = [
 ];
 
 const PatientInfo = () => {
+  // redux 
+  const dispatch = useDispatch();
+  const router = useRouter()
+  
+  const patient = useSelector((state) => state.patientReducer?.patient);
+  const cities = useSelector((state) => state.constantDataReducer?.cities);
+
   //state
   const [state, setState] = useState(
-    //
-    FIELDS.reduce((obj, field) => ({...obj , [field.id]: field.defaultValue}), {})
+    {...FIELDS.reduce((obj, field) => ({...obj , [field.id]: field.defaultValue}), {}), ...patient}  
   );
+
+  const submit = async (e) => {
+    try {
+      // setError(false);
+      await dispatch(
+        updatePatient({...state})
+      ).unwrap();
+      router.push("/");
+    } catch (e) {
+      console.log(e)
+      // setError(true);
+    }
+  };
+
+  useEffect(() => {
+    if (cities && cities.length > 0 && patient.city) {
+      const city = cities.filter(item => item.id === patient.city)[0]
+      console.log('city', city)
+      setState({...state,province:city.parent})
+    }
+  }, [cities, patient]);
 
   return(
     <div className="flex flex-col justify-center items-center w-full px-3 md:px-8 py-8">
@@ -159,10 +189,12 @@ const PatientInfo = () => {
              options={field.options}
              validators={field.validators}
              state={state}
-        ></field.component>))}
+           ></field.component>))}
 
       </div>
-      <Button variant="contained" className="w-full md:w-[400px] p-5 mt-8 mb-2 text-lg font-bold ">
+      <Button variant="contained" className="w-full md:w-[400px] p-5 mt-8 mb-2 text-lg font-bold "
+      onClick={submit}
+      >
         تکمیل ثبت نام
       </Button>
 

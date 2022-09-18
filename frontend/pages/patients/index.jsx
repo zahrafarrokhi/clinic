@@ -5,6 +5,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { loadPatients, loginAsPatient } from "../../lib/slices/patients";
 
 
 
@@ -21,11 +22,15 @@ export default function Patients() {
 
   const Patients = async () => {
     try {
-      // await dispatch(loadPatients()).unwrap();
-    } catch (error) {}
+      await dispatch(loadPatients()).unwrap();
+    } catch (error) {
+      console.log(error)
+    }
   };
   const submit = () => {
-    // dispatch(loginAsPatient(selectedPatient));
+    dispatch(loginAsPatient(selectedPatient));
+
+    router.push('/')
   };
   useEffect(() => {
     Patients();
@@ -44,13 +49,31 @@ export default function Patients() {
       {/* flex-col items-center => horizental min-width ,then blow btn get width So  horizental min-width = width btn*/}
       <div className="flex flex-col py-12 md:py-3 self-stretch md:self-auto items-stretch md:items-center">
         {/* {['mohamadi', 'alizade', 'set'] */}
-        {[0, 1, 2]
+        {/* {[0, 1, 2]
           .map((i) => ({
             id: i,
             first_name: "patient",
             last_name: i,
           }))
           .map((p) => (
+           
+            <ToggleButton
+              variant="list"
+              className="my-2"
+              fullWidth
+              color="primary"
+              key={p.id}
+              onChange={() => selectPatient(p.id)}
+              selected={selectedPatient === p.id}
+            >
+              
+              
+            
+                {p.first_name} {p.last_name}
+             
+              </ToggleButton>
+          ))} */}
+         {patients?.map((p) => (
            
             <ToggleButton
               variant="list"
