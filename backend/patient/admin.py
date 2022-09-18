@@ -24,12 +24,12 @@ class AddressAdmin(admin.ModelAdmin):
     search_fields = ( 'name', 'address', 'postal_code',
                      'reciever', 'phone_number', )
     list_display = ('user', 'name', 'address', 'postal_code',
-                    'reciever', 'phone_number', 'location')
+                    'reciever', 'phone_number', )
     ordering = ('postal_code',)
     fields = None
     fieldsets = (
         ('address info',
-         {'fields': ('user', 'name', 'address', 'postal_code', 'reciever', 'phone_number', 'location')}),
+         {'fields': ('user', 'name', 'address', 'postal_code', 'reciever', 'phone_number', )}),
     )
 
 
