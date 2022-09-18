@@ -5,7 +5,18 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "../../components/DatePicker";
 import LoginLayout from "../../components/LoginLayout";
+import { addPatient } from "../../lib/slices/patients";
+import { persianToEnglishDigits } from "../../lib/utils";
 export default function NewPatient() {
+  const dispatch = useDispatch();
+  const router = useRouter()
+  //state
+  const [totalState,setTotalState] = useState(
+    {
+      first_name: "",
+      last_name: "",
+    }
+  )
   const [nationalId, setnationalId] = useState();
     // birthdate
   const [birthdate, setBirthDate] = useState();
@@ -13,16 +24,20 @@ export default function NewPatient() {
 
   const submit = async (e) => {
     try {
-      setError(false);
+      // setError(false);
       await dispatch(
         addPatient({
-          nationalId: persianToEnglishDigits(nationalId.current.value),
-          dateOfBirth: birthdate,
+          national_id: persianToEnglishDigits(nationalId),
+          date_of_birth: birthdate,
+          first_name: totalState.first_name,
+          last_name: totalState.last_name,
+          // ...totalState,
         })
       ).unwrap();
-      router.push("/patients/profile");
+      // router.push("/patients/profile");
     } catch (e) {
-      setError(true);
+      console.log(e)
+      // setError(true);
     }
   };
   return(
@@ -34,8 +49,29 @@ export default function NewPatient() {
        
         </div>
     </div>
-    <div className="flex flex-col p-3 my-4 md:my-0 gap-4 items-center">
-
+      <div className="flex flex-col p-3 my-4 md:my-0 gap-4 items-center">
+      <TextField
+          value={totalState.first_name}
+          onChange={(e)=>setTotalState({...totalState, first_name: e.target.value})}
+        label={"نام"}
+        // placeholder={}
+        InputProps={{
+          sx: {
+            textAlign: 'center',
+          }
+        }}
+        ></TextField>
+  <TextField
+          value={totalState.last_name}
+          onChange={(e)=>setTotalState({...totalState, last_name: e.target.value})}
+        label={" نام خانوادگی"}
+        // placeholder={}
+        InputProps={{
+          sx: {
+            textAlign: 'center',
+          }
+        }}
+        ></TextField>
     <TextField
           value={nationalId}
           onChange={(e)=>setnationalId(e.target.value)}
@@ -61,7 +97,7 @@ export default function NewPatient() {
         <DatePicker></DatePicker>
       </div>
       <Button variant="contained" color="primary" className="w-[320px] md:w-[400px] my-4 text-lg"
-      //  onClick={submit}
+       onClick={submit}
       //  disabled={selectedPatient === null}
       >ثبت بیمار</Button>
   </div>)
