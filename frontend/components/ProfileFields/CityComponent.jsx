@@ -19,7 +19,7 @@ const CityComponent = (props) => {
   useEffect(() => {
     getCities()
   }, []);
-
+  
   const { value, onChange, label, state, className } = props;
   return (
     <FormControl
@@ -35,7 +35,8 @@ const CityComponent = (props) => {
       onChange={(e)=>onChange(e,e.target.value)}
       >
         {/* handle with redux */}
-        {cities?.filter(c=>c.parent==state.province).map((city) => <MenuItem value={city.id}>{city.fa_name}</MenuItem>)} 
+        {!state.province && <MenuItem disabled value="">استان را انتخاب کنید.</MenuItem>}
+        {cities?.filter(c=>c.parent==state.province).map((city) => <MenuItem key={city.id} value={city.id}>{city.fa_name}</MenuItem>)} 
         {/* if Province => map on cities */}
       {/* {cities?.filter(city=>city.parent!==null).map((city)=> <MenuItem value={city.id}>{city.name }</MenuItem>)}  */}
       
