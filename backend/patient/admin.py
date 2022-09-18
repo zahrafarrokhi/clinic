@@ -22,7 +22,7 @@ admin.site.register(Patient, PatientAdmin)
 
 class AddressAdmin(admin.ModelAdmin):
     search_fields = ( 'name', 'address', 'postal_code',
-                     'reciever', 'phone_number', 'location')
+                     'reciever', 'phone_number', )
     list_display = ('user', 'name', 'address', 'postal_code',
                     'reciever', 'phone_number', 'location')
     ordering = ('postal_code',)
