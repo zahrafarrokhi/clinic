@@ -36,7 +36,7 @@ const Insurance = (props) => {
       onChange={(e)=>onChange(e,e.target.value)}
       >
       
-        {insurances?.map((ins) => <MenuItem value={ins.id}>{ins.fa_name}</MenuItem>)} 
+        {insurances?.map((ins) => <MenuItem key={ins.id} value={ins.id}>{ins.fa_name}</MenuItem>)} 
       
     </Select>
   </FormControl>

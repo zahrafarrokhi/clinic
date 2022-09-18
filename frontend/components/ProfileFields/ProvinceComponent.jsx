@@ -21,11 +21,11 @@ const ProvinceComponent = (props) => {
     <Select
       labelId="demo-simple-select-label"
       id="demo-simple-select"
-      value={value}
+      value={value || 0}
       label={label}
       onChange={(e)=>onChange(e,e.target.value)}
     >
-      {provinces.map((item)=> <MenuItem value={item.id}>{item.fa_name }</MenuItem>)} 
+      {provinces.map((item)=> <MenuItem key={item.id} value={item.id}>{item.fa_name }</MenuItem>)} 
       
     </Select>
   </FormControl>
