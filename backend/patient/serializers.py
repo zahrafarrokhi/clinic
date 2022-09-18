@@ -6,7 +6,7 @@ from patient.models import Patient, Address
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = '__all__'
+        #fields = '__all__'
         exclude = ['user']
 
     def validate(self,attrs):
