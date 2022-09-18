@@ -7,6 +7,7 @@ class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         fields = '__all__'
+        exclude = ['user']
 
     def validate(self,attrs):
         if len (attrs['national_id'] ) != 10 :
