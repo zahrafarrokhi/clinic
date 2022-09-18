@@ -9,6 +9,7 @@ import { persistStore } from 'redux-persist';
 //auth  example
 import { authSlice } from './slices/auth';
 import { constantDataSlice } from './slices/constant_data';
+import { patientSlice } from './slices/patients';
 
 
 const makeStore = (initialState) => {
@@ -25,6 +26,7 @@ const makeStore = (initialState) => {
       //auth example
       authReducer: authSlice.reducer,
       constantDataReducer: constantDataSlice.reducer,
+      patientReducer: patientSlice.reducer,
       
     });
 
