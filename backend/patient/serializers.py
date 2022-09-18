@@ -27,20 +27,18 @@ class PatientSerializer(serializers.ModelSerializer):
         return patient
 
     def update(self, instance, validated_data):
-        # instance.city = validated_data.get(
-        #     'city', instance.city)
+        instance.city = validated_data.get(
+            'city', instance.city)
         instance.first_name = validated_data.get(
             'first_name', instance.first_name)
         instance.last_name = validated_data.get(
             'last_name', instance.last_name)
         instance.gender = validated_data.get(
             'gender', instance.gender)
-        # instance.has_social_security_insurance = validated_data.get(
-        #     'has_social_security_insurance', instance.has_social_security_insurance)
         instance.insurance = validated_data.get(
             'insurance', instance.insurance)
-        # instance.supplementary_insurance = validated_data.get(
-        #     'supplementary_insurance', instance.supplementary_insurance)
+        instance.supplementary_insurance = validated_data.get(
+            'supplementary_insurance', instance.supplementary_insurance)
         instance.save()
         return instance
 
