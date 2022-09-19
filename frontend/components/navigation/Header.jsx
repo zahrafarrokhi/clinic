@@ -33,7 +33,7 @@ export default function Header(props) {
       <Toolbar className="flex justify-between md:justify-end items-center h-[80px]">
         <Box className="flex items-center">
           <IconButton onClick={openDrawer} className="md:hidden">
-            <TiThMenuOutline />
+            <TiThMenuOutline className="text-3xl" />
           </IconButton>
           <NotificationsOutlined />
         </Box>
