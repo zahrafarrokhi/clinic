@@ -2,6 +2,7 @@ import { Button } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
 import LoginLayout from "../components/LoginLayout";
+import Navigation from "../components/navigation/Navigation";
 import styles from "../styles/Home.module.css";
 
 function Home() {
@@ -19,7 +20,7 @@ function Home() {
 }
 
 Home.getLayout = (page) => {
-  return <LoginLayout>{page}</LoginLayout>;
+  return <Navigation>{page}</Navigation>;
 };
 
 export default Home;
