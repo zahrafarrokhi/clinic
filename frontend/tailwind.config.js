@@ -22,7 +22,7 @@ module.exports = {
 
       borderColor: '#2773ff',
       border: '#d6cfcf',
-      background: '#eff6ff',
+      background: '#fbfbfb',
       backgroundPrimary: '#C2DBFF',
       backgroundGray: '#e5e5e5',
       backgroundBlue: '#e8f5ff',
