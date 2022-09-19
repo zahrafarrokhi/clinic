@@ -1,8 +1,17 @@
 import { useTheme } from "@emotion/react";
-import { Button, Menu, MenuItem } from "@mui/material";
+import { ChevronLeft } from "@mui/icons-material";
+import { Button, Divider, Menu, MenuItem } from "@mui/material";
+import Link from "next/link";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginAsPatient } from "../../lib/slices/patients";
+import { AiOutlinePlus } from 'react-icons/ai';
 
 export default function PatientSelection() {
+  //redux
+  const dispatch = useDispatch();
+  const patients = useSelector((state) => state.patientReducer?.patients);
+  const patient = useSelector((state) => state.patientReducer?.patient);
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   //mobile
@@ -16,6 +25,10 @@ export default function PatientSelection() {
     setOpen(true)
     setAnchorEl(event.currentTarget);
   };
+  const selectP = (id) => {
+    dispatch(loginAsPatient(id))
+    handleClose()
+  }
   return (
     <div>
     <Button
@@ -25,7 +38,9 @@ export default function PatientSelection() {
       aria-expanded={open ? 'true' : undefined}
       onClick={handleClick}
     >
-      Dashboard
+        {patient?.first_name}  {patient?.last_name}
+        <Divider orientation="vertical" className="h-full mx-1" ></Divider>
+        <ChevronLeft className={`transition-all duration-300 ${open ? 'rotate-90' : '-rotate-90'}`}/>
     </Button>
     <Menu
       id="basic-menu"
@@ -37,6 +52,12 @@ export default function PatientSelection() {
       }}
         //patientSelection for mobile
         sx={{
+          [theme.breakpoints.up('md')]: {
+            '& .MuiMenu-paper': {
+              borderRadius: '1rem',
+              padding:'0.5em'
+            }
+      },
           [theme.breakpoints.down('md')]: {
             '& .MuiMenu-paper': {
               bottom: 0,
@@ -51,9 +72,14 @@ export default function PatientSelection() {
       }
       }}
     >
-      <MenuItem onClick={handleClose}>Profile</MenuItem>
-      <MenuItem onClick={handleClose}>My account</MenuItem>
-      <MenuItem onClick={handleClose}>Logout</MenuItem>
+        {patients?.map((p) => (<MenuItem key={p.id} onClick={()=>selectP(p.id)} className={patient?.id===p.id?'text-primary':''}>{p.first_name} {p.last_name }</MenuItem>))} 
+        <Divider />
+        <Link href="/patients/new" passHref>
+        <MenuItem>
+            <AiOutlinePlus className="text-primary mx-2"/>
+          بیمار جدید
+          </MenuItem>
+          </Link>
     </Menu>
   </div>
   )
