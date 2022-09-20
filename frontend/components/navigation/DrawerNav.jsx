@@ -8,7 +8,7 @@ import { HiOutlineDocumentDuplicate } from "react-icons/hi";
 import CreditScoreIcon from "@mui/icons-material/CreditScore";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Chip,
@@ -26,6 +26,9 @@ import { useRouter } from "next/router";
 import { IoLogoGitlab } from "react-icons/io5";
 import PatientSelection from "./PatientSelection";
 import { useState } from "react";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { logout } from "../../lib/utils";
+import { useEffect } from "react";
 
 const NavFields = [
   //field
@@ -123,7 +126,17 @@ export default function DrawerNav(props) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
+ //logout
+ const refresh = useSelector((state) => state.authReducer?.refresh);
+  const dispatch = useDispatch();
 
+  // useEffect(()=>{},[])
+  
+  useEffect(() => {
+    if (refresh === null) {
+      router.push('/auth/login/')
+    }
+  },[refresh])
   return (
     <SwipeableDrawer
       open={open}
@@ -146,24 +159,31 @@ export default function DrawerNav(props) {
           // height: '50px',
           borderTopLeftRadius: "1.5rem",
           borderTopRightRadius: "1.5rem",
-          top: patientSelection ? '100%': undefined,
+          top: patientSelection ? "100%" : undefined,
         },
       }}
     >
       {/* Divider show on mobile */}
-      <Divider className="md:hidden w-[30%] mx-auto my-2 border-b-[.125rem] rounded-full" variant="middle" >
-      </Divider>
+      <Divider
+        className="md:hidden w-[30%] mx-auto my-2 border-b-[.125rem] rounded-full"
+        variant="middle"
+      ></Divider>
       {/* Logo */}
       <Box className="flex flex-row items-center my-6 mx-8">
         <IoLogoGitlab className="text-3xl ml-2 text-primary" />
-        <Typography variant="h6" color="primary">کلینیک آوا</Typography>
+        <Typography variant="h6" color="primary">
+          کلینیک آوا
+        </Typography>
       </Box>
 
       <Box className="flex flex-row md:hidden items-center mx-8">
-        <PatientSelection onOpen={()=>setPatientSelection(true)} onClose={()=>setPatientSelection(false)}  />
+        <PatientSelection
+          onOpen={() => setPatientSelection(true)}
+          onClose={() => setPatientSelection(false)}
+        />
       </Box>
       {/* Divider with Chip */}
-      <Divider className="md:hidden mx-auto w-[80%]" variant="middle" >
+      <Divider className="md:hidden mx-auto w-[80%]" variant="middle">
         <Chip label="منو"></Chip>
       </Divider>
       <List dense>
@@ -190,10 +210,21 @@ export default function DrawerNav(props) {
                 );
               })}
               {/* Divider hiddenlastitem =>(className="last:hidden") center (with =>variant="middle" ) */}
-              <Divider className="last:hidden my-2 mx-auto w-[80%]"  variant="middle" ></Divider>
+              <Divider
+                className="last:hidden my-2 mx-auto w-[80%]"
+                variant="middle"
+              ></Divider>
             </>
           );
         })}
+        <ListItem >
+          <ListItemButton onClick={() => logout(dispatch)}>
+            <ListItemIcon className="min-w-[40px]">
+              <LogoutIcon className="text-danger" />
+            </ListItemIcon>
+            <ListItemText primary="خروج" ></ListItemText>
+          </ListItemButton>
+        </ListItem>
       </List>
     </SwipeableDrawer>
   );
