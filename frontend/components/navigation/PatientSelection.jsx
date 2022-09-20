@@ -1,13 +1,14 @@
 import { useTheme } from "@emotion/react";
 import { ChevronLeft } from "@mui/icons-material";
-import { Button, Divider, Menu, MenuItem } from "@mui/material";
+import { Button, Divider, Menu, MenuItem, Slide, useMediaQuery } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginAsPatient } from "../../lib/slices/patients";
 import { AiOutlinePlus } from 'react-icons/ai';
 
-export default function PatientSelection() {
+export default function PatientSelection(props) {
+  const { onOpen = () => { }, onClose = () => { } } = props;
   //redux
   const dispatch = useDispatch();
   const patients = useSelector((state) => state.patientReducer?.patients);
@@ -16,19 +17,29 @@ export default function PatientSelection() {
   const [anchorEl, setAnchorEl] = useState(null);
   //mobile
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   
   const handleClose = () => {
     setOpen(false)
     setAnchorEl(null)
+    onClose()
   }
   const handleClick = (event) => {
     setOpen(true)
     setAnchorEl(event.currentTarget);
+    onOpen()
   };
   const selectP = (id) => {
     dispatch(loginAsPatient(id))
     handleClose()
   }
+//just only show on mobile
+  const mobileAnimation = isMobile ? {
+    TransitionComponent: Slide,
+    TransitionProps: {
+      direction: 'up',
+    }
+  } : {}
   return (
     <div>
     <Button
@@ -47,6 +58,8 @@ export default function PatientSelection() {
       anchorEl={anchorEl}
       open={open}
       onClose={handleClose}
+        //just only show on mobile
+        {...mobileAnimation}
       MenuListProps={{
         'aria-labelledby': 'basic-button',
       }}
@@ -68,6 +81,9 @@ export default function PatientSelection() {
               maxWidth: 'unset',
               borderTopLeftRadius: '1.5rem',
         borderTopRightRadius: '1.5rem',
+            },
+            '& .MuiBackdrop-root': {
+              backgroundColor: 'rgba(0, 0, 0, 0.5)'
             }
       }
       }}
