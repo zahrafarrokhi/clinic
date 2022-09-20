@@ -10,6 +10,7 @@ module.exports = {
       primary__contrastText: "#fff",
 
       background: "#eff6ff",
+      loginBg: '#EFF6FF',
       secondary: "#858fad",
       secondary__contrastText: "#fff",
       // secondary__light: "#fff",
