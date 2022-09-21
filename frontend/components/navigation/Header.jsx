@@ -29,7 +29,7 @@ export default function Header(props) {
   return (
     <ElevationScroll {...props}>
 
-    <AppBar position="absolute" color="background" className="">
+    <AppBar position="absolute" color="white" className="md:border-0 md:border-b md:border-border md:border-solid">
       <Toolbar className="flex justify-between md:justify-end items-center h-[80px]">
         <Box className="flex items-center">
           <IconButton onClick={openDrawer} className="md:hidden">
