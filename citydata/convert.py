@@ -8,14 +8,14 @@ with open('./ostan.csv') as csvFile:
     next(reader)
     for row in reader:
         data.append({'model': 'constant_data.city', 'pk': row[0],
-                     'fields': {'fa_name': row[1], 'name': row[1]}})
+                     'fields': {'fa_name': row[1],}})
 
 with open('./shahrestan.csv') as csvFile:
     reader = csv.reader(csvFile)
     next(reader)
     for row in reader:
         data.append({'model': 'constant_data.city', 'pk': 60 + int(row[0]),
-                     'fields': {'fa_name': row[1], 'name': row[1], 'parent':
+                     'fields': {'fa_name': row[1], 'parent':
                                 row[2]}})
 
 
