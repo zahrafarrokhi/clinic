@@ -20,12 +20,14 @@ const Insurance = (props) => {
     getInsurance()
   }, []);
 
-  const { value, onChange, label, state, className } = props;
+  const { value, onChange, label, state, className, InputProps = {}, active=true} = props;
   return (
     <FormControl
       // fullWidth
-      disabled={state.hasSupIns !== true}
+      // disabled={}
+      {...InputProps}
       className={className}
+      disabled={!active || state.hasSupIns !== true}
     >
       <InputLabel id="demo-simple-select-label">{label}</InputLabel>
     <Select
@@ -34,6 +36,7 @@ const Insurance = (props) => {
       value={value}
       label={label}
       onChange={(e)=>onChange(e,e.target.value)}
+      {...InputProps}
       >
       
         {insurances?.map((ins) => <MenuItem key={ins.id} value={ins.id}>{ins.fa_name}</MenuItem>)} 

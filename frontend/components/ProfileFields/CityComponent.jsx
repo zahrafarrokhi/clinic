@@ -20,11 +20,13 @@ const CityComponent = (props) => {
     getCities()
   }, []);
   
-  const { value, onChange, label, state, className } = props;
+  const { value, onChange, label, state, className, InputProps={}, active=true } = props;
   return (
     <FormControl
       className={className}
+      {...InputProps}
       // fullWidth
+      disabled={!active}
     >
       <InputLabel id="demo-simple-select-label">{label}</InputLabel>
     <Select
@@ -33,6 +35,7 @@ const CityComponent = (props) => {
       value={value}
       label={label}
       onChange={(e)=>onChange(e,e.target.value)}
+      {...InputProps}
       >
         {/* handle with redux */}
         {!state.province && <MenuItem disabled value="">استان را انتخاب کنید.</MenuItem>}

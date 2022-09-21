@@ -11,19 +11,22 @@ const ProvinceComponent = (props) => {
   const provinces = useSelector((state) => state.constantDataReducer?.provinces);
 
   
-  const { value, onChange, label, className} = props;
+  const { value, onChange, label, className, InputProps = {},active=true} = props;
   return (
     <FormControl
       // fullWidth
+      {...InputProps}
       className={className}
+      disabled={!active}
     >
       <InputLabel id="demo-simple-select-label">{label}</InputLabel>
     <Select
       labelId="demo-simple-select-label"
       id="demo-simple-select"
-      value={value || 0}
+      value={value || null}
       label={label}
       onChange={(e)=>onChange(e,e.target.value)}
+      {...InputProps}
     >
       {provinces.map((item)=> <MenuItem key={item.id} value={item.id}>{item.fa_name }</MenuItem>)} 
       

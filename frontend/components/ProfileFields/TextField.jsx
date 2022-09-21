@@ -2,7 +2,7 @@ import { TextField } from "@mui/material";
 import { useMemo, useState } from "react";
 
 const FormTextField = (props) => {
-  const { value, onChange, label, validators, className } = props;
+  const { value, onChange, label, validators, className, InputProps={}, active=true} = props;
   const [hasChanged, setHasChanged] = useState(false)
 
   const error = useMemo(() => {
@@ -21,9 +21,11 @@ const FormTextField = (props) => {
     value={value}
       onChange={(e) => onChange(e, e.target.value) || setHasChanged(true)}
       label={label}
-      InputLabelProps={{ shrink: true }}
+      // InputLabelProps={{ shrink: true }}
       error={hasChanged && error}
       helperText={hasChanged && error}
+      {...InputProps}
+      disabled={!active}
     >
   </TextField>
   );
