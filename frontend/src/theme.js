@@ -24,7 +24,7 @@ let theme = createTheme({
   },
   typography: {
     fontFamily: 'IRANSansMobile',
-    fontSize: 16,
+    fontSize: 14,
   },
   components: {
     MuiInputLabel: {
@@ -37,6 +37,11 @@ let theme = createTheme({
     },
    
     MuiOutlinedInput: {
+      // variants: [
+      //   {
+      //     props: [{}]
+      //   }
+      // ]
       styleOverrides: {
         root: ({ theme }) => ({
           '& .MuiSelect-select': {
@@ -67,6 +72,8 @@ let theme = createTheme({
               },
             },
           },
+
+          
 
         }),
       },
