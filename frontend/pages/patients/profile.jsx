@@ -188,6 +188,7 @@ const PatientInfo = () => {
              label={field.label}
              options={field.options}
              validators={field.validators}
+             InputProps={{InputLabelProps: {shrink: true}}}
              state={state}
            ></field.component>))}
 
