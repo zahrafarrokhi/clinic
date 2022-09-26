@@ -8,6 +8,7 @@ import ProvinceComponent from "./ProvinceComponent";
 import TextField from "./TextField";
 import Form from "./FormRender/Form";
 import AddressList from "./FormRender/AddressList";
+import { listAddress, updateAddress } from "../../lib/slices/address";
 //
 export const tabs = [
   //f => patientinfo or address
@@ -143,8 +144,9 @@ export const tabs = [
   {
     id: "address",
     name: "مدیریت آدرس ها",
-    loadData:"",
-    data:"",
+    loadData: listAddress,
+    data: (state) => state.addressReducer?.addresses,
+    updateData: updateAddress,
     users: [],
     form: [
       {

@@ -6,10 +6,10 @@ export const IDLE = 'idle';
 export const LOADING = 'loading';
 
 export const listAddress = createAsyncThunk(
-  'cities/getall',
+  'addresses/getall',
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get('/api/data/city/');
+      const response = await axios.get('/api/patients/address/');
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.response.data });
@@ -17,11 +17,11 @@ export const listAddress = createAsyncThunk(
   },
 );
 
-export const up= createAsyncThunk(
-  'insurance/getall',
-  async (_, thunkAPI) => {
+export const updateAddress = createAsyncThunk(
+  'address/update',
+  async (payload, thunkAPI) => {
     try {
-      const response = await axios.get('/api/data/insurance/');
+      const response = await axios.put(`/api/patients/address/${payload.id}`,payload);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.response.data });
@@ -30,46 +30,44 @@ export const up= createAsyncThunk(
 );
 
 const internalInitialState = {
-  cities: [],
-  provinces :[],
-  supplementaryInsuranceList: null,
+  addresses: [],
   error: null,
   loading: IDLE,
 };
 
-export const constantDataSlice = createSlice({
-  name: 'constant_data',
+export const addressSlice = createSlice({
+  name: 'address',
   initialState: internalInitialState,
   reducers: {
     reset: () => internalInitialState,
   },
   extraReducers: (builder) => {
-    // Load cities
-    builder.addCase(loadCities.fulfilled, (state, action) => {
-      state.cities = action.payload.filter(city => city.parent != null)
-      state.provinces = action.payload.filter(p => p.parent == null)
+    // listAddress
+    builder.addCase(listAddress.fulfilled, (state, action) => {
+      state.addresses = action.payload;
       state.loading = IDLE;
     });
-    builder.addCase(loadCities.rejected, (state, action) => {
+    builder.addCase(listAddress.rejected, (state, action) => {
       state.error = action.payload.error;
       state.loading = IDLE;
     });
-    builder.addCase(loadCities.pending, (state, action) => {
+    builder.addCase(listAddress.pending, (state, action) => {
       state.loading = LOADING;
     });
-    // Load loadSupplementaryInsurance
-    builder.addCase(loadSupplementaryInsurance.fulfilled, (state, action) => {
-      state.supplementaryInsuranceList = action.payload;
+    // updateAddress
+    builder.addCase(updateAddress.fulfilled, (state, action) => {
+      state.addresses = [...state.addresses.filter(item=>item.id!==action.payload.id), action.payload].sort((a, b)=>a.id - b.id)
       state.loading = IDLE;
     });
-    builder.addCase(loadSupplementaryInsurance.rejected, (state, action) => {
+    builder.addCase(updateAddress.rejected, (state, action) => {
       state.error = action.payload.error;
       state.loading = IDLE;
     });
-    builder.addCase(loadSupplementaryInsurance.pending, (state, action) => {
+    builder.addCase(updateAddress.pending, (state, action) => {
       state.loading = LOADING;
     });
+   
   },
 });
 
-export const { reset } = constantDataSlice.actions;
+export const { reset } = addressSlice.actions;

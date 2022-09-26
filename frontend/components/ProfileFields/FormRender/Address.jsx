@@ -1,11 +1,28 @@
 import { Box, Button } from "@mui/material";
+import { useEffect } from "react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import MapComponent from "../MapComponent";
 
 export default function Address(props) {
-  const { formsTab } = props;
+  const { formsTab,data } = props;
   const [state, setState] = useState({});
   const [active, setActive] = useState(false);
+
+  useEffect(()=> {
+    setState(data)
+  }, [data])
+  //redux
+  const dispatch = useDispatch();
+  const updateAddress = async ()=>{
+    try {
+      await dispatch(formsTab.updateData(state)).unwrap();
+      setActive(false)
+    } catch (error) {
+      
+    }
+  }
+  
   return (
     <div className="flex">
     <div className="flex flex-col basis-[68%]">
@@ -20,6 +37,7 @@ export default function Address(props) {
             validators={field.validators}
             state={state}
             active={active}
+
             //  InputProps={{InputLabelProps: {shrink: null}}}
           ></field.component>
         ))}
@@ -28,8 +46,11 @@ export default function Address(props) {
       <Box className="flex gap-2">
         {active ? (
           <>
-            <Button variant="contained" className="w-36">ثبت</Button>
-            <Button variant="outlined" className="w-36" onClick={() => setActive(false)}>
+            <Button variant="contained" className="w-36" onClick={updateAddress} >ثبت</Button>
+            <Button variant="outlined" className="w-36" onClick={() => {
+              setActive(false)
+              setState(data)
+              }}>
               انصراف
             </Button>
           </>

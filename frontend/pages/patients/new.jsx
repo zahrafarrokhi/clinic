@@ -34,7 +34,7 @@ export default function NewPatient() {
           // ...totalState,
         })
       ).unwrap();
-      // router.push("/patients/profile");
+      router.push("/patients/profile");
     } catch (e) {
       console.log(e)
       // setError(true);
