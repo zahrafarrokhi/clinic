@@ -3,7 +3,7 @@ from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
 
 from patient import models, serializers
-from patient.models import Patient
+from patient.models import Patient, Address
 
 
 # Create your views here.

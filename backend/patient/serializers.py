@@ -46,7 +46,7 @@ class PatientSerializer(serializers.ModelSerializer):
 class AddressSerializers(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = '__all__'
+        # fields = '__all__'
         exclude = ['user']
 
     def create(self,validated_data):
