@@ -7,10 +7,10 @@ import CityComponent from "./CityComponent";
 import ProvinceComponent from "./ProvinceComponent";
 import TextField from "./TextField";
 import Form from "./FormRender/Form";
-import Address from "./FormRender/Address";
-
+import AddressList from "./FormRender/AddressList";
+//
 export const tabs = [
-  //f
+  //f => patientinfo or address
   {
     id: "patientinfo",
     name: "اطلاعات کاربری",
@@ -143,6 +143,94 @@ export const tabs = [
   {
     id: "address",
     name: "مدیریت آدرس ها",
+    loadData:"",
+    data:"",
+    users: [],
+    form: [
+      {
+        id: "address_name",
+        label: "نام آدرس",
+        component: TextField,
+      },
+      {
+        id: "postal_code",
+        label: "کد پستی",
+        required: true,
+        validators: [NotNull, StringLength(10), OnlyDigits],
+        component: TextField,
+      },
+      {
+        id: "phone_number",
+        label: "تلفن ثابت",
+        required: true,
+        validators: [NotNull, StringLength(11), OnlyDigits],
+        component: TextField,
+      },
+      {
+        id: "reciever",
+        label: "نام",
+        validators: [NotNull],
+        editable: false,
+        component: TextField,
+      },
+      {
+        id: "address",
+        label: "آدرس",
+        required: true,
+        component: TextField,
+        validators: [NotNull],
+      },
+      {
+        id: "location",
+        label: " موقعیت در نقشه",
+        // editable: false,
+        component: TextField,
+      },
+    ],
+    formComponent: AddressList,
+  },
+];
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div role="tabpanel" hidden={value !== index} {...other}>
+      {/* {value === index && ( */}
+      {/* <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box> */}
+      {/* )} */}
+      {children} {/*  children is formComponent */}
+    </div>
+  );
+}
+
+export default function TabComponent() {
+  const [selectedTab, setSelectedTab] = useState();
+  const handleChange = (event, newValue) => {
+    setSelectedTab(newValue);
+  };
+  return (
+    <Box sx={{ width: "100%" }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        {/* Tab -> onClick -> Tabs.onChange(event, Tab.value) */}
+        {/* Tab-> value -> which tab is selected -> value={selectedTab} ,{value} === const [selectedTab,setSelectedTab]=useState();*/}
+        <Tabs value={selectedTab} onChange={handleChange}>
+          {/* each tab has  label & value(has default index)*/}
+          {tabs.map((t) => (
+            <Tab label={t.name} value={t.id} />
+          ))}
+        </Tabs>
+      </Box>
+      {tabs.map((f) => (
+        //which tab is  selected=> value={selectedTab} ,which tab  information blongs to => index={f.id}
+        <TabPanel value={selectedTab} index={f.id} key={f.id}>
+          {/* {f.name} */}
+          {/* f => for example address form
+           {
+    id: "address",
+    name: "مدیریت آدرس ها",
     users: [],
     form: [
       {
@@ -187,43 +275,9 @@ export const tabs = [
     ],
     formComponent: Address,
   },
-];
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div role="tabpanel" hidden={value !== index} {...other}>
-      {/* {value === index && ( */}
-      {/* <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box> */}
-      {/* )} */}
-      {children}
-    </div>
-  );
-}
-
-export default function TabComponent() {
-  const [value, setValue] = useState();
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  return (
-    <Box sx={{ width: "100%" }}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        {/* Tab -> onClick -> Tabs.onChange(event, Tab.value) */}
-        {/* Tab-> value -> which tab is selected -> value={value} ,{value} === const [value,setValue]=useState();*/}
-        <Tabs value={value} onChange={handleChange}>
-          {/* each tab has  label & value(has default index)*/}
-          {tabs.map((t) => (
-            <Tab label={t.name} value={t.id} />
-          ))}
-        </Tabs>
-      </Box>
-      {tabs.map((f) => (
-        <TabPanel value={value} index={f.id} key={f.id}>
-          {/* {f.name} */}
+         
+          */}
+          {/* formsTab => props */}
           <f.formComponent formsTab={f} />
         </TabPanel>
       ))}
