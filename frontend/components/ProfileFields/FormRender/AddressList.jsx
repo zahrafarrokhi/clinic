@@ -20,7 +20,7 @@ export default function AddressList(props) {
     getAddress()
   },[])
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
       {addresses?.map((ad) => <Address formsTab={formsTab } data={ad} key={ad.id} />)}
       </div>
   )

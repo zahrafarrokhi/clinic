@@ -9,6 +9,7 @@ import TextField from "./TextField";
 import Form from "./FormRender/Form";
 import AddressList from "./FormRender/AddressList";
 import { listAddress, updateAddress } from "../../lib/slices/address";
+import { updatePatient } from "../../lib/slices/patients";
 //
 export const tabs = [
   //f => patientinfo or address
@@ -16,6 +17,8 @@ export const tabs = [
     id: "patientinfo",
     name: "اطلاعات کاربری",
     users: [],
+    updateData: updatePatient,
+    data: (state) => state.patientReducer?.patient,
     form: [
       //field
       {

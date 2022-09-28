@@ -33,7 +33,7 @@ const Insurance = (props) => {
     <Select
       labelId="demo-simple-select-label"
       id="demo-simple-select"
-      value={value}
+      value={value || null}
       label={label}
       onChange={(e)=>onChange(e,e.target.value)}
       {...InputProps}

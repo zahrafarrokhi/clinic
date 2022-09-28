@@ -1,4 +1,5 @@
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { useEffect } from "react";
 //redux
 import { useDispatch, useSelector } from "react-redux";
 
@@ -9,9 +10,22 @@ const ProvinceComponent = (props) => {
    // redux
   const dispatch = useDispatch();
   const provinces = useSelector((state) => state.constantDataReducer?.provinces);
+  const cities = useSelector((state) => state.constantDataReducer?.cities);
 
   
-  const { value, onChange, label, className, InputProps = {},active=true} = props;
+  const { value, onChange, label, className, InputProps = {},state, active=true} = props;
+
+
+  useEffect(() => {
+    if(!value && state.city) {
+      const city = cities.filter((item) => item.id === state.city);
+      if(city.length > 0) {
+        onChange({}, city[0].parent)
+      }
+    }
+  }, [value, state, cities])
+
+
   return (
     <FormControl
       // fullWidth
@@ -19,10 +33,11 @@ const ProvinceComponent = (props) => {
       className={className}
       disabled={!active}
     >
-      <InputLabel id="demo-simple-select-label">{label}</InputLabel>
+      <InputLabel id="demo-simple-select-label" shrink={value !== undefined}>{label}</InputLabel>
     <Select
       labelId="demo-simple-select-label"
       id="demo-simple-select"
+      // value={value}
       value={value || null}
       label={label}
       onChange={(e)=>onChange(e,e.target.value)}

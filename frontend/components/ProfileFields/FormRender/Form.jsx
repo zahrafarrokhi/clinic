@@ -1,10 +1,28 @@
 import { Box, Button } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 
 export default function Form(props) {
   const { formsTab } = props;
   const [state, setState] = useState({});
   const [active, setActive] = useState(false);
+  //redux
+  const dispatch = useDispatch();
+  //loadData
+  const data = useSelector(formsTab.data)
+  useEffect(()=> {
+    setState(data)
+  }, [data])
+  //updateData
+  const update = async ()=>{
+    try {
+      await dispatch(formsTab.updateData(state)).unwrap();
+      setActive(false)
+    } catch (error) {
+      
+    }
+  }
   return (
     <div className="flex flex-col">
       <div className="flex justify-start items-start gap-9 flex-wrap self-stretch my-12">
@@ -26,13 +44,16 @@ export default function Form(props) {
       <Box className="flex gap-2">
         {active ? (
           <>
-            <Button variant="contained" className="w-36">ثبت</Button>
-            <Button variant="outlined" className="w-36" onClick={() => setActive(false)}>
+            <Button variant="contained" className="flex basis-[45%] grow md:block md:basis-auto md:grow-0 md:w-36" onClick={update} >ثبت</Button>
+            <Button variant="outlined" className="flex basis-[45%] grow md:block md:basis-auto md:grow-0 md:w-36" onClick={() => {
+              setActive(false)
+              setState(data)
+              }}>
               انصراف
             </Button>
           </>
         ) : (
-          <Button variant="contained" className="w-auto" onClick={() => setActive(true)}>
+          <Button variant="contained" className="flex basis-[45%] grow md:block md:basis-auto md:grow-0 md:w-auto" onClick={() => setActive(true)}>
             ویرایش اطلاعات
           </Button>
         )}

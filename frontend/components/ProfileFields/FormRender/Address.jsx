@@ -24,8 +24,8 @@ export default function Address(props) {
   }
   
   return (
-    <div className="flex">
-    <div className="flex flex-col basis-[68%]">
+    <div className="flex flex-wrap">
+    <div className="flex flex-col flex-grow basis-[68%]">
       <div className="flex justify-start items-start gap-9 flex-wrap my-12 ">
         {formsTab.form.map((field) => (
           <field.component
@@ -43,7 +43,7 @@ export default function Address(props) {
         ))}
       </div>
       {/* BTN */}
-      <Box className="flex gap-2">
+      <Box className="hidden md:flex gap-2">
         {active ? (
           <>
             <Button variant="contained" className="w-36" onClick={updateAddress} >ثبت</Button>
@@ -61,7 +61,25 @@ export default function Address(props) {
         )}
       </Box>
     </div>
-<div className="basis-[30%] grow-0"><MapComponent value={state.location} onChange={(val) => setState({...state, location: val })}/></div>
+<div className="basis-[30%] grow md:grow-0 shrink-0 min-w-[200px] min-h-[200px]"><MapComponent value={state.location} onChange={(val) => setState({...state, location: val })}/></div>
+
+<Box className="flex md:hidden w-full gap-2 my-10">
+        {active ? (
+          <>
+            <Button variant="contained" className="flex basis-[45%] grow" onClick={updateAddress} >ثبت</Button>
+            <Button variant="outlined" className="flex basis-[45%] grow" onClick={() => {
+              setActive(false)
+              setState(data)
+              }}>
+              انصراف
+            </Button>
+          </>
+        ) : (
+          <Button variant="contained" className="flex basis-[45%] grow" onClick={() => setActive(true)}>
+            ویرایش اطلاعات
+          </Button>
+        )}
+      </Box>
     </div>
   );
 }

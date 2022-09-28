@@ -21,6 +21,7 @@ const CityComponent = (props) => {
   }, []);
   
   const { value, onChange, label, state, className, InputProps={}, active=true } = props;
+
   return (
     <FormControl
       className={className}
@@ -28,11 +29,12 @@ const CityComponent = (props) => {
       // fullWidth
       disabled={!active}
     >
-      <InputLabel id="demo-simple-select-label">{label}</InputLabel>
+      <InputLabel id="demo-simple-select-label" shrink={value !== undefined}>{label}</InputLabel>
     <Select
       labelId="demo-simple-select-label"
       id="demo-simple-select"
-      value={value}
+      value={value || null}
+      // value={state.province ? value : null}
       label={label}
       onChange={(e)=>onChange(e,e.target.value)}
       {...InputProps}
