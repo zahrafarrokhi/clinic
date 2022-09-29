@@ -33,12 +33,12 @@ const ProvinceComponent = (props) => {
       className={className}
       disabled={!active}
     >
-      <InputLabel id="demo-simple-select-label" shrink={value !== undefined}>{label}</InputLabel>
+      <InputLabel id="demo-simple-select-label">{label}</InputLabel>
     <Select
       labelId="demo-simple-select-label"
       id="demo-simple-select"
       // value={value}
-      value={value || null}
+      value={value || ''}
       label={label}
       onChange={(e)=>onChange(e,e.target.value)}
       {...InputProps}

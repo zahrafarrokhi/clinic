@@ -13,7 +13,7 @@ const SelectField = (props) => {
     <Select
       labelId="demo-simple-select-label"
       id="demo-simple-select"
-        value={value}
+        value={value || ''}
         // defaultValue={options[0].id}
       label={label}
       onChange={(e)=>onChange(e,e.target.value)}

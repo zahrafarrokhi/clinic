@@ -29,11 +29,11 @@ const CityComponent = (props) => {
       // fullWidth
       disabled={!active}
     >
-      <InputLabel id="demo-simple-select-label" shrink={value !== undefined}>{label}</InputLabel>
+      <InputLabel id="demo-simple-select-label" >{label}</InputLabel>
     <Select
       labelId="demo-simple-select-label"
       id="demo-simple-select"
-      value={value || null}
+      value={value || ''}
       // value={state.province ? value : null}
       label={label}
       onChange={(e)=>onChange(e,e.target.value)}
