@@ -1,12 +1,12 @@
-import { Box, Button } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listAddress } from "../../../lib/slices/address";
 import Address from "./Address";
 
+
 export default function AddressList(props) { 
-  const { formsTab } = props;
+  const { formsTab, show, setShow } = props;
   const dispatch = useDispatch();
   const addresses = useSelector(formsTab.data)
   const getAddress = async ()=>{
@@ -18,10 +18,14 @@ export default function AddressList(props) {
   }
   useEffect (()=>{
     getAddress()
-  },[])
+  }, [])
+ 
   return (
     <div className="flex flex-col gap-4">
+      {show && <Address formsTab={formsTab} data={{}} hide={()=>{ setShow(false)} } /> } 
       {addresses?.map((ad) => <Address formsTab={formsTab } data={ad} key={ad.id} />)}
+    
+     
       </div>
   )
 

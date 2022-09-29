@@ -1,5 +1,5 @@
 import { NotNull, OnlyDigits, StringLength } from "./validators";
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Tab, Tabs, Typography, Button } from "@mui/material";
 import { useState } from "react";
 import Insurance from "./Insurance";
 import SelectField from "./SelectField";
@@ -8,8 +8,10 @@ import ProvinceComponent from "./ProvinceComponent";
 import TextField from "./TextField";
 import Form from "./FormRender/Form";
 import AddressList from "./FormRender/AddressList";
-import { listAddress, updateAddress } from "../../lib/slices/address";
+import { createAddress, listAddress, updateAddress } from "../../lib/slices/address";
 import { updatePatient } from "../../lib/slices/patients";
+import AddIcon from '@mui/icons-material/Add';
+import HasInsurance from "./HasInsurance";
 //
 export const tabs = [
   //f => patientinfo or address
@@ -122,15 +124,15 @@ export const tabs = [
         id: "hasSupIns",
         label: "بیمه تکمیلی",
         // editable: false,
-        component: SelectField,
+        component: HasInsurance,
         options: [
           {
             //id:backend
-            id: true,
+            id: 'true',
             name: "بله",
           },
           {
-            id: false,
+            id: 'false',
             name: "خیر",
           },
         ],
@@ -150,6 +152,7 @@ export const tabs = [
     loadData: listAddress,
     data: (state) => state.addressReducer?.addresses,
     updateData: updateAddress,
+    createData: createAddress,
     users: [],
     form: [
       {
@@ -216,17 +219,34 @@ export default function TabComponent() {
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
+  //plus btn
+
+   const [show,setShow]=useState(false)
+   const newAddress = () => {
+     setShow(true)
+   }
+
   return (
     <Box sx={{ width: "100%" }}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+      <Box className="flex justify-between"sx={{ borderBottom: 1, borderColor: "divider" }}>
         {/* Tab -> onClick -> Tabs.onChange(event, Tab.value) */}
         {/* Tab-> value -> which tab is selected -> value={selectedTab} ,{value} === const [selectedTab,setSelectedTab]=useState();*/}
+      
         <Tabs value={selectedTab} onChange={handleChange}>
           {/* each tab has  label & value(has default index)*/}
           {tabs.map((t) => (
-            <Tab label={t.name} value={t.id} />
+            <Tab label={t.name} value={t.id} className="text-base"/>
           ))}
         </Tabs>
+        {tabs.filter(item => selectedTab === item.id && item.createData).length > 0 && <div className="flex flex-row  items-center gap-2" >
+         <Button color="primary" aria-label="upload picture" variant="outlined" className="min-w-fit"
+        onClick={newAddress}
+        
+        >
+        <AddIcon className="text-lg"/>
+        </Button>
+        افزودن آدرس دیگر
+     </div>}
       </Box>
       {tabs.map((f) => (
         //which tab is  selected=> value={selectedTab} ,which tab  information blongs to => index={f.id}
@@ -283,7 +303,7 @@ export default function TabComponent() {
          
           */}
           {/* formsTab => props */}
-          <f.formComponent formsTab={f} />
+          <f.formComponent show={show } setShow={setShow} formsTab={f} />
         </TabPanel>
       ))}
     </Box>

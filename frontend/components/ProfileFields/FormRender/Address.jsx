@@ -5,19 +5,30 @@ import { useDispatch } from "react-redux";
 import MapComponent from "../MapComponent";
 
 export default function Address(props) {
-  const { formsTab,data } = props;
+  const { formsTab,data,hide } = props;
   const [state, setState] = useState({});
   const [active, setActive] = useState(false);
 
   useEffect(()=> {
     setState(data)
+    if (!data.id) {
+      setActive(true)
+    }
   }, [data])
   //redux
   const dispatch = useDispatch();
   const updateAddress = async ()=>{
     try {
-      await dispatch(formsTab.updateData(state)).unwrap();
-      setActive(false)
+      if (data.id) {
+        await dispatch(formsTab.updateData(state)).unwrap();
+        setActive(false)
+      }
+      else {
+        await dispatch(formsTab.createData(state)).unwrap();
+        setState({})
+        hide ()
+      }
+     
     } catch (error) {
       
     }
@@ -47,9 +58,12 @@ export default function Address(props) {
         {active ? (
           <>
             <Button variant="contained" className="w-36" onClick={updateAddress} >ثبت</Button>
-            <Button variant="outlined" className="w-36" onClick={() => {
+           <Button variant="outlined" className="w-36" onClick={() => {
               setActive(false)
-              setState(data)
+                setState(data)
+                if (!data.id) {
+                  hide()
+                }
               }}>
               انصراف
             </Button>
@@ -70,6 +84,9 @@ export default function Address(props) {
             <Button variant="outlined" className="flex basis-[45%] grow" onClick={() => {
               setActive(false)
               setState(data)
+              if (!data.id) {
+                hide()
+              }
               }}>
               انصراف
             </Button>
