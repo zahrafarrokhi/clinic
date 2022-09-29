@@ -20,23 +20,29 @@ const Insurance = (props) => {
     getInsurance()
   }, []);
 
-  const { value, onChange, label, state, className, InputProps = {}, active=true} = props;
+  const { value, onChange, label, state, className, InputProps = {}, active = true } = props;
+  
+  useEffect(() => {
+    if (state.hasSupIns === 'false') {
+      onChange(null, null)
+    }
+  }, [state.hasSupIns])
   return (
     <FormControl
       // fullWidth
-      // disabled={}
-      {...InputProps}
+      InputProps={{ ...InputProps}}
       className={className}
-      disabled={!active || state.hasSupIns !== true}
+      disabled={!active || state.hasSupIns !== 'true'}
     >
-      <InputLabel id="demo-simple-select-label">{label}</InputLabel>
+      <InputLabel id="demo-simple-select-label" >{label}</InputLabel>
     <Select
-      labelId="demo-simple-select-label"
-      id="demo-simple-select"
-      value={value || null}
-      label={label}
-      onChange={(e)=>onChange(e,e.target.value)}
-      {...InputProps}
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        value={value || ''}
+        label={label}
+        onChange={(e) => onChange(e, e.target.value)}
+        InputProps={{ ...InputProps }}
+        
       >
       
         {insurances?.map((ins) => <MenuItem key={ins.id} value={ins.id}>{ins.fa_name}</MenuItem>)} 

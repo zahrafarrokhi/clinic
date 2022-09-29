@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LoginLayout from "../../components/LoginLayout";
 import CityComponent from "../../components/ProfileFields/CityComponent";
+import HasInsurance from "../../components/ProfileFields/HasInsurance";
 import Insurance from "../../components/ProfileFields/Insurance";
 import ProvinceComponent from "../../components/ProfileFields/ProvinceComponent";
 import SelectField from "../../components/ProfileFields/SelectField";
@@ -115,14 +116,14 @@ const FIELDS = [
     id: "hasSupIns",
     label: "بیمه تکمیلی",
     // editable: false,
-    component: SelectField,
+    component: HasInsurance,
     options: [{
       //id:backend
-      id: true,
+      id: 'true',
       name:"بله",
     },
     {
-      id: false,
+      id: 'false',
       name:"خیر",
     },
     ]
