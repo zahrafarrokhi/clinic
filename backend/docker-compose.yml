@@ -36,7 +36,8 @@ services:
     entrypoint: ./entrypoint_celery.sh
 
   postgres_db:
-    image: postgres:12-alpine3.16
+#    image: postgres:12-alpine3.16
+    image: postgis/postgis:12-3.3-alpine
     restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data/
