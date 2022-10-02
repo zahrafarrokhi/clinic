@@ -12,6 +12,7 @@ import { createAddress, listAddress, updateAddress } from "../../lib/slices/addr
 import { updatePatient } from "../../lib/slices/patients";
 import AddIcon from '@mui/icons-material/Add';
 import HasInsurance from "./HasInsurance";
+import MultilineFormTextField from "./MultilineTextField";
 //
 export const tabs = [
   //f => patientinfo or address
@@ -185,15 +186,16 @@ export const tabs = [
         id: "address",
         label: "آدرس",
         required: true,
-        component: TextField,
+        // component: (props) => <TextField {...props} multiline className={'flex-grow md:mx-2'}/>,
+        component: MultilineFormTextField,
         validators: [NotNull],
       },
-      {
-        id: "location",
-        label: " موقعیت در نقشه",
-        // editable: false,
-        component: TextField,
-      },
+      // {
+      //   id: "location",
+      //   label: " موقعیت در نقشه",
+      //   // editable: false,
+      //   component: TextField,
+      // },
     ],
     formComponent: AddressList,
   },
