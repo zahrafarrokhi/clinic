@@ -29,7 +29,7 @@ class AddressAdmin(admin.ModelAdmin):
     fields = None
     fieldsets = (
         ('address info',
-         {'fields': ('user', 'name', 'address', 'postal_code', 'reciever', 'phone_number', )}),
+         {'fields': ('user', 'name', 'address', 'postal_code', 'reciever', 'phone_number', 'location')}),
     )
 
 

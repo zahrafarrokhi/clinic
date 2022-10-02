@@ -46,8 +46,11 @@ class PatientSerializer(serializers.ModelSerializer):
 class AddressSerializers(serializers.ModelSerializer):
     class Meta:
         model = Address
+        # Can't use both fields and exclude
         # fields = '__all__'
         exclude = ['user']
+        # read_only_fields = ['user'] # or exclude
+        geo_field = "location"
 
     def create(self,validated_data):
         user = self.context['request'].user

@@ -1,5 +1,5 @@
 # from django.contrib.contenttypes.fields import GenericRelation
-# from django.contrib.gis.db import models as gis_models
+from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -57,7 +57,7 @@ class Patient(models.Model):
         verbose_name_plural = _("Patients")
 
 
-class Address(models.Model):
+class Address(gis_models.Model):
     user = models.ForeignKey(
         User, null=False, blank=False, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, blank=True, null=True)
@@ -65,7 +65,7 @@ class Address(models.Model):
     postal_code = models.CharField(max_length=20)
     reciever = models.CharField(max_length=64)
     phone_number = models.CharField(max_length=16)
-    # location = gis_models.PointField()
+    location = gis_models.PointField()
 
     def __str__(self):
         return f"{self.name} {self.postal_code} ({self.phone_number}, {self.user})"
