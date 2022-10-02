@@ -46,8 +46,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'rest_framework_simplejwt',
     'rest_framework',
+    'rest_framework_gis',
     'constant_data',
     'authentication',
     'patient',
@@ -96,7 +98,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        # 'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME':env('DATABASE_NAME') ,
         'USER':env('DATABASE_USER') ,
         'PASSWORD': env('DATABASE_PASSWORD'),
