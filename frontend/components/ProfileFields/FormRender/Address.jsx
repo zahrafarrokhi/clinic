@@ -40,7 +40,7 @@ export default function Address(props) {
       <div className="flex justify-start items-start gap-9 flex-wrap my-12 ">
         {formsTab.form.map((field) => (
           <field.component
-            className="basis-full md:basis-[49%] flex-grow flex-shrink-0 md:max-w-[calc(50%-1.5rem)] my-2 [&>.MuiOutlinedInput-root]:text-sm [&>label]:text-sm"
+            className="basis-full md:basis-[40%] flex-grow flex-shrink-0 md:mx-2 my-2 [&>.MuiOutlinedInput-root]:text-sm [&>label]:text-sm"
             value={state[field.id]}
             onChange={(e, val) => setState({ ...state, [field.id]: val })}
             label={field.label}
@@ -75,7 +75,9 @@ export default function Address(props) {
         )}
       </Box>
     </div>
-<div className="basis-[30%] grow md:grow-0 shrink-0 min-w-[200px] min-h-[200px]"><MapComponent value={state.location} onChange={(val) => setState({...state, location: val })}/></div>
+    <div className="basis-[30%] grow md:grow-0 shrink-0 min-w-[200px] min-h-[200px]">
+      <MapComponent value={state.location} onChange={(val) => setState({...state, location: val })} active={active}/>
+    </div>
 
 <Box className="flex md:hidden w-full gap-2 my-10">
         {active ? (

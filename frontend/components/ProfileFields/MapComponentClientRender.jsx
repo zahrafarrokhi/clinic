@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef, useEffect, useMemo,
+  useState, useRef, useEffect, useMemo, useCallback,
 } from 'react';
 import {
   MapContainer, TileLayer, Marker, Popup, center, useMap, useMapEvents,
@@ -8,83 +8,118 @@ import {
 
 const CENTER = [35.754650, 51.377395];
 
-const DraggableMarker = (props) => {
-  const {
-    onChange, value, center, position, setPosition, draggable, toggleDraggable, zoom, setZoom,
-  } = props;
-  const marker = useRef();
+function DraggableMarker(props) {
+  const { position, setPosition } = props;
+  // draggable => true ,you can dragg on map ,at first is false
+  const [draggable, setDraggable] = useState(false)
+  // current location of marker
+  // const [position, setPosition] = useState([35.754650, 51.377395])
+  const markerRef = useRef(null)
 
-  useEffect(() => {
-    function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          console.log(position.coords)
-          setPosition([position.coords.latitude, position.coords.longitude])
-        });
-      } else {
-        // x.innerHTML = "Geolocation is not supported by this browser.";
-      }
-    }
-    getLocation();
-  }, [])
 
+  //useMemo
+
+  // Without useMemo this function will be regenrated on every render(every state change)
+  // const eventHandlers = {
+  //   dragend() {
+  //     const marker = markerRef.current
+  //     if (marker != null) {
+  //       setPosition(marker.getLatLng())
+  //     }
+  //   },
+  // }
+  // Will only be generated once
+
+  //useMemo(()=>({}),[])
+  // const eventHandlers = useMemo(
+  //   () => ({
+  //     //Dragging events => https://leafletjs.com/reference.html#marker
+  //     dragend() {
+  //       // marker => getElementById => Marker
+  //       const marker = markerRef.current
+  //       if (marker != null) {
+  //         //update postion
+  //         setPosition(marker.getLatLng())
+  //       }
+  //     },
+  //   }),
+  //   //only run on first page render 
+  //   [],
+  // )
+
+
+  //
+  // console.log(position)
   const map = useMapEvents({
-    drag: (e) => {
-      if (draggable) {
-        setPosition(e.target.getCenter());
-      }
+    drag(e) {
+      const center = e.target.getCenter()
+      console.log("Update map", center, position)
+      setPosition([center.lat, center.lng])
     },
-    // dragend: (e) => {
-    //   if (draggable) {
-    //     setPosition(e.target.getCenter());
-    //   }
-    // },
-  });
+  })
+  //useCallback
 
-  const eventHandlers = useMemo(
-    () => ({
-      click() {
-        const m = marker.current;
+  // 1
+  // const toggleDraggable = () => {
+  //   if (draggable) {
+  //     setDraggable(false)
+  //   } else {
+  //     setDraggable(true)
+  //   }
+  // }
 
-        toggleDraggable();
-        if (m != null) {
-        }
-      },
-    }),
-    [],
-  );
+  // 2
+  // useCallback will return a function
+  // const toggleDraggable = useCallback(() => {
+  //   if (draggable) {
+  //     setDraggable(false)
+  //   } else {
+  //     setDraggable(true)
+  //   }
+  // }, [draggable])
+
+  // 3
+  const toggleDraggable = useCallback(() => {
+    // setState((perviousValue) => newValue)
+    setDraggable((d) => !d)
+  }, [])
+  
 
   return (
-    <Marker eventHandlers={eventHandlers} position={position ?? center ?? CENTER} ref={marker} />
-  );
-};
+    <Marker
+      // draggable => true ,you can dragg on map ,at first is false
+      draggable={draggable}
+      //
+      // eventHandlers={eventHandlers}
+      //
+      position={position}
+      ref={markerRef}>
+      <Popup minWidth={90}>
+        <span onClick={toggleDraggable}>
+          {draggable
+            ? 'Marker is draggable'
+            : 'Click here to make marker draggable'}
+        </span>
+      </Popup>
+    </Marker>
+  )
+}
+
 
 const MapComponent = (props) => {
   const {
-    value, onChange, cmp, className, center = CENTER, classNameMap, classNameBtn, editableState,
+    value, onChange, center = CENTER, active
   } = props;
 
-  const [position, setPosition] = useState(value?.coordinates ?? center);
-  const [draggable, setDraggable] = useState(editableState);
-  const [zoom, setZoom] = useState(13);
+  const position = useMemo(() => value?.coordinates || center, [value])
+  const setPosition = useCallback((val) => {
+    if(active) onChange({...(value || {}), coordinates: val})
+  }, [value, onChange, active])
+  // const [position, setPosition] = useState(value?.coordinates || center)
 
-  useEffect(() => {
-    console.log(value);
-  }, [value]);
 
-  const updatePosition = (pos) => {
-    // onChange({ ...value, coordinates: pos });
-    setPosition(pos);
-  };
+  console.log("Mapp", position)
 
-  const toggleDraggable = () => {
-    if (draggable) {
-      onChange({ ...value, coordinates: position });
-      // setDraggable(!draggable);
-    } else {
-      // setDraggable(true);
-    }
-  };
 
   return (
     <div
@@ -93,7 +128,7 @@ const MapComponent = (props) => {
       {/* <label className={``}>{cmp.label}</label> */}
       <MapContainer
         center={position}
-        zoom={zoom}
+        zoom={12}
         scrollWheelZoom={false}
         className={`w-full h-full`}
       >
@@ -102,26 +137,9 @@ const MapComponent = (props) => {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <DraggableMarker
-          {...props}
-          position={position}
-          setPosition={updatePosition}
-          draggable={draggable}
-          toggleDraggable={toggleDraggable}
-          setZoom={setZoom}
-        />
+       <DraggableMarker position={position} setPosition={setPosition} />
       </MapContainer>
-      { editableState && (
-      <button
-        className={`m-1 mt-4 p-1 ${
-				  draggable ? 'btn btn-outline-secondary' : 'btn btn-secondary'
-        }  ${classNameBtn}`}
-        onClick={toggleDraggable}
-      >
-        {draggable ? 'انتخاب' : 'تغییر آدرس'}
-
-      </button>
-      )}
+      
     </div>
   );
 };
