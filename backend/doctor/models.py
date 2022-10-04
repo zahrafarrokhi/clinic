@@ -45,6 +45,7 @@ class Doctor(models.Model):
     image = models.FileField(
         upload_to=_doctor_img_upload_path_generator, blank=True, null=True)
     # fk
+    # blank=False, null=False => required
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     address = models.ForeignKey(Office, on_delete=models.CASCADE)
