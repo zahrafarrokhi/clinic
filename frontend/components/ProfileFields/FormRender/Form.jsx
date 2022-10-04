@@ -36,7 +36,7 @@ export default function Form(props) {
             validators={field.validators}
             state={state}
             active={active}
-            //  InputProps={{InputLabelProps: {shrink: null}}}
+             InputProps={{InputLabelProps: {shrink: true}}}
           ></field.component>
         ))}
       </div>

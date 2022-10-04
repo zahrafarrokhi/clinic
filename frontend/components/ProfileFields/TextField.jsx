@@ -24,7 +24,7 @@ const FormTextField = (props) => {
     value={value}
       onChange={(e) => onChange(e, e.target.value) || setHasChanged(true)}
       label={label}
-      // InputLabelProps={{ shrink: true }}
+      InputLabelProps={{ shrink: true }}
       error={hasChanged && error}
       helperText={hasChanged && error}
       {...InputProps}
