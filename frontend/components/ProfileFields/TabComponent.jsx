@@ -1,6 +1,6 @@
 import { NotNull, OnlyDigits, StringLength } from "./validators";
 import { Box, Tab, Tabs, Typography, Button } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Insurance from "./Insurance";
 import SelectField from "./SelectField";
 import CityComponent from "./CityComponent";
@@ -211,7 +211,7 @@ function TabPanel(props) {
           <Typography>{children}</Typography>
         </Box> */}
       {/* )} */}
-      {children} {/*  children is formComponent */}
+      {value === index && children} {/*  children is formComponent */}
     </div>
   );
 }
@@ -227,7 +227,12 @@ export default function TabComponent() {
    const newAddress = () => {
      setShow(true)
    }
-
+ // when there is no tab selected
+  //1
+  useEffect(() => {
+    setSelectedTab(tabs[0].id)
+   
+  }, [])
   return (
     <Box sx={{ width: "100%" }}>
       <Box className="flex justify-between"sx={{ borderBottom: 1, borderColor: "divider" }}>
