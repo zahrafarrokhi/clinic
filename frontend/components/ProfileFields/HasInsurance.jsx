@@ -6,12 +6,14 @@ const HasInsurance = (props) => {
   const { value, onChange, label, state, options, className, InputProps = {}, active = true } = props; 
 
   useEffect(() => {
-    if (state.supplementary_insurance) {
-      onChange({}, 'true')
-    } else {
-      onChange({}, 'false')
+    if (!state.hasSupIns) {
+      if (state.supplementary_insurance) {
+        onChange({}, 'true')
+      } else {
+        onChange({}, 'false')
+      }
     }
-  }, [state.supplementary_insurance])
+  }, [state, state.supplementary_insurance])
 
   return (
     <FormControl
