@@ -21,4 +21,5 @@ urlpatterns = [
     path('api/auth/',include('authentication.urls')),
     path('api/data/', include('constant_data.urls')),
     path('api/patients/', include('patient.urls')),
+    path('api/doctors/', include('doctor.urls')),
 ]

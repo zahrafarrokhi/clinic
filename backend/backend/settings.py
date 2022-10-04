@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'constant_data',
     'authentication',
     'patient',
+    'doctor',
 
 ]
 
