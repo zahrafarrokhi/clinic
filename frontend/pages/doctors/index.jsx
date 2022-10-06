@@ -27,16 +27,18 @@ function Doctors() {
     <div className="mx-auto w-[85%] py-4">
      {/* props */}
       <DoctorsTab selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-
       <div className="flex flex-wrap gap-2 py-10">
-        
         {/* {doctors?.map((doc) => <div> {doc.first_name} {doc.last_name} </div>)} */}
-        
-        {doctors?.map((doc) => <DoctorItem data={doc} /> )}
-     
-        
-     
-      </div>
+        {/*
+          // at the first
+          {doctors?.map((doc) => <DoctorItem data={doc} /> )}
+          // department doctors
+          {doctors?.filter(doc=>  doc.department.id === selectedTab).map((doc) => <DoctorItem data={doc} /> )}
+          // all departments &  department doctors
+          {doctors?.filter(doc=> selectedTab ? doc.department.id === selectedTab : true).map((doc) => <DoctorItem data={doc} /> )}
+        */}
+        {doctors?.filter(doc=> selectedTab ? doc.department.id === selectedTab : true).map((doc) => <DoctorItem data={doc} /> )}
+        </div>
     
     </div>
   );
