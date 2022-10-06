@@ -108,7 +108,7 @@ function DraggableMarker(props) {
 
 const MapComponent = (props) => {
   const {
-    value, onChange, center = CENTER, active
+    value, onChange, center = CENTER, active, className
   } = props;
 
   const position = useMemo(() => value?.coordinates || center, [value])
@@ -123,7 +123,7 @@ const MapComponent = (props) => {
 
   return (
     <div
-      className={`m-1 mt-4 flex flex-col justify-center items-center  w-full h-full`}
+      className={`m-1 mt-4 flex flex-col justify-center items-center  w-full h-full ${className}`}
     >
       {/* <label className={``}>{cmp.label}</label> */}
       <MapContainer
