@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import DoctorItem from "../../components/doctors/DoctorItem";
 import DoctorsTab from "../../components/doctors/DoctorsTab";
 import Navigation from "../../components/navigation/Navigation";
 import { loadDoctors } from "../../lib/slices/doctors";
@@ -26,10 +27,17 @@ function Doctors() {
     <div className="mx-auto w-[85%] py-4">
      {/* props */}
       <DoctorsTab selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-      {doctors?.map((doc) => <div>
+
+      <div className="flex flex-wrap gap-2 py-10">
         
-        {doc.first_name} {doc.last_name}
-      </div>)}
+        {/* {doctors?.map((doc) => <div> {doc.first_name} {doc.last_name} </div>)} */}
+        
+        {doctors?.map((doc) => <DoctorItem data={doc} /> )}
+     
+        
+     
+      </div>
+    
     </div>
   );
 }
