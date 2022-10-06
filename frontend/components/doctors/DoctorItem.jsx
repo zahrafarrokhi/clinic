@@ -29,7 +29,7 @@ const DoctorItem = (props) => {
      </div>
 
      <div className="flex flex-row justify-center items-center md:hidden basis-10 grow-0 shrink-0">
-        <IoCaretBackCircleOutline className="text-2xl"/>
+        <IoCaretBackCircleOutline className="text-2xl" onClick={() => setOpen(true)}/>
 
         
         </div>
