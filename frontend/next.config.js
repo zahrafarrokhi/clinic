@@ -3,7 +3,12 @@
 const nextConfig = {
   reactStrictMode: true,
   trailingSlash: true,
-
+  images: {
+    domains: [
+      // 'localhost',
+      ...process.env.IMAGE_DOMAINS.split(',')
+    ]
+  },
   async rewrites() {
     return [
       {
