@@ -203,7 +203,7 @@ export default function DrawerNav(props) {
                             className={`${isActive ? "text-primary" : ""}`}
                           />
                         </ListItemIcon>
-                        <ListItemText primary={nav.name}></ListItemText>
+                        <ListItemText className="[&_.MuiListItemText-primary]:md:text-lg" primary={nav.name}></ListItemText>
                       </ListItemButton>
                     </Link>
                   </ListItem>
@@ -222,7 +222,7 @@ export default function DrawerNav(props) {
             <ListItemIcon className="min-w-[40px]">
               <LogoutIcon className="text-danger" />
             </ListItemIcon>
-            <ListItemText primary="خروج" ></ListItemText>
+            <ListItemText className="[&_.MuiListItemText-primary]:md:text-lg" primary="خروج" ></ListItemText>
           </ListItemButton>
         </ListItem>
       </List>
