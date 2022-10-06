@@ -13,7 +13,7 @@ const DoctorItem = (props) => {
       <div className="basis-[90px] md:basis-[90px] relative shrink-0">
         <Image layout="fill" objectFit="contain" src={data.image ?? '/defaultDoctorPic/doctor.jpeg'} objectPosition="center" />
      </div>
-     <div className="flex flex-col  flex-grow flex-shrink-0">
+     <div className="flex flex-col basis-[calc(100%-140px)]  flex-grow flex-shrink-0">
      <div className="text-primary text-base font-bold italic"> {data.department.faname} </div>
         <div className="text-lg font-medium"> {data.first_name} {data.last_name} </div>
         <div  className="hidden md:flex text-lg font-medium"> شماره نظام پزشکی: {data.medical_code} </div>
