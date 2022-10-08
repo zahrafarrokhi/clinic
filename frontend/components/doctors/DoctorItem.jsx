@@ -2,13 +2,17 @@ import { Button } from "@mui/material";
 import Image from "next/image";
 import {IoCaretBackCircleOutline } from 'react-icons/io5';
 import { useState } from "react";
-import DoctorModal from "./DoctorModal";
+import ProfileModal from "./ProfileModal";
+import PaymentDialog from "./PaymentDialog";
 
 const DoctorItem = (props) => {
   const { data } = props;
+  //profile modal
   const [open,setOpen] = useState(false)
+  //payment modal
+  const [openPayment,setOpenPayment] = useState(false)
   return (
-    <div className="flex basis-full min-h-[190px] rounded-xl border border-solid border-backgroundGray md:basis-[45%] md:max-w-[calc(50%-0.5rem)] flex-grow flex-shrink-0 p-2 md:p-4 gap-2">
+    <div className="flex basis-full min-h-[190px] rounded-xl border border-solid border-backgroundGray md:basis-[45%] md:max-w-[calc(50%-0.5rem)] flex-grow flex-shrink-0 p-2 md:p-4 gap-2" onClick={() => setOpen(true)}>
 
       <div className="basis-[90px] md:basis-[90px] relative shrink-0">
         <Image layout="fill" objectFit="contain" src={data.image ?? '/defaultDoctorPic/doctor.jpeg'} objectPosition="center" />
@@ -21,9 +25,13 @@ const DoctorItem = (props) => {
 
         <div className="hidden md:flex flex-wrap flex-row justify-end gap-1">
         <Button className="rounded-xl w-40" variant="outlined" onClick={()=>setOpen(true)}>مشاهده پروفایل </Button>
-        <Button className="rounded-xl w-40" variant="contained">ویزیت آنلاین</Button>
-        {/* modal */}
-        <DoctorModal open={open} setOpen={setOpen} data={data}/>
+        <Button className="rounded-xl w-40" variant="contained" onClick={()=>setOpenPayment(true)}>ویزیت آنلاین</Button>
+        <div onClick={(e) => e.stopPropagation()}>
+        {/* ProfileModal */}
+        <ProfileModal open={open} setOpen={setOpen} setOpenPayment={setOpenPayment} data={data}/>
+        {/* PaymentDialog */}
+       <PaymentDialog open={openPayment} setOpen={setOpenPayment} data={data}/>
+       </div>
         </div>
         
      </div>

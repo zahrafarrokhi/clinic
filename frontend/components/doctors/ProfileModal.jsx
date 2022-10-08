@@ -21,6 +21,7 @@ import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import QueryBuilderOutlinedIcon from "@mui/icons-material/QueryBuilderOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
+import PaymentDialog from "./PaymentDialog";
 
 const TabPanel = (props) => {
   const { children, value, selectedTab } = props;
@@ -30,12 +31,17 @@ const TabPanel = (props) => {
   return <>{(isDesktop || value === selectedTab) && children}</>;
 };
 
-const DoctorModal = (props) => {
-  const { open, setOpen, data } = props;
+const ProfileModal = (props) => {
+  const { open, setOpen,  data } = props;
   const [selectedTab, setSelectedTab] = useState("profile");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  //payment modal
+  const [openPayment,setOpenPayment] = useState(false)
+ 
+ 
   return (
+    <>
     <Dialog
       onClose={() => setOpen(false)}
       open={open}
@@ -122,10 +128,12 @@ const DoctorModal = (props) => {
                 <div className=""> {data.degree} </div>
 
                 <div className="hidden md:flex flex-wrap flex-row justify-end gap-1">
-                  <Button className="rounded-xl w-40" variant="contained">
+                  <Button className="rounded-xl w-40" variant="contained" onClick={()=>{setOpenPayment(true); setOpen(false)}}>
                     ویزیت آنلاین
                   </Button>
                   {/* modal */}
+                  {/* PaymentDialog put there has error for fix that we need fragment and put PaymentDialog on line:179  */} 
+                  {/* <PaymentDialog open={openPayment} setOpen={setOpenPayment} data={data}/> */}
                 </div>
               </div>
             </div>
@@ -160,13 +168,16 @@ const DoctorModal = (props) => {
           </div>
         </TabPanel>
       </Stack>
+      {/* mobile */}
       <Button className="rounded-xl opacity-0 md:hidden" variant="contained">
       </Button>
-      <Button className="rounded-xl absolute left-10 right-10 bottom-4 md:hidden" variant="contained">
+      <Button className="rounded-xl absolute left-10 right-10 bottom-4 md:hidden" variant="contained" onClick={()=>{setOpenPayment(true); setOpen(false)}}>
         ویزیت آنلاین
       </Button>
       </div>
     </Dialog>
+                 <PaymentDialog open={openPayment} setOpen={setOpenPayment} data={data}/>
+                 </>
   );
 };
-export default DoctorModal;
+export default ProfileModal;
