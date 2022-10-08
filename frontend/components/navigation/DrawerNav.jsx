@@ -186,7 +186,7 @@ export default function DrawerNav(props) {
       <Divider className="md:hidden mx-auto w-[80%]" variant="middle">
         <Chip label="منو"></Chip>
       </Divider>
-      <List dense>
+      <List dense className="md:flex md:flex-col md:h-[90%]">
         {NavFields?.map((field) => {
           return (
             <>
@@ -203,7 +203,7 @@ export default function DrawerNav(props) {
                             className={`${isActive ? "text-primary" : ""}`}
                           />
                         </ListItemIcon>
-                        <ListItemText className="[&_.MuiListItemText-primary]:md:text-lg" primary={nav.name}></ListItemText>
+                        <ListItemText className="[&_.MuiListItemText-primary]:md:text-base" primary={nav.name}></ListItemText>
                       </ListItemButton>
                     </Link>
                   </ListItem>
@@ -217,12 +217,13 @@ export default function DrawerNav(props) {
             </>
           );
         })}
+        <div className="hidden md:flex flex-grow"/>
         <ListItem >
           <ListItemButton onClick={() => logout(dispatch)}>
             <ListItemIcon className="min-w-[40px]">
               <LogoutIcon className="text-danger" />
             </ListItemIcon>
-            <ListItemText className="[&_.MuiListItemText-primary]:md:text-lg" primary="خروج" ></ListItemText>
+            <ListItemText className="[&_.MuiListItemText-primary]:md:text-[0.9rem]" primary="خروج از حساب کاربری" ></ListItemText>
           </ListItemButton>
         </ListItem>
       </List>
