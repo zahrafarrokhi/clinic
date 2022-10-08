@@ -46,11 +46,24 @@ const DoctorModal = (props) => {
     TransitionProps={{
       direction: 'up',
     }}
+    PaperProps={{
+      sx: {
+        overflow: 'visible',
+        [theme.breakpoints.up('md')]: {
+          borderRadius:'15px'
+        }
+        
+      }
+    }}
     >
       {/* <DialogTitle>Set backup account</DialogTitle> */}
-      {/* <Button className="rounded-full absolute h-8 w-8 -top-2 -left-2 z-10 min-w-0 p-2" variant="contained" color="white">
+      <Button onClick={()=>setOpen(false)} className="rounded-full absolute h-8 w-8 -top-2 -left-2 min-w-0 p-2 shadow-lg" variant="contained" color="white" sx={{
+
+      }}>
         <CloseOutlinedIcon className="text-3xl"/>
-      </Button> */}
+      </Button>
+      {/* for handling overflow */}
+      <div className="w-full h-full overflow-auto">
       <AppBar color='white' elevation={0} className="md:hidden">
         <Toolbar>
           <IconButton
@@ -83,7 +96,7 @@ const DoctorModal = (props) => {
       </div>
       <Stack direction="row" spacing={2} sx={{ p: "2rem" }}>
         <TabPanel value="profile" selectedTab={selectedTab}>
-          <div className="flex flex-col basis-full md:basis-[70%] overflow-visible ">
+          <div className="flex flex-col basis-full md:basis-[70%] max-w-full  overflow-visible ">
             <div className="flex min-h-[190px] rounded-xl border border-solid border-backgroundGray flex-shrink-0 p-2 md:p-4 gap-2">
               <div className="basis-[90px] md:basis-[90px] relative shrink-0">
                 <Image
@@ -147,9 +160,12 @@ const DoctorModal = (props) => {
           </div>
         </TabPanel>
       </Stack>
+      <Button className="rounded-xl opacity-0 md:hidden" variant="contained">
+      </Button>
       <Button className="rounded-xl absolute left-10 right-10 bottom-4 md:hidden" variant="contained">
         ویزیت آنلاین
       </Button>
+      </div>
     </Dialog>
   );
 };
