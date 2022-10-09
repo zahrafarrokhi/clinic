@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/data/', include('constant_data.urls')),
     path('api/patients/', include('patient.urls')),
     path('api/doctors/', include('doctor.urls')),
+    path('api/visits/', include('visit.urls')),
 ]
 
 if settings.DEBUG:
