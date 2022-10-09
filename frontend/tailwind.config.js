@@ -59,6 +59,15 @@ module.exports = {
       accent900: '#54d2d2',
       lightBlue: '#d5e1eb',
 
+      //chip colors for visit status table 
+      chip_warning: '#e08c0f',
+      chip_warning__light: '#FFF3C8',
+      chip_success: '#16843b',
+      chip_success__light: 'rgba(90, 255, 146, 0.5)',
+      chip_default: '#4D4D4D',
+      chip_default__light: '#CFCDCD',
+      chip_error: '#FF0D0D',
+      chip_error__light: 'rgba(255, 130, 130, 0.5)',
     },
     extend: {
       boxShadow: {

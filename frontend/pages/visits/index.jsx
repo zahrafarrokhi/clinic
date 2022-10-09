@@ -1,4 +1,4 @@
-import { Paper, Table, TableHead, TableRow } from "@mui/material";
+import { Chip, Paper, Table, TableHead, TableRow, tableRowClasses } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
@@ -23,13 +23,18 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 }));
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
- 
+  [`&.${tableRowClasses.head}`]: {
+    borderTop: 0,
+  },
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
 }));
 
 const Visits = ()=>{
   return(
     <div className="flex flex-col p-8">
-       <TableContainer component={Paper} variant="outlined">
+       <TableContainer component={Paper} variant="outlined" className="rounded-3xl border-t-0">
      <Table>
 
      <TableHead>
@@ -53,7 +58,10 @@ const Visits = ()=>{
             <StyledTableCell align="center">نام دکتر</StyledTableCell>
             <StyledTableCell align="center">پزشک</StyledTableCell>
             <StyledTableCell align="center">شماره ویزیت</StyledTableCell>
-            <StyledTableCell align="center"> پاسخ داده شده</StyledTableCell>
+            <StyledTableCell align="center"> 
+            <Chip variant="status" label="پاسخ داده شده" color="warning">
+            </Chip>
+            </StyledTableCell>
             <StyledTableCell align="center"><ArrowBackIos color="backgroundGray"/></StyledTableCell>
              
             </StyledTableRow>
