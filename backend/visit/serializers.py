@@ -10,6 +10,7 @@ class VisitSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def validate(self, attrs):
+        print(attrs)
         patient = attrs['patient']
         if self.context['request'].user != patient.user:
             raise ValidationError(_('action not allowed'))
