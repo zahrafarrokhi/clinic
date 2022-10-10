@@ -12,6 +12,7 @@ import { constantDataSlice } from './slices/constant_data';
 import { patientSlice } from './slices/patients';
 import { addressSlice } from './slices/address';
 import { doctorSlice } from './slices/doctors';
+import { visitSlice } from './slices/visits';
 
 
 const makeStore = (initialState) => {
@@ -31,6 +32,7 @@ const makeStore = (initialState) => {
       patientReducer: patientSlice.reducer,
       addressReducer: addressSlice.reducer,
       doctorReducer :doctorSlice.reducer,
+      visitReducer :visitSlice.reducer,
       
     });
 

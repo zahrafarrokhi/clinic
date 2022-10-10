@@ -13,7 +13,10 @@ import TableBody from "@mui/material/TableBody";
 import Navigation from "../../components/navigation/Navigation";
 import TableContainer from "@mui/material/TableContainer";
 import { ArrowBackIos } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loadPatients } from "../../lib/slices/patients";
+import { loadVisitsPatient } from "../../lib/slices/visits";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -54,11 +57,44 @@ const CustomTableSortLabel = (props) => {
     </StyledTableCell>
   );
 };
+const VISIT_STATUS_TEXT = {
+  started :'شروع شده',
+  waiting_for_response: 'در انتظار پاسخ',
+  responded: 'پاسخ داده شده',
+  closed: 'بسته شده',
+  waiting_for_payment: 'در انتظار پرداخت',
+  payment_failed: 'پرداخت ناموفق',
+}
+const VISIT_STATUS_COLOR = {
+  started : 'success',
+  waiting_for_response: 'warning',
+  responded: 'success',
+  closed: 'default',
+  waiting_for_payment: 'warning',
+  payment_failed: 'error',
+}
 const Visits = () => {
   //desc or asc
   const [order, setOrder] = useState("desc");
   //which column is active
   const [orderBy, setOrderBy] = useState("created_at");
+    //redux
+  const visits = useSelector((state) => state.visitReducer?.visits);
+  const patient = useSelector((state) => state.patientReducer?.patient);
+  const dispatch = useDispatch();
+  
+  
+    const lstVisits = async () => {
+      try {
+        await dispatch(loadVisitsPatient({patient_id: patient.id, ordering: `${order === 'asc' ? '' : '-'}${orderBy}`})).unwrap();
+      } catch (error) {
+        console.log(error)
+      }
+    };
+
+    useEffect(() => {
+      lstVisits();
+    }, [patient, orderBy, order]);
 
   const handleSort = (col) => {
     if (orderBy === col) {
@@ -91,8 +127,8 @@ const Visits = () => {
               <CustomTableSortLabel
                 order={order}
                 orderBy={orderBy}
-                id={"doctor"}
-                onClick={() => handleSort("doctor")}
+                id={"doctor__first_name"}
+                onClick={() => handleSort("doctor__first_name")}
               >
                 نام دکتر
               </CustomTableSortLabel>
@@ -118,18 +154,18 @@ const Visits = () => {
           </TableHead>
 
           <TableBody>
-            {[0, 1, 2, 3].map((row) => (
-              <StyledTableRow key={row.name}>
-                <StyledTableCell align="center">1</StyledTableCell>
-                <StyledTableCell align="center"> 1400-12-12</StyledTableCell>
-                <StyledTableCell align="center">نام دکتر</StyledTableCell>
-                <StyledTableCell align="center">پزشک</StyledTableCell>
-                <StyledTableCell align="center">شماره ویزیت</StyledTableCell>
+            {visits?.map((row,index) => (
+              <StyledTableRow key={row.name} >
+                <StyledTableCell align="center">{index+1}</StyledTableCell>
+                <StyledTableCell align="center"> {row.created_at}</StyledTableCell>
+                <StyledTableCell align="center">{row.doctor.first_name}{' '}{row.doctor.last_name}</StyledTableCell>
+                <StyledTableCell align="center">{row.doctor.department.faname}</StyledTableCell>
+                <StyledTableCell align="center">{row.id}</StyledTableCell>
                 <StyledTableCell align="center">
                   <Chip
                     variant="status"
-                    label="پاسخ داده شده"
-                    color="warning"
+                    label={VISIT_STATUS_TEXT[row.status]}
+                    color={VISIT_STATUS_COLOR[row.status]}
                   ></Chip>
                 </StyledTableCell>
                 <StyledTableCell align="center">
