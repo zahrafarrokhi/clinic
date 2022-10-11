@@ -92,7 +92,7 @@ const Visits = () => {
   //search
   const [search,setSearch]= useState("");
   // filters
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(['']);
 
   //redux
   const visits = useSelector((state) => state.visitReducer?.visits);
@@ -168,8 +168,27 @@ const Visits = () => {
               id="demo-simple-select"
               value={status || ""}
               label="وضعیت"
-              onChange={(e) => setStatus(e.target.value)}
+              // onChange={(e) => setStatus(e.target.value)}
+              onChange={(e) => {
+                //get value from e.target
+                const { target: {value} } = e; // e.target.value
+                const newStatus = typeof value === 'string' ? value.split(',') : value;
+                setStatus((prevStatus) => {
+                  if (newStatus.indexOf('') > -1 && prevStatus.indexOf('') === -1) {
+                    return ['']
+                  } else if(newStatus.length === 1) {
+                    return newStatus
+                  } else if(newStatus.length === 0) {
+                    return ['']
+                  } else {
+                    return newStatus.filter(item => item !== '')
+                  }
+                })
+              }}
+              // Default(select all)
               displayEmpty
+              // Multiselect
+              multiple
               // size select
               size="small"
               //fontSize
