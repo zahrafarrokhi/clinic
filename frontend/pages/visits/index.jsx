@@ -1,5 +1,6 @@
 import {
   Chip,
+  IconButton,
   InputAdornment,
   Paper,
   Table,
@@ -24,6 +25,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import SearchIcon from '@mui/icons-material/Search';
 import Select from "@mui/material/Select";
+import CloseIcon from '@mui/icons-material/Close';
 import throttle from "lodash.throttle";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -142,8 +144,16 @@ const Visits = () => {
         onChange={(e)=>setSearch(e.target.value)}
         InputProps={{
           startAdornment: <InputAdornment position="start"><SearchIcon/></InputAdornment>,
+          endAdornment: (<InputAdornment position="end">
+            {/* clear search */}
+            {search && <IconButton onClick={()=>setSearch('')}>
+              <CloseIcon className="text-base" />
+            </IconButton>}
+          </InputAdornment>),
         }}
         size="small"
+
+
        />
         
         </div>
