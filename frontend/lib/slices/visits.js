@@ -6,10 +6,10 @@ export const LOADING = 'loading';
 
 export const loadVisitsPatient = createAsyncThunk(
   'visits/list',
-  async (data, thunkAPI) => {
- 
+  async ({patient_id, ...data}, thunkAPI) => {
+  
     try {
-      const response = await axios.get(`/api/visits/visit/patient/${data.patient_id}/`, {params: data});
+      const response = await axios.get(`/api/visits/visit/patient/${patient_id}/`, {params: data});
 
       console.log(response, response.data);
 

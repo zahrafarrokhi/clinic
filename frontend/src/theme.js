@@ -133,13 +133,13 @@ let theme = createTheme({
           props: { variant: "status" },
           style: ({ theme, ownerState }) => {
             let color = ownerState.color
-            console.log(color)
+            // console.log(color)
             if (!color) {
               color = 'chip_warning'
             } else {
               color = `chip_${color}`
             }
-            console.log(color, theme.palette[color])
+            // console.log(color, theme.palette[color])
 
             return {
               borderRadius: "1em",
