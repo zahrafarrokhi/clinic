@@ -15,7 +15,7 @@ import TableBody from "@mui/material/TableBody";
 import Navigation from "../../components/navigation/Navigation";
 import TableContainer from "@mui/material/TableContainer";
 import { ArrowBackIos } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loadVisitsPatient } from "../../lib/slices/visits";
 import Box from "@mui/material/Box";
@@ -24,6 +24,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import SearchIcon from '@mui/icons-material/Search';
 import Select from "@mui/material/Select";
+import throttle from "lodash.throttle";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -96,7 +97,9 @@ const Visits = () => {
   const patient = useSelector((state) => state.patientReducer?.patient);
   const dispatch = useDispatch();
 
-  const lstVisits = async () => {
+
+
+  const lstVisits = useMemo(() => throttle(async ({search}) => {
     try {
       await dispatch(
         loadVisitsPatient({
@@ -114,10 +117,10 @@ const Visits = () => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, 1000), [patient, orderBy, order, status,]);
 
   useEffect(() => {
-    lstVisits();
+    lstVisits({search});
   }, [patient, orderBy, order, status, search]);
   // ordering
   const handleSort = (col) => {
