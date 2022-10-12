@@ -17,6 +17,7 @@ class VisitView(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveM
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_fields = {
         'status': ['exact', 'in'],
+        'created_at': ['date__lte', 'date__gte'],
     }
     search_fields = ['doctor__first_name', 'doctor__last_name', 'id', 'created_at']
     ordering_fields = ['created_at', 'id', 'doctor__last_name', 'status']
