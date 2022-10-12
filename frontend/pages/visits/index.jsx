@@ -4,6 +4,7 @@ import {
   IconButton,
   InputAdornment,
   ListItemText,
+  Pagination,
   Paper,
   Table,
   TableHead,
@@ -29,6 +30,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import Select from "@mui/material/Select";
 import CloseIcon from "@mui/icons-material/Close";
 import throttle from "lodash.throttle";
+import RangeDatePicker from "../../components/RangeDatePicker";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -95,9 +97,17 @@ const Visits = () => {
   const [search, setSearch] = useState("");
   // filters
   const [status, setStatus] = useState([""]);
-
+  //picker
+  const [start, setStart] = useState();
+  const [end, setEnd] = useState();
+  //pagination
+  const LIMIT = 10;
+  const count = useSelector((state) => state.visitReducer?.visits?.count);
+  const [offset,setOffset] = useState(0);
+  const current_page = useMemo(()=>(offset / LIMIT + 1),[offset]);
+  const number_of_pages = useMemo(() => Math.ceil(count/LIMIT), [count]);
   //redux
-  const visits = useSelector((state) => state.visitReducer?.visits);
+  const visits = useSelector((state) => state.visitReducer?.visits?.results);
   const patient = useSelector((state) => state.patientReducer?.patient);
   const dispatch = useDispatch();
 
@@ -113,21 +123,24 @@ const Visits = () => {
               //ordering
               ordering: `${order === "asc" ? "" : "-"}${orderBy}`,
               //filter
-              status: status || undefined,
+              status__in: status.join(',') || undefined,
               //search
               search,
+              // pagination
+              limit: LIMIT,
+              offset,
             })
           ).unwrap();
         } catch (error) {
           console.log(error);
         }
       }, 1000),
-    [patient, orderBy, order, status]
+    [patient, orderBy, order, status, offset]
   );
 
   useEffect(() => {
     lstVisits({ search });
-  }, [patient, orderBy, order, status, search]);
+  }, [patient, orderBy, order, status, search, offset]);
   // ordering
   const handleSort = (col) => {
     if (orderBy === col) {
@@ -140,6 +153,7 @@ const Visits = () => {
 
   return (
     <div className="flex flex-col p-8">
+      {/* search & filter */}
       <div className="flex justify-between my-2 items-center">
         <div>
           {/* Search */}
@@ -167,13 +181,16 @@ const Visits = () => {
             size="small"
           />
         </div>
-        <div className="flex">
+        <div className="flex gap-2">
+          {/* datepicker */}
+          <RangeDatePicker start={start} end={end} setStart={setStart} setEnd={setEnd}/>
           {/* Filters */}
-          <FormControl>
+          <FormControl size='small'>
             <InputLabel id="demo-simple-select-label" shrink>
               وضعیت
             </InputLabel>
             <Select
+            v
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={status || ""}
@@ -201,14 +218,18 @@ const Visits = () => {
                   }
                 });
               }}
-              // renderValue={(selected) => selected.map(item => VISIT_STATUS_TEXT[item] || "مشاهده‌ی همه").join(', ')}
-              renderValue={(selected) => (
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                  {selected.map((value) => (
-                    <Chip key={value} label={VISIT_STATUS_TEXT[value] || "مشاهده‌ی همه"} color={VISIT_STATUS_COLOR[value] || 'default'}/>
-                  ))}
-                </Box>
-              )}
+              renderValue={(selected) => selected.map(item => VISIT_STATUS_TEXT[item] || "مشاهده‌ی همه").join(', ')}
+              // renderValue={(selected) => (
+              //   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              //     {selected.map((value) => (
+              //       <Chip key={value} label={VISIT_STATUS_TEXT[value] || "مشاهده‌ی همه"} color={VISIT_STATUS_COLOR[value] || 'default'} sx={{
+              //         '& .MuiChip-label': {
+              //           fontSize: '0.875em'
+              //         }
+              //       }}/>
+              //     ))}
+              //   </Box>
+              // )}
               // Default(select all)
               displayEmpty
               // Multiselect
@@ -218,8 +239,11 @@ const Visits = () => {
               //fontSize
               sx={{
                 "& .MuiSelect-select": {
-                  fontSize: "0.9em",
+                  fontSize: "0.875em",
                 },
+              }}
+              InputProps={{
+                size:'small'
               }}
               MenuProps={{
                 sx: {
@@ -248,6 +272,7 @@ const Visits = () => {
           </FormControl>
         </div>
       </div>
+      {/* Table */}
       <TableContainer
         component={Paper}
         variant="outlined"
@@ -324,6 +349,10 @@ const Visits = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      {/* pagination */}
+      <div className="flex justify-end my-4">
+      <Pagination count={number_of_pages} page={current_page} onChange={(e,val) => setOffset((val - 1 )* LIMIT)} variant="outlined" color="primary" />
+      </div>
     </div>
   );
 };
