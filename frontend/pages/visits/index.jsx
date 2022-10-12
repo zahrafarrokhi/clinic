@@ -1,7 +1,9 @@
 import {
+  Checkbox,
   Chip,
   IconButton,
   InputAdornment,
+  ListItemText,
   Paper,
   Table,
   TableHead,
@@ -23,9 +25,9 @@ import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search";
 import Select from "@mui/material/Select";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import throttle from "lodash.throttle";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -85,44 +87,46 @@ const VISIT_STATUS_COLOR = {
 };
 const Visits = () => {
   //ordering
-     //desc or asc
+  //desc or asc
   const [order, setOrder] = useState("desc");
-     //which column is active
+  //which column is active
   const [orderBy, setOrderBy] = useState("created_at");
   //search
-  const [search,setSearch]= useState("");
+  const [search, setSearch] = useState("");
   // filters
-  const [status, setStatus] = useState(['']);
+  const [status, setStatus] = useState([""]);
 
   //redux
   const visits = useSelector((state) => state.visitReducer?.visits);
   const patient = useSelector((state) => state.patientReducer?.patient);
   const dispatch = useDispatch();
 
-
-
-  const lstVisits = useMemo(() => throttle(async ({search}) => {
-    try {
-      await dispatch(
-        loadVisitsPatient({
-          // url params
-          patient_id: patient.id,
-          // queryparam-> backend: state
-          //ordering
-          ordering: `${order === "asc" ? "" : "-"}${orderBy}`,
-          //filter
-          status: status || undefined,
-          //search
-          search,
-        })
-      ).unwrap();
-    } catch (error) {
-      console.log(error);
-    }
-  }, 1000), [patient, orderBy, order, status,]);
+  const lstVisits = useMemo(
+    () =>
+      throttle(async ({ search }) => {
+        try {
+          await dispatch(
+            loadVisitsPatient({
+              // url params
+              patient_id: patient.id,
+              // queryparam-> backend: state
+              //ordering
+              ordering: `${order === "asc" ? "" : "-"}${orderBy}`,
+              //filter
+              status: status || undefined,
+              //search
+              search,
+            })
+          ).unwrap();
+        } catch (error) {
+          console.log(error);
+        }
+      }, 1000),
+    [patient, orderBy, order, status]
+  );
 
   useEffect(() => {
-    lstVisits({search});
+    lstVisits({ search });
   }, [patient, orderBy, order, status, search]);
   // ordering
   const handleSort = (col) => {
@@ -137,25 +141,31 @@ const Visits = () => {
   return (
     <div className="flex flex-col p-8">
       <div className="flex justify-between my-2 items-center">
-        <div>{/* Search */}
-        <TextField
-        label="جستجو"
-        value ={search}
-        onChange={(e)=>setSearch(e.target.value)}
-        InputProps={{
-          startAdornment: <InputAdornment position="start"><SearchIcon/></InputAdornment>,
-          endAdornment: (<InputAdornment position="end">
-            {/* clear search */}
-            {search && <IconButton onClick={()=>setSearch('')}>
-              <CloseIcon className="text-base" />
-            </IconButton>}
-          </InputAdornment>),
-        }}
-        size="small"
-
-
-       />
-        
+        <div>
+          {/* Search */}
+          <TextField
+            label="جستجو"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  {/* clear search */}
+                  {search && (
+                    <IconButton onClick={() => setSearch("")}>
+                      <CloseIcon className="text-base" />
+                    </IconButton>
+                  )}
+                </InputAdornment>
+              ),
+            }}
+            size="small"
+          />
         </div>
         <div className="flex">
           {/* Filters */}
@@ -171,20 +181,34 @@ const Visits = () => {
               // onChange={(e) => setStatus(e.target.value)}
               onChange={(e) => {
                 //get value from e.target
-                const { target: {value} } = e; // e.target.value
-                const newStatus = typeof value === 'string' ? value.split(',') : value;
+                const {
+                  target: { value },
+                } = e; // e.target.value
+                const newStatus =
+                  typeof value === "string" ? value.split(",") : value;
                 setStatus((prevStatus) => {
-                  if (newStatus.indexOf('') > -1 && prevStatus.indexOf('') === -1) {
-                    return ['']
-                  } else if(newStatus.length === 1) {
-                    return newStatus
-                  } else if(newStatus.length === 0) {
-                    return ['']
+                  if (
+                    newStatus.indexOf("") > -1 &&
+                    prevStatus.indexOf("") === -1
+                  ) {
+                    return [""];
+                  } else if (newStatus.length === 1) {
+                    return newStatus;
+                  } else if (newStatus.length === 0) {
+                    return [""];
                   } else {
-                    return newStatus.filter(item => item !== '')
+                    return newStatus.filter((item) => item !== "");
                   }
-                })
+                });
               }}
+              // renderValue={(selected) => selected.map(item => VISIT_STATUS_TEXT[item] || "مشاهده‌ی همه").join(', ')}
+              renderValue={(selected) => (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={VISIT_STATUS_TEXT[value] || "مشاهده‌ی همه"} color={VISIT_STATUS_COLOR[value] || 'default'}/>
+                  ))}
+                </Box>
+              )}
               // Default(select all)
               displayEmpty
               // Multiselect
@@ -193,23 +217,31 @@ const Visits = () => {
               size="small"
               //fontSize
               sx={{
-                '& .MuiSelect-select': {
-                  fontSize: '0.9em'
+                "& .MuiSelect-select": {
+                  fontSize: "0.9em",
                 },
               }}
               MenuProps={{
                 sx: {
-                  '& .MuiMenuItem-root': {
-                    fontSize: '0.9em',
-                  }
-                }
+                  "& .MuiMenuItem-root": {
+                    fontSize: "0.9em",
+                  },
+                },
               }}
             >
-              <MenuItem value={""}>مشاهده‌ی همه</MenuItem>
+              {/* <MenuItem value={""}>مشاهده‌ی همه</MenuItem> */}
+              <MenuItem value={""}>
+                <Checkbox checked={status.indexOf("") > -1} />
+                <ListItemText primary={"مشاهده‌ی همه"} />
+              </MenuItem>
 
               {Object.keys(VISIT_STATUS_TEXT).map((item) => {
                 return (
-                  <MenuItem value={item}>{VISIT_STATUS_TEXT[item]}</MenuItem>
+                  // <MenuItem value={item}>{VISIT_STATUS_TEXT[item]}</MenuItem>
+                  <MenuItem key={item} value={item}>
+                    <Checkbox checked={status.indexOf(item) > -1} />
+                    <ListItemText primary={VISIT_STATUS_TEXT[item]} />
+                  </MenuItem>
                 );
               })}
             </Select>
