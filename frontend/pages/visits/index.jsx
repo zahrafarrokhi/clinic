@@ -31,6 +31,7 @@ import Select from "@mui/material/Select";
 import CloseIcon from "@mui/icons-material/Close";
 import throttle from "lodash.throttle";
 import RangeDatePicker from "../../components/RangeDatePicker";
+import { format } from "date-fns";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -122,6 +123,9 @@ const Visits = () => {
               // queryparam-> backend: state
               //ordering
               ordering: `${order === "asc" ? "" : "-"}${orderBy}`,
+              // date
+              created_at__date__lte: end ? format(end, 'yyyy-MM-dd') : undefined,
+              created_at__date__gte: start ? format(start, 'yyyy-MM-dd') : undefined,
               //filter
               status__in: status.join(',') || undefined,
               //search
@@ -135,12 +139,12 @@ const Visits = () => {
           console.log(error);
         }
       }, 1000),
-    [patient, orderBy, order, status, offset]
+    [patient, orderBy, order, status, offset,start,end]
   );
 
   useEffect(() => {
     lstVisits({ search });
-  }, [patient, orderBy, order, status, search, offset]);
+  }, [patient, orderBy, order, status, search, offset,start,end]);
   // ordering
   const handleSort = (col) => {
     if (orderBy === col) {
