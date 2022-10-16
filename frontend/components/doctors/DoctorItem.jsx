@@ -12,7 +12,7 @@ const DoctorItem = (props) => {
   //payment modal
   const [openPayment,setOpenPayment] = useState(false)
   return (
-    <div className="flex basis-full min-h-[190px] rounded-xl border border-solid border-backgroundGray md:basis-[45%] md:max-w-[calc(50%-0.5rem)] flex-grow flex-shrink-0 p-2 md:p-4 gap-2" onClick={() => setOpen(true)}>
+    <div className="flex basis-full md:min-h-[190px] rounded-xl border border-solid border-backgroundGray md:basis-[45%] md:max-w-[calc(50%-0.5rem)] flex-grow flex-shrink-0 p-2 md:p-4 gap-2" onClick={() => setOpen(true)}>
 
       <div className="basis-[90px] md:basis-[90px] relative shrink-0">
         <Image layout="fill" objectFit="contain" src={data.image ?? '/defaultDoctorPic/doctor.jpeg'} objectPosition="center" />
@@ -37,7 +37,7 @@ const DoctorItem = (props) => {
      </div>
 
      <div className="flex flex-row justify-center items-center md:hidden basis-10 grow-0 shrink-0">
-        <IoCaretBackCircleOutline className="text-2xl" onClick={() => setOpen(true)}/>
+        <IoCaretBackCircleOutline className="text-2xl text-gray" onClick={() => setOpen(true)}/>
 
         
         </div>

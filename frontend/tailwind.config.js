@@ -16,6 +16,7 @@ module.exports = {
       // secondary__light: "#fff",
       // secondary__200: "#fff",
 
+      gray: '#CFCDCD',
       filter: 'rgba(0, 0, 0, 0.23)',
 
       white: "#ffffff",
