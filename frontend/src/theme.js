@@ -25,6 +25,16 @@ let theme = createTheme({
     fontFamily: "IRANSansMobile",
     fontSize: 14,
   },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 640,
+      md: 920,
+      lg: 1024,
+      xl: 1280,
+      '2xl': 1536,
+    },
+  },
   components: {
     MuiInputLabel: {
       styleOverrides: {

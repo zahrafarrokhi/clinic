@@ -82,6 +82,9 @@ module.exports = {
       },
 
     },
+    screens: {
+      md: '920px',
+    }
   },
   plugins: [],
 
