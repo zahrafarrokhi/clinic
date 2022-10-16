@@ -214,7 +214,8 @@ const [selectedTab,setSelectedTab] = useState('open')
         borderColor: 'divider',
         [theme.breakpoints.up('md')]: {
           display: 'none',
-        }
+        },
+        marginBottom: '1em',
       })}>
        <Tabs value={selectedTab} onChange={(e, newValue) => {
         setSelectedTab(newValue)
