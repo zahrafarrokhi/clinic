@@ -32,6 +32,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import throttle from "lodash.throttle";
 import RangeDatePicker from "../../components/RangeDatePicker";
 import { format } from "date-fns";
+import { convertStrToJalali } from "../../lib/utils";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -158,7 +159,7 @@ const Visits = () => {
   return (
     <div className="flex flex-col p-8">
       {/* search & filter */}
-      <div className="flex justify-between my-2 items-center">
+      <div className="flex justify-between my-4 items-center px-1">
         <div>
           {/* Search */}
           <TextField
@@ -329,7 +330,7 @@ const Visits = () => {
                 <StyledTableCell align="center">{index + 1}</StyledTableCell>
                 <StyledTableCell align="center">
                   {" "}
-                  {row.created_at}
+                  {convertStrToJalali(row.created_at)}
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   {row.doctor.first_name} {row.doctor.last_name}

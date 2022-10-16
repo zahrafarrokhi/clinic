@@ -1,3 +1,4 @@
+import { format } from 'date-fns-jalali';
 import axiosInstance from './axios';
 
 export const preventLettersTyping = (x) => x.replace(/[^\d]/g, '');
@@ -21,3 +22,20 @@ export const logout = (dispatch) => {
   delete axiosInstance.defaults.headers.Authorization;
   delete axiosInstance.defaults.headers.common.Authorization;
 }
+
+// Date('1999-12-12') -> '1378/5/5'
+export const covertDateToJalai = (date, f='yyyy/MM/dd')=> {
+  return format(date, f)
+}
+
+// '2000-12-12T00:00:00Z' -> Date(2000, 12, 12)
+export const convertStrToDate = (str) => {
+  const date = new Date(str);
+
+  return date
+}
+
+export const convertStrToJalali = (str, format='yyyy/MM/dd') => {
+  return covertDateToJalai(convertStrToDate(str), format)
+}
+
