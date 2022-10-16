@@ -14,11 +14,13 @@ import {
   Paper,
   Portal,
   Slide,
+  Tab,
   Table,
   TableHead,
   TableRow,
   tableRowClasses,
   TableSortLabel,
+  Tabs,
   TextField,
   Toolbar,
   Typography,
@@ -203,9 +205,30 @@ const Visits = () => {
   };
   //mobile filter
   const [openModal, setOpenModal] = useState(false);
-
+// mobile tab
+const [selectedTab,setSelectedTab] = useState('open')
   return (
     <div className="flex flex-col p-4 md:p-8">
+      <Box sx={(theme) => ({
+        borderBottom: 1, 
+        borderColor: 'divider',
+        [theme.breakpoints.up('md')]: {
+          display: 'none',
+        }
+      })}>
+       <Tabs value={selectedTab} onChange={(e, newValue) => {
+        setSelectedTab(newValue)
+
+        if(newValue === 'open')
+          setStatus(['started', 'waiting_for_response', 'responded'])
+        else 
+          setStatus(['closed'])
+        }} aria-label="basic tabs example">
+        <Tab label="ویزیت های فعال"  value="open" className="flex-grow"/>
+        
+          <Tab label="ویزیت های بسته شده" value="closed" className="flex-grow"/>
+        </Tabs>
+        </Box>
       {/* search & filter */}
       <div className="flex flex-wrap justify-between my-4 items-center px-1">
         <div className="flex gap-5 w-full md:w-auto">
