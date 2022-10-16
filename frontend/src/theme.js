@@ -152,6 +152,15 @@ let theme = createTheme({
               color: theme.palette[color].main, // `${color}.main` = 'chip_danger.main'
               backgroundColor:
                 theme.palette[color].light,
+              [theme.breakpoints.down('md')]: {
+                padding: '0.25em',
+                ['& .MuiChip-label']: {
+                  fontWeight: 'normal',
+                  fontSize: '12px',
+                  // margin: '0.25em',
+                  padding: '0.25em',
+                },
+              }
             };
           },
         },
