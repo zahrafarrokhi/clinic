@@ -11,7 +11,7 @@ def _doctor_img_upload_path_generator(instance, file_name):
 class Department(models.Model):
     name = models.CharField(max_length=50)
     faname = models.CharField(max_length=50)
-
+    icon = models.FileField(blank=True,null=True)
     def __str__(self):
         return str(self.name)
 
