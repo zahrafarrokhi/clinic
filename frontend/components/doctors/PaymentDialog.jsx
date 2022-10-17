@@ -65,7 +65,7 @@ const PaymentDialog = (props)=>{
           
         </div>
       </div>
-      <div className="flex flex-row rounded-lg border border-solid border-backgroundGray m-8 p-4 pt-6 relative  text-lg">
+      <div className="flex flex-row rounded-lg border border-solid border-backgroundGray m-8 p-4 pt-6 relative text-sm md:text-lg">
 
 <div className="bg-white text-primary font-bold text-base absolute -top-3 right-3 px-2">
 توضیحات
@@ -81,7 +81,7 @@ const PaymentDialog = (props)=>{
       </div>
       <div className="flex flex-col md:flex-row mx-8 mb-8 mt-2 justify-end">
 
-        <Button variant="contained" color="primary" className="text-lg">تایید و پرداخت</Button>
+        <Button variant="contained" color="primary" className="md:text-lg">تایید و پرداخت</Button>
       </div>
     </div>
     </Dialog>
