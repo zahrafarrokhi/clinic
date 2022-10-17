@@ -4,14 +4,16 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loadDepartments } from "../../lib/slices/doctors";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
-import axiosInstance from "../../lib/axios";
+import { useRouter } from "next/router";
+import axios from "axios";
 
 const Svg = (props)=>{
   const {url} = props;
   const [svg,setSvg]=useState("")
+  const router = useRouter();
   const loadSvg = async () => {
     try {
-      const response = await axiosInstance.get(url)
+      const response = await axios.get(url)
       setSvg(response.data)
     } catch(e) {
       console.log(e)
@@ -20,6 +22,12 @@ const Svg = (props)=>{
   useEffect(()=>{
     loadSvg()
   },[url])
+  useEffect(() => {
+    router.events.on('routeChangeComplete', loadSvg)
+    return () => {
+      router.events.off('routeChangeComplete', loadSvg)
+    }
+  }, [])
 
   return (
     <div className="custom-svg" dangerouslySetInnerHTML={{ __html: svg }}></div>
@@ -45,6 +53,14 @@ const StyledTab = styled(Tab)(({ theme }) => ({
     borderRadius: "0.45em",
     color: theme.palette.grayBtn.main,
     margin: "0 0.25em",
+    '& .MuiTab-iconWrapper': {
+      width: '1em !important',
+      height: '1em !important',
+    },
+    '& .custom-svg, & .custom-svg svg': {
+      width: '1.5em !important',
+      height: '1.5em !important',
+    },
     '& .custom-svg g': {
       opacity: 1,
     },
@@ -123,7 +139,7 @@ const DoctorsTab = (props) => {
           icon={<LocalHospitalIcon />}
           iconPosition="bottom"
           value={null}
-          className="text-base"
+          className="text-sm md:text-base"
         />
         {departments?.map((tab) => (
           <StyledTab
@@ -133,7 +149,7 @@ const DoctorsTab = (props) => {
             //icon
             icon={<Svg url={tab.icon}/>}
             iconPosition="bottom"
-            className="text-base"
+            className="text-sm md:text-base"
           />
         ))}
       </StyledTabs>
