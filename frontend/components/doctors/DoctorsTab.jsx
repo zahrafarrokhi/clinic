@@ -31,6 +31,12 @@ const StyledTab = styled(Tab)(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
     "& .MuiTab-iconWrapper": {
       display: "none",
+
+      
+    },
+    //dont show svg icon on desktop
+    '& .custom-svg ': {
+      display: "none",
     },
   },
   [theme.breakpoints.down("md")]: {
