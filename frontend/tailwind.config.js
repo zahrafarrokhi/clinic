@@ -19,6 +19,9 @@ module.exports = {
       gray: '#CFCDCD',
       filter: 'rgba(0, 0, 0, 0.23)',
 
+      grayBtn: '#7A7A7A',
+      grayBtn__light: 'rgba(196, 196, 196, 0.50)',
+
       white: "#ffffff",
 
       border: "#d6cfcf",
