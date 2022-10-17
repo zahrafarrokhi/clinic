@@ -141,6 +141,7 @@ export default function DrawerNav(props) {
     <SwipeableDrawer
       open={open}
       onClose={() => setOpen(false)}
+      onOpen={() => setOpen(true)}
       variant={isMobile ? "temporary" : "permanent"}
       anchor={isMobile ? "bottom" : "left"}
       sx={{
@@ -161,6 +162,11 @@ export default function DrawerNav(props) {
           borderTopRightRadius: "1.5rem",
           top: patientSelection ? "100%" : undefined,
         },
+      }}
+      SwipeAreaProps={{
+        sx: {
+          height: '0px !important',
+        }
       }}
     >
       {/* Divider show on mobile */}
