@@ -56,9 +56,11 @@ INSTALLED_APPS = [
     'rest_framework_gis',
     'constant_data',
     'authentication',
+    'payment',
     'patient',
     'doctor',
     'visit',
+
 
 ]
 
@@ -194,3 +196,14 @@ AUTHENTICATION_BACKENDS = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+
+PAYMENT_SETTINGS = {
+    'AP': {
+        'urls': {
+            'token': 'https://sandbox.banktest.ir/ap/ipgrest.asanpardakht.ir/v1/Token'
+        },
+        'MERCHANT_ID': env("MERCHANT_ID"),
+        'USERNAME': env("USERNAME"),
+        'PASSWORD': env("PASSWORD"),
+    }
+}
