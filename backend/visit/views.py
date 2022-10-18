@@ -12,7 +12,7 @@ from visit.serializers import VisitSerializer
 
 # Create your views here.
 class VisitView(
-        # mixins.CreateModelMixin,
+        mixins.CreateModelMixin,
         mixins.ListModelMixin,
         mixins.RetrieveModelMixin,
         viewsets.GenericViewSet):

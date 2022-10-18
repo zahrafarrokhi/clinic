@@ -12,6 +12,11 @@ class PaymentSerializer(serializers.ModelSerializer):
         model = Payment
         fields = '__all__'
 
+    def update(self, instance, validated_data):
+        BasePaymentService.get_result(instance)
+
+        return instance
+
 class VisitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Visit
