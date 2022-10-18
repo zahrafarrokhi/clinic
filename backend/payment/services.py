@@ -9,10 +9,18 @@ class BasePaymentService:
     @classmethod
     def create_payment(cls, user,amount):
         payment = Payment(user=user,amount=amount)
+        payment.save()
         try:
-            response = requests.post(cls.settings['urls']['token'],
-                                     data={"merchantConfigurationId": cls.settings['MERCHANT_ID']},
-                                     headers={"usr":cls.settings['USERNAME'],"pwd":cls.settings['PASSWORD']}
+            response = requests.post(cls.settings['urls']['get_token'],
+                                     data={
+                                         "merchantConfigurationId": cls.settings['MERCHANT_ID'],
+                                         "callbackUrl": f"http://localhost:8000/api/payment/verify/{payment.id}/",
+                                         "amountInRials": amount,
+                                     },
+                                     headers={
+                                         "usr":cls.settings['USERNAME'],
+                                         "pwd":cls.settings['PASSWORD'],
+                                     }
                                      )
 
             payment.ref_id = response.text
@@ -20,6 +28,7 @@ class BasePaymentService:
             pass
         payment.save()
         return payment
+
 
 
 class ApPaymentService(BasePaymentService):

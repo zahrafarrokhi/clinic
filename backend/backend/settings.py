@@ -200,10 +200,10 @@ CORS_ALLOW_CREDENTIALS = True
 PAYMENT_SETTINGS = {
     'AP': {
         'urls': {
-            'token': 'https://sandbox.banktest.ir/ap/ipgrest.asanpardakht.ir/v1/Token'
+            'get_token': 'https://sandbox.banktest.ir/ap/ipgrest.asanpardakht.ir/v1/Token'
         },
-        'MERCHANT_ID': env("MERCHANT_ID"),
-        'USERNAME': env("USERNAME"),
-        'PASSWORD': env("PASSWORD"),
+        'MERCHANT_ID': env("AP_MERCHANT_ID"),
+        'USERNAME': env("AP_USERNAME"),
+        'PASSWORD': env("AP_PASSWORD"),
     }
 }

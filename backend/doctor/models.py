@@ -8,6 +8,8 @@ def _doctor_img_upload_path_generator(instance, file_name):
     return 'uploads/doctor_img/doc{0}_{1}'.format(instance.user.pk, file_name)
 
 
+DEFAULT_VISIT_AMOUNT = 500000
+
 class Department(models.Model):
     name = models.CharField(max_length=50)
     faname = models.CharField(max_length=50)
@@ -49,6 +51,8 @@ class Doctor(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     address = models.ForeignKey(Office, on_delete=models.CASCADE)
+    amount = models.IntegerField(default=DEFAULT_VISIT_AMOUNT)
+
     @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}"

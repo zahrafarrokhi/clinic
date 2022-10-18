@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from payment.models import Payment
 from visit.models import Visit
-
+from .services import BasePaymentService
 
 ### create for visit
 class PaymentSerializer(serializers.ModelSerializer):
@@ -27,7 +27,8 @@ class VisitSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # user is who has logged in
-        visit = Visit(user=self.context['request'].user,doctor=validated_data['doctor'],patient=validated_data['patient'] )
+        payment = BasePaymentService.create_payment(user=self.context['request'].user,amount=validated_data['doctor'].amount)
+        visit = Visit(user=self.context['request'].user,doctor=validated_data['doctor'],patient=validated_data['patient'],payment=payment)
         visit.save()
 
         return visit
