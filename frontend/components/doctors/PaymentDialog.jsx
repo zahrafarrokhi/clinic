@@ -1,10 +1,38 @@
 import { Button, Dialog, Slide, useMediaQuery, useTheme } from "@mui/material";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import { useDispatch, useSelector } from "react-redux";
+import { createVisitPatient } from "../../lib/slices/visits";
 
 const PaymentDialog = (props)=>{
   const { open, setOpen,data } = props;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  //redux
+  const dispatch = useDispatch()
+  const patient = useSelector((state) => state.patientReducer?.patient);
+  const visitPayment = async()=>{
+    console.log(data)
+    try {
+      const response = await dispatch(createVisitPatient({doctor_id: data.user,patient:patient.id})).unwrap()
+      console.log(response)
+      
+      var form = document.createElement("form");
+      form.setAttribute("method", "POST");
+      form.setAttribute("action", "https://sandbox.banktest.ir/ap/asan.shaparak.ir");
+      form.setAttribute("target", "_self");
+      var hiddenField = document.createElement("input");
+      hiddenField.setAttribute("name", "RefId");
+      hiddenField.setAttribute("value", response?.data?.payment?.ref_id);
+      form.appendChild(hiddenField);
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form)
+
+    } catch (error) {
+      
+    }
+    
+  }
    return(
 
     <Dialog
@@ -81,7 +109,7 @@ const PaymentDialog = (props)=>{
       </div>
       <div className="flex flex-col md:flex-row mx-8 mb-8 mt-2 justify-end">
 
-        <Button variant="contained" color="primary" className="md:text-lg">تایید و پرداخت</Button>
+        <Button variant="contained" color="primary" className="md:text-lg" onClick={visitPayment}>تایید و پرداخت</Button>
       </div>
     </div>
     </Dialog>

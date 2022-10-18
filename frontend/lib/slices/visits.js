@@ -7,7 +7,7 @@ export const LOADING = 'loading';
 export const loadVisitsPatient = createAsyncThunk(
   'visits/list',
   async ({patient_id, ...data}, thunkAPI) => {
-  
+
     try {
       const response = await axios.get(`/api/visits/visit/patient/${patient_id}/`, {params: data});
 
@@ -15,22 +15,18 @@ export const loadVisitsPatient = createAsyncThunk(
 
       return { data: response.data };
     } catch (error) {
-      console.log(error);
       return thunkAPI.rejectWithValue({ error: error.response.data });
     }
   },
 );
-export const createVisitsPatient = createAsyncThunk(
+export const createVisitPatient = createAsyncThunk(
   'visits/create',
   async (payload, thunkAPI) => {
     try {
-      const response = await axios.post(`/api/visits/visit/patient/${data.patient_id}/`,);
-
-      console.log(response, response.data);
+      const response = await axios.post(`/api/visits/visit/`,payload);
 
       return { data: response.data};
     } catch (error) {
-      console.log(error);
       return thunkAPI.rejectWithValue({ error: error.response.data });
     }
   },
@@ -71,18 +67,18 @@ export const visitSlice = createSlice({
       return state;
     });
 // createVisitsPatient
-    builder.addCase(createVisitsPatient.pending, (state) => ({
+    builder.addCase(createVisitPatient.pending, (state) => ({
       ...state,
       loading: LOADING,
     }));
-    builder.addCase(createVisitsPatient.rejected, (state, action) => ({
+    builder.addCase(createVisitPatient.rejected, (state, action) => ({
       ...state,
       loading: IDLE,
       error: action.payload.error,
     }));
-    builder.addCase(createVisitsPatient.fulfilled, (state, action) => {
+    builder.addCase(createVisitPatient.fulfilled, (state, action) => {
       state.loading = IDLE;
-      state.visits = action.payload.data;
+      // state.visits = action.payload.data;
       
       return state;
     });

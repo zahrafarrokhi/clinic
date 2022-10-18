@@ -25,7 +25,10 @@ const DoctorItem = (props) => {
 
         <div className="hidden md:flex flex-wrap flex-row justify-end gap-1">
         <Button className="rounded-xl w-40" variant="outlined" onClick={()=>setOpen(true)}>مشاهده پروفایل </Button>
-        <Button className="rounded-xl w-40" variant="contained" onClick={()=>setOpenPayment(true)}>ویزیت آنلاین</Button>
+        <Button className="rounded-xl w-40" variant="contained" onClick={(e)=>{
+          e.stopPropagation()
+          setOpenPayment(true)
+        }}>ویزیت آنلاین</Button>
         <div onClick={(e) => e.stopPropagation()}>
         {/* ProfileModal */}
         <ProfileModal open={open} setOpen={setOpen} setOpenPayment={setOpenPayment} data={data}/>
