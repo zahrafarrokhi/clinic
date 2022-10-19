@@ -621,5 +621,80 @@ export const wrapper = createWrapper(makeStore, { storeKey: 'key' });
 
 
 ```
+### connection to back
+```jsx
+// lib/slice/visit.js
+//loadVisitsPatient
+export const loadVisitsPatient = createAsyncThunk(
+  'visits/list',
+  async ({patient_id, ...data}, thunkAPI) => {
 
+    try {
+      const response = await axios.get(`/api/visits/visit/patient/${patient_id}/`, {params: data});
 
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  },
+);
+//visit/index.jsx
+
+  const lstVisits =  async () => {
+        try {
+          await dispatch(
+            loadVisitsPatient({
+             backend(models field): frontend(state)
+            })
+          ).unwrap();
+        } catch (error) {
+       
+        }
+      }
+
+// lstVisits run loadVisitsPatient
+// we need lstVisits because useEffect can't be async
+ 
+
+await dispatch(loadVisitsPatient(payload={backend(models field): frontend(state)})
+		|
+		v
+export const loadVisitsPatient = createAsyncThunk(
+  async (payload, thunkAPI) => {
+    const {patient_id, ...data} = payload
+    const response = await axios.get(`/api/visits/visit/patient/${patient_id}/`, {params: data});
+// for example:
+// http://localhost:3000/api/visits/visit/patient/3/?ordering=created_at&created_at__date__lte=2022-10-20&created_at__date__gte=2022-10-02&status__in=started,waiting_for_payment&search=&limit=10&offset=0
+// {"count":12,"next":"http://localhost:8000/api/visits/visit/patient/3/?created_at__date__gte=2022-10-02&created_at__date__lte=2022-10-20&limit=10&offset=10&ordering=created_at&search=&status__in=started%2Cwaiting_for_payment","previous":null,"results":[{"id":1,"doctor":{"user":7,"first_name":"parham","last_name":"راد","department":{"id":2,"name":"eye","faname":"چشم","icon":"http://localhost:8000/media/Eye.svg"},"image":null,"degree":"full_doctor","medical_code":"1212","description":"dldldldld","office":{"id":2,"location":{"type":"Point","coordinates":[54.5727753639221,34.34947143384983]},"address":"kddkdkd","open_hours":"شنبه تا چهارشنبه 14:00 الی 19:00","postal_code":"7657","phone_number":"0992832729"}},"payment":{"id":8,"created_at":"2022-10-18T12:58:07.287070Z","amount":500000,"card_number":null,"rrn":null,"ref_id":"internal error","status":"pending","user":4},"created_at":"2022-10-18T12:58:32.771032Z","updated_at":"2022-10-18T12:58:32.771042Z","status":"waiting_for_payment","patient":3},...]
+export const loadVisitsPatient = createAsyncThunk(
+  async (...) => {
+      const response = await axios.get(`/api/visits/visit/patient/${patient_id}/`, {params: data});
+		|
+		v
+      return { data: response.data };
+  },
+);
+
+builder.addCase(loadVisitsPatient.fulfilled, (state, action) => {
+	state.loading = IDLE;
+	//total data => action.payload.data
+	//up => {...respose.data } or response.data => action.payload
+	state.visits = action.payload.data;
+
+	return state;
+});
+// lib/store.js
+// save in redux store:
+
+const combinedReducers = combineReducers({
+	...
+	visitReducer :visitSlice.reducer,
+
+});
+
+//visit/index.jsx
+  const count = useSelector((state) => state.visitReducer?.visits?.count); //pagination
+  const visits = useSelector((state) => state.visitReducer?.visits?.results);
+  
+    {visits?.map(...)}
+```
