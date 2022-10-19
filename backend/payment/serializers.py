@@ -13,7 +13,9 @@ class PaymentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def update(self, instance, validated_data):
+        print("Updating payment")
         BasePaymentService.get_result(instance)
+        print("Payment updated")
 
         return instance
 

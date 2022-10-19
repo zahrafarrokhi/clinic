@@ -17,7 +17,7 @@ class BasePaymentService:
                                      #json=>body
                                      json={
                                          "merchantConfigurationId": cls.settings['MERCHANT_ID'],
-                                         "callbackUrl": f"http://localhost:8000/api/payment/verify/{payment.id}/",
+                                         "callbackUrl": f"http://localhost:3000/payment/{payment.id}/",
                                          "amountInRials": amount,
                                          "serviceTypeId": 1,
                                          "localInvoiceId": payment.id,
@@ -46,10 +46,12 @@ class BasePaymentService:
     def get_result(cls,payment):
         try:
             response = requests.get(cls.settings['urls']['get_result'],
-                                    # data => queryparams
-                                     data={
+                                    # json
+                                     json={
                                          "merchantConfigurationId": cls.settings['MERCHANT_ID'],
                                          "localInvoiceId": payment.id,
+                                         # "refId": payment.ref_id,
+                                         # "RefId": payment.ref_id,
                                      },
                                      headers={
                                          "usr":cls.settings['USERNAME'],
@@ -59,22 +61,21 @@ class BasePaymentService:
                                      )
 
             resp = response.json()
-            payment.card_number = resp['card_number']
-            payment.rnn = resp['rnn']
-            status = resp['serviceStatusCode']
-            payGateTranId = resp['payGateTranId']
-            if status == 0:
-                payment.status = payment.Status.successful
-                cls.verify(payment, payGateTranId)
+            print(resp, response.status_code)
+            if response.status_code == 200:
+                payment.card_number = resp['cardNumber']
+                payment.rrn = resp['rrn']
+                # status = resp['serviceStatusCode']
+                payGateTranId = resp['payGateTranID']
+                if cls.verify(payment, payGateTranId).status_code == 200:
+                    payment.status = payment.Status.successful
                 payment.save()
-            elif status == 2:
-                return
             else:
                 payment.status = payment.Status.failed
                 payment.save()
 
-        except:
-            pass
+        except Exception as e:
+            print(e)
         return
     @classmethod
     def verify(cls, payment, payGateTranId):
@@ -89,6 +90,8 @@ class BasePaymentService:
                                     "Content-Type": "application/json",
                                 }
                                 )
+        print("Verified", response, response.status_code)
+        return response
 
 class ApPaymentService(BasePaymentService):
     settings = PAYMENT_SETTINGS['AP']
