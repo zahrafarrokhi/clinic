@@ -210,3 +210,9 @@ PAYMENT_SETTINGS = {
         'PASSWORD': env("AP_PASSWORD"),
     }
 }
+
+ROCKETCHAT_SETTINGS = {
+   "url": env("ROCKETCHAT_URL"),
+    "admin_token": env("ROCKETCHAT_ADMIN_TOKEN"),
+    "admin_user_id": env("ROCKETCHAT_ADMIN_USERID"),
+}

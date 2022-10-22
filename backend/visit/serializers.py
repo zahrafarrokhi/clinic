@@ -20,7 +20,7 @@ class VisitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Visit
         fields = "__all__"
-        read_only_fields = ['status','payment', 'user']
+        read_only_fields = ['status','payment', 'user', 'room_id', 'room_name']
 
     # create
     def validate(self, attrs):

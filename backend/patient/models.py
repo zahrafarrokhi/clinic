@@ -1,4 +1,5 @@
 # from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -40,8 +41,8 @@ class Patient(models.Model):
     supplementary_insurance = models.ForeignKey('constant_data.SupplementaryInsurance', on_delete=models.SET_NULL,
                                                 null=True, blank=True)
 
-    # rocket_chat = GenericRelation('chat.RocketChatToken', related_query_name="patient",
-    #                               content_type_field='refrence_type', object_id_field='refrence_id')
+    chat_user = GenericRelation('chat.ChatUser', related_query_name="patient",
+                                  content_type_field='owner_type', object_id_field='owner_id')
     # last_used_doctor = models.ForeignKey(
     #     User, null=True, blank=True, related_name="last_used_doctor", on_delete=models.SET_NULL)
 

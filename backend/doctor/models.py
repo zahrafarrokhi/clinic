@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from authentication.models import User
 from constant_data.models import City
@@ -52,6 +53,9 @@ class Doctor(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     address = models.ForeignKey(Office, on_delete=models.CASCADE)
     amount = models.IntegerField(default=DEFAULT_VISIT_AMOUNT)
+
+    chat_user = GenericRelation('chat.ChatUser', related_query_name="doctor",
+                                  content_type_field='owner_type', object_id_field='owner_id')
 
     @property
     def full_name(self):

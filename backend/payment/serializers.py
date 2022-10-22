@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from chat.services import RocketChatService
 from payment.models import Payment
 from visit.models import Visit
 from .services import BasePaymentService
@@ -13,9 +14,11 @@ class PaymentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def update(self, instance, validated_data):
-        print("Updating payment")
         BasePaymentService.get_result(instance)
-        print("Payment updated")
+
+        if instance.status == Payment.Status.successful:
+            instance.visit.status = instance.visit.Status.started
+            RocketChatService().create_channel(instance.visit)
 
         return instance
 

@@ -21,4 +21,8 @@ class Visit(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(choices=Status.choices, default=Status.waiting_for_payment, max_length=30)
-    payment = models.ForeignKey(Payment,on_delete=models.CASCADE)
+    payment = models.OneToOneField(Payment, on_delete=models.CASCADE)
+
+    room_id = models.CharField(max_length=50, null=True, blank=True)
+    room_name = models.CharField(max_length=50, null=True, blank=True)
+
