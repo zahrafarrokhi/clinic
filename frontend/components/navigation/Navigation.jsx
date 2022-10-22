@@ -45,7 +45,7 @@ export default function Navigation(props) {
         }}
       >
         <Header openDrawer={() => setOpen(true)} />
-        <Box>
+        <Box className="flex-grow flex flex-col">
           <Toolbar className="h-[80px]"></Toolbar>
           {children}
         </Box>
