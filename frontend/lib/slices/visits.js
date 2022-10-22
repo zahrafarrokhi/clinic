@@ -32,6 +32,20 @@ export const createVisitPatient = createAsyncThunk(
   },
 );
 
+export const getVisitPatient = createAsyncThunk(
+  'visits/get',
+  async ({patient_id,pk}, thunkAPI) => {
+    try {
+      // const response = await axios.get(`/visit/patient/${thunkAPI.getState().patientReducer?.patient?.id}/<int:pk>`,payload);
+      const response = await axios.get(`/api/visits/visit/patient/${patient_id}/${pk}/`);
+
+      return { data: response.data};
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  },
+);
+
 
 const internalInitialState = {
   visits: [],
@@ -83,6 +97,22 @@ export const visitSlice = createSlice({
       return state;
     });
 
+// getVisitPatient
+builder.addCase(getVisitPatient.pending, (state) => ({
+  ...state,
+  loading: LOADING,
+}));
+builder.addCase(getVisitPatient.rejected, (state, action) => ({
+  ...state,
+  loading: IDLE,
+  error: action.payload.error,
+}));
+builder.addCase(getVisitPatient.fulfilled, (state, action) => {
+  state.loading = IDLE;
+  state.visit = action.payload.data;
+  
+  return state;
+});
 
 
   },
