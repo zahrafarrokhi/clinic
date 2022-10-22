@@ -1,5 +1,6 @@
 //redux
 import { Button, TextField } from "@mui/material";
+import { format } from "date-fns";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +27,7 @@ export default function NewPatient() {
       await dispatch(
         addPatient({
           national_id: persianToEnglishDigits(nationalId),
-          date_of_birth: birthdate,
+          date_of_birth: format(birthdate, 'yyyy-mm-dd'),
           first_name: totalState.first_name,
           last_name: totalState.last_name,
           // ...totalState,
