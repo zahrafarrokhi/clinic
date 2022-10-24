@@ -108,24 +108,24 @@ const ProfileModal = (props) => {
                 <Image
                   layout="fill"
                   objectFit="contain"
-                  src={data.image ?? "/defaultDoctorPic/doctor.jpeg"}
+                  src={data?.image ?? "/defaultDoctorPic/doctor.jpeg"}
                   objectPosition="center"
                 />
               </div>
               <div className="flex flex-col flex-grow">
                 <div className="text-primary text-base font-bold italic">
                   {" "}
-                  {data.department.faname}{" "}
+                  {data?.department.faname}{" "}
                 </div>
                 <div className="text-lg font-medium">
                   {" "}
-                  {data.first_name} {data.last_name}{" "}
+                  {data?.first_name} {data?.last_name}{" "}
                 </div>
                 <div className="hidden md:flex text-lg font-medium">
                   {" "}
-                  شماره نظام پزشکی: {data.medical_code}{" "}
+                  شماره نظام پزشکی: {data?.medical_code}{" "}
                 </div>
-                <div className=""> {data.degree} </div>
+                <div className=""> {data?.degree} </div>
 
                 <div className="hidden md:flex flex-wrap flex-row justify-end gap-1">
                   <Button className="rounded-xl w-40" variant="contained" onClick={()=>{setOpenPayment(true); setOpen(false)}}>
@@ -137,7 +137,7 @@ const ProfileModal = (props) => {
                 </div>
               </div>
             </div>
-            <div className="px-1 py-4">{data.description}</div>
+            <div className="px-1 py-4">{data?.description}</div>
           </div>
         </TabPanel>
         <TabPanel value="office" selectedTab={selectedTab}>

@@ -13,6 +13,7 @@ import { patientSlice } from './slices/patients';
 import { addressSlice } from './slices/address';
 import { doctorSlice } from './slices/doctors';
 import { visitSlice } from './slices/visits';
+import { chatSlice } from './slices/chat';
 
 
 const makeStore = (initialState) => {
@@ -33,6 +34,7 @@ const makeStore = (initialState) => {
       addressReducer: addressSlice.reducer,
       doctorReducer :doctorSlice.reducer,
       visitReducer :visitSlice.reducer,
+      charReducer :chatSlice.reducer
       
     });
 

@@ -9,6 +9,7 @@ import { getVisitPatient } from "../../../lib/slices/visits";
 import MicIcon from '@mui/icons-material/Mic';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SendIcon from '@mui/icons-material/Send';
+import { getToken } from "../../../lib/slices/chat";
 
 const Chat =(props)=>{
   const dispatch = useDispatch()
@@ -28,6 +29,21 @@ const Chat =(props)=>{
   useEffect(()=>{
     if(id) getvisit()
   },[id, patient])
+
+//chat
+const token = useSelector(state=>state.chatReducer?.token)
+
+const Token = async()=>{
+  try {
+    await dispatch(getToken(patient.id)).unwrap()
+    
+  } catch (error) {
+    
+  }
+}
+useEffect(()=>{
+ Token()
+},[patient])
 const [open,setOpen] = useState(false)
 
 return(

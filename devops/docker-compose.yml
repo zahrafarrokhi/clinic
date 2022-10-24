@@ -22,6 +22,7 @@ services:
       PORT: ${PORT:-3000}
       DEPLOY_METHOD: docker
       DEPLOY_PLATFORM: ${DEPLOY_PLATFORM}
+      CREATE_TOKENS_FOR_USERS: true
     depends_on:
       - mongodb
     expose:

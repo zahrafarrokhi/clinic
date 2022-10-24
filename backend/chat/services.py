@@ -5,6 +5,8 @@ from backend.settings import ROCKETCHAT_SETTINGS
 import string
 
 from chat.models import ChatUser
+from doctor.models import Doctor
+from patient.models import Patient
 from visit.models import Visit
 
 
@@ -68,3 +70,13 @@ class RocketChatService:
         obj.room_id = res['channel']['_id']
         obj.room_name = name
         obj.save()
+
+    def create_token(self, obj: [Doctor, Patient]):
+        # chat_user(realation to ChatUser modles ,has username field)
+        username = obj.chat_user.first().username
+        # user_id = obj.chat_user.first().rocketchat_id
+        response = requests.post(f"{self.settings['url']}/api/v1/users.createToken", json={
+            "username":username,
+        }, headers=self.headers)
+        res = response.json()
+        return res['data']
