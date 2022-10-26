@@ -47,6 +47,9 @@ export const getVisitPatient = createAsyncThunk(
 );
 
 
+
+
+
 const internalInitialState = {
   visits: [],
   visit:null,

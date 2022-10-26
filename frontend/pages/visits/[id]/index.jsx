@@ -9,7 +9,7 @@ import { getVisitPatient } from "../../../lib/slices/visits";
 import MicIcon from '@mui/icons-material/Mic';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SendIcon from '@mui/icons-material/Send';
-import { getToken } from "../../../lib/slices/chat";
+import { getToken, listMessages, sendVisitMessage } from "../../../lib/slices/chat";
 
 const Chat =(props)=>{
   const dispatch = useDispatch()
@@ -30,7 +30,7 @@ const Chat =(props)=>{
     if(id) getvisit()
   },[id, patient])
 
-//chat
+//chat(token)
 const token = useSelector(state=>state.chatReducer?.token)
 
 const Token = async()=>{
@@ -45,7 +45,55 @@ useEffect(()=>{
  Token()
 },[patient])
 const [open,setOpen] = useState(false)
+//state text
+const [text,setText]=useState("")
+// chat(message)
+const sendmsg = async()=>{
+  try {
+    await dispatch(sendVisitMessage({
+      //url from redux
+      p_id: patient.id, 
+      visit_id: id,
+      //cred with rest(back beacuse body)
+      text: text, 
+    })).unwrap() // {text: ''}
+    
+    setText("")
 
+    // cred without rest
+    // async ({visit_id,p_id, cred}, thunkAPI) => {}
+    // await dispatch(sendVisitMessage({
+    //   //url from redux
+    //   p_id: patient.id, 
+    //   visit_id: id,
+    //   //cred without rest(back beacuse body)
+    //   cred: {
+    //     text: '', 
+    //   },
+    // })).unwrap() // {text: ''}
+  } catch (error) {
+    
+  }
+}
+
+// messages
+const messages = useSelector(state=>state.chatReducer?.messages?.messages)
+
+const lstMessages = async()=>{
+  try {
+    await dispatch(listMessages({
+       //url from redux
+       p_id: patient.id, 
+       visit_id: id,
+    })).unwrap()
+    
+  } catch (error) {
+    
+  }
+}
+useEffect(()=>{
+  if(id && patient?.id) lstMessages()
+},[patient, id])
 return(
   <div className="flex flex-col flex-grow">
   <div className="flex flex-row justify-between shadow-lg p-4">
@@ -59,23 +107,33 @@ return(
     <Button onClick={()=>setOpen(true)}>مشاهده پروفایل دکتر</Button>
     <ProfileModal  open={open} setOpen={setOpen}  data={visit?.doctor} />
   </div>
-  <div className="flex relative flex-grow" style={{
+  <div className="flex relative flex-grow flex-col-reverse" style={{
     backgroundImage: `url("/chatbackground.png")`,
     backgroundSize: 'cover',
     backgroundRepeat: 'repeat'
   }}>
-    
-  
+    <div className="absolute inset-0 flex flex-col-reverse overflow-auto pb-24  px-4">
+   {messages?.map((msg)=>
+   
+   <div className={`flex ${token.userId===msg.u._id ? 'flex-row' : 'flex-row-reverse'} my-2`}>
+   <div className={`${token.userId===msg.u._id ? 'bg-accent900' : 'bg-white'} basis-[400px] max-w-[90%] md:max-w-[60%] p-2 rounded-lg text-base text-black`}>{msg.msg} </div>
+   </div>
+   
+   )}
+   </div>
 
-  <div className="px-4 absolute left-0 right-0 bottom-4 flex gap-3" > 
+  <form className="px-4 absolute left-0 right-0 bottom-4 flex gap-3" onSubmit={(e) => {
+    e.preventDefault();
+    sendmsg()
+  }}> 
 
    <Button className="" color="white" variant="contained"><MicIcon/></Button>
-   <TextField variant="outlined"  fullWidth className="flex-grow bg-white" InputProps={{
+   <TextField value={text} onChange={(e) => setText(e.target.value)} variant="outlined"  fullWidth className="flex-grow bg-white" InputProps={{
     endAdornment: <InputAdornment position="end"><AttachFileIcon /></InputAdornment>
    }}></TextField>
-   <Button className="" color="white" variant="contained"><SendIcon className="rotate-180"/></Button>
+   <Button className="" color="white" variant="contained" type="submit"><SendIcon className="rotate-180"/></Button>
 
-  </div>
+  </form>
 
   </div>
   </div>

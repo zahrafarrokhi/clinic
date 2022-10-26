@@ -34,7 +34,7 @@ const makeStore = (initialState) => {
       addressReducer: addressSlice.reducer,
       doctorReducer :doctorSlice.reducer,
       visitReducer :visitSlice.reducer,
-      charReducer :chatSlice.reducer
+      chatReducer :chatSlice.reducer
       
     });
 

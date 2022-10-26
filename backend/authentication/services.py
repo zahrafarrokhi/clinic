@@ -45,10 +45,10 @@ class EmailService:
 class SmsService:
     @staticmethod
     def send_otp(user, token, template):
-        sms = ghasedakpack.Ghasedak(Ghasedak_APIKEY)
+        # sms = ghasedakpack.Ghasedak(Ghasedak_APIKEY)
 
-        sms.verification({'receptor': user.phone_number, 'type': '1',
-                         'template': template, 'param1': token.value})
+        # sms.verification({'receptor': user.phone_number, 'type': '1',
+        #                  'template': template, 'param1': token.value})
         return True
 
         # payload ={

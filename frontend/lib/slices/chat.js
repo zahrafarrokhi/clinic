@@ -21,9 +21,35 @@ export const getToken = createAsyncThunk(
 );
 
 
+export const sendVisitMessage = createAsyncThunk(
+  'chat/send',
+  async ({visit_id,p_id, ...cred}, thunkAPI) => {
+    try {
+      const response = await axios.post(`/api/chat/send-message/${visit_id }/${p_id?`${p_id}/`:''}`,cred);
+
+      return { data: response.data};
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  },
+);
+
+export const listMessages = createAsyncThunk(
+  'chat/list-messages',
+  async ({visit_id,p_id,}, thunkAPI) => {
+    try {
+      const response = await axios.get(`/api/chat/list-messages/${visit_id }/${p_id?`${p_id}/`:''}`);
+
+      return { data: response.data};
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  },
+);
 
 const internalInitialState = {
   token:null,
+  messages: { messages: [], offset: 0, count: 0, total: 0},
   error: null,
   loading: IDLE, // false ,not busy
 };
@@ -52,6 +78,41 @@ export const chatSlice = createSlice({
       
       return state;
     });
+  
+   // sendVisitMessage 
+   builder.addCase(sendVisitMessage .pending, (state) => ({
+    ...state,
+    loading: LOADING,
+  }));
+  builder.addCase(sendVisitMessage .rejected, (state, action) => ({
+    ...state,
+    loading: IDLE,
+    error: action.payload.error,
+  }));
+  builder.addCase(sendVisitMessage .fulfilled, (state, action) => {
+    state.loading = IDLE; 
+    
+    
+    return state;
+  });
+
+// listMessages
+builder.addCase(listMessages .pending, (state) => ({
+  ...state,
+  loading: LOADING,
+}));
+builder.addCase(listMessages .rejected, (state, action) => ({
+  ...state,
+  loading: IDLE,
+  error: action.payload.error,
+}));
+builder.addCase(listMessages .fulfilled, (state, action) => {
+  state.loading = IDLE; 
+  state.messages = action.payload.data
+  
+  return state;
+});
+
 
  
 

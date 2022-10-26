@@ -21,17 +21,31 @@ def create_username(obj):
 
 class RocketChatService:
     settings = ROCKETCHAT_SETTINGS
+    authorization_headers = {}
+
 
     def __init__(self, settings=ROCKETCHAT_SETTINGS):
         self.settings = settings
+        self.authorization_headers = {}
+
+    def login(self, obj: [Doctor, Patient]):
+        self.user = obj
+        resp = self.create_token(self.user)
+        self.authorization_headers = {
+            'X-Auth-Token': resp['authToken'],
+            'X-User-Id': resp['userId'],
+        }
 
     @property
     def headers(self):
-        return {
+        headers = {
             'X-Auth-Token': self.settings['admin_token'],
             'X-User-Id': self.settings['admin_user_id'],
             'Content-type': 'application/json',
         }
+        print("Auth", self.authorization_headers)
+        headers.update(self.authorization_headers)
+        return headers
 
     def create_user(self, obj):
         username = create_username(obj)
@@ -80,3 +94,16 @@ class RocketChatService:
         }, headers=self.headers)
         res = response.json()
         return res['data']
+
+    def send_message(self,visit: Visit, text=None):
+        print(self.headers)
+
+        response = requests.post(f"{self.settings['url']}/api/v1/chat.postMessage",json={"roomId":visit.room_id,"text":text},headers=self.headers)
+        return response.json()
+
+    def list_messages(self,visit:Visit):
+        print(visit.room_id, visit.room_name)
+        response = requests.get(f"{self.settings['url']}/api/v1/channels.messages",
+                                 params={"roomId": visit.room_id}, headers=self.headers)
+        print(response.json())
+        return response.json()
