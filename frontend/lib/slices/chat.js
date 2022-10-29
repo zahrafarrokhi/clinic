@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { fromUnixTime, isAfter } from 'date-fns';
 import axios from '../axios';
 
 export const IDLE = 'idle';
@@ -58,7 +59,13 @@ export const chatSlice = createSlice({
   name: 'chat',
   initialState: internalInitialState,
   reducers: {
-    
+    recieveMessage:(state, action)=>{
+      state.messages.messages = [ ...action.payload, ...(state?.messages?.messages ?? []),].filter((item, index, arr) => index == arr.findIndex((element) => element._id === item._id))
+      // .sort((a, b) => {
+      //   console.log(getTime(a.ts), getTime(b.ts))
+      //   return isAfter(getTime(a.ts), getTime(b.ts))
+      // })
+    },
     reset: () => internalInitialState,
   },
   extraReducers: (builder) => {
@@ -120,4 +127,4 @@ builder.addCase(listMessages .fulfilled, (state, action) => {
   },
 });
 
-export const { reset} = chatSlice.actions;
+export const { reset, recieveMessage} = chatSlice.actions;
