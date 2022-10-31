@@ -62,3 +62,17 @@ class ListMessages(APIView, UserObjExtension):
         mesg = service.list_messages(visit=visit)
         return Response(mesg)
 
+class UploadFile(APIView, UserObjExtension):
+    obj_query_name = 'patient_id'
+    permission_classes = [IsAuthenticated]
+
+    def post(self,requset,visit_id, **kwargs):
+        # user = self.request.user
+        obj = self.get_user_obj()
+        visit = obj.visit_set.get(pk=visit_id)
+        file = requset.data['file']
+        print(file.__dict__)
+        service = RocketChatService()
+        service.login(obj)
+        resp = service.upload_file(visit=visit,file=file)
+        return Response(resp)

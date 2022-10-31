@@ -36,16 +36,22 @@ class RocketChatService:
             'X-User-Id': resp['userId'],
         }
 
-    @property
-    def headers(self):
+    def get_headers(self, add_content_type=True):
         headers = {
             'X-Auth-Token': self.settings['admin_token'],
             'X-User-Id': self.settings['admin_user_id'],
-            'Content-type': 'application/json',
         }
         print("Auth", self.authorization_headers)
         headers.update(self.authorization_headers)
+        if add_content_type:
+            headers.update({
+                'Content-type': 'application/json',
+            })
         return headers
+
+    @property
+    def headers(self):
+        return self.get_headers()
 
     def create_user(self, obj):
         username = create_username(obj)
@@ -106,4 +112,9 @@ class RocketChatService:
         response = requests.get(f"{self.settings['url']}/api/v1/channels.messages",
                                  params={"roomId": visit.room_id}, headers=self.headers)
         print(response.json())
+        return response.json()
+
+    def upload_file(self, visit: Visit, file):
+        response = requests.post(f"{self.settings['url']}/api/v1/rooms.upload/{visit.room_id}",
+                                files={'file': (file._name, file.file, file.content_type)}, headers=self.get_headers(add_content_type=False))
         return response.json()
