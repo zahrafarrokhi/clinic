@@ -52,6 +52,7 @@ import Image from "next/image";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { useTheme } from "@mui/system";
 import { useRef } from "react";
+import { useRouter } from "next/router";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -156,7 +157,8 @@ const Visits = () => {
   const visits = useSelector((state) => state.visitReducer?.visits?.results);
   const patient = useSelector((state) => state.patientReducer?.patient);
   const dispatch = useDispatch();
-
+  // route
+  const router = useRouter()
   const lstVisits = useMemo(
     () =>
       throttle(async ({ search }) => {
@@ -644,7 +646,12 @@ const [selectedTab,setSelectedTab] = useState('open')
                   className="hidden md:table-cell"
                   align="center"
                 >
+                  {/* !(row.status === 'waiting_for_payment' || row.status === 'payment_failed') */}
+                  {/* (row.status !== 'waiting_for_payment' && row.status !== 'payment_failed') */}
+                  {/* (['waiting_for_payment', 'payment_failed'].indexOf(row.status) == -1) */}
+                {(['waiting_for_payment', 'payment_failed'].indexOf(row.status) == -1) &&<IconButton onClick={() => router.push(`/visits/${row.id}`)}>
                   <ArrowBackIos color="backgroundGray" />
+                  </IconButton>} 
                 </StyledTableCell>
               </StyledTableRow>
             ))}

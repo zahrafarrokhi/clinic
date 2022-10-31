@@ -47,6 +47,21 @@ export const listMessages = createAsyncThunk(
     }
   },
 );
+//uploadfile
+export const uploadFile = createAsyncThunk(
+  'chat/uploadfile',
+  async ({visit_id,p_id,payload}, thunkAPI) => {
+    try {
+      const fd = new FormData();       
+      fd.append('file', payload.file);
+      const response = await axios.post(`/api/chat/upload-file/${visit_id }/${p_id?`${p_id}/`:''}`,fd);
+
+      return { data: response.data};
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  },
+);
 
 const internalInitialState = {
   token:null,
@@ -120,7 +135,21 @@ builder.addCase(listMessages .fulfilled, (state, action) => {
   return state;
 });
 
-
+// uploadFile
+builder.addCase(uploadFile .pending, (state) => ({
+  ...state,
+  loading: LOADING,
+}));
+builder.addCase(uploadFile .rejected, (state, action) => ({
+  ...state,
+  loading: IDLE,
+  error: action.payload.error,
+}));
+builder.addCase(uploadFile .fulfilled, (state, action) => {
+  state.loading = IDLE;
+  
+  return state;
+});
  
 
 

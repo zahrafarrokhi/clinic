@@ -20,11 +20,16 @@ import {
   listMessages,
   recieveMessage,
   sendVisitMessage,
+  uploadFile,
 } from "../../../lib/slices/chat";
 import { AiTwotoneBank } from "react-icons/ai";
-// import { io } from "socket.io-client";
+import MicRecorder from "mic-recorder-to-mp3";
+import { ImPause2 } from "react-icons/im";
+//
+const recorder = new MicRecorder({ bitRate: 128 });
 
 const Chat = (props) => {
+ 
   const dispatch = useDispatch();
 
   const visit = useSelector((state) => state.visitReducer?.visit);
@@ -106,10 +111,50 @@ const Chat = (props) => {
     if (id && patient?.id) lstMessages();
   }, [patient, id]);
 
+ //recording
+ const [record, setRecord] = useState(false);
+ const upload = async(file)=>{
+  await dispatch(uploadFile({visit_id:visit.id,p_id:patient.id,payload: {file}})).unwrap();
+ }
+ function recording() {
+   //
+   if (!record) {
+     recorder
+       .start()
+       .then(() => {
+         console.log("alloo");
+         setRecord(true);
+       })
+       .catch((e) => {
+         console.error(e);
+       });
+
+   } else {
+     recorder
+       .stop()
+       .getMp3()
+       .then(([buffer, blob]) => {
+         const file = new File(buffer, "me-at-thevoice.mp3", {
+           type: blob.type,
+           lastModified: Date.now(),
+
+         });
+         upload(file);
+         setRecord(false);
+       })
+       .catch((e) => {
+         alert("We could not retrieve your message");
+         console.log(e);
+         setRecord(false);
+       });
+   }
+ }
+  
+
   //socket
   const socket = useRef();
   const startSocket = () => {
-    console.log("TEST")
+    console.log("TEST");
     const sock = new WebSocket(process.env.NEXT_PUBLIC_ROCKETCHAT_WS);
     socket.current = sock;
 
@@ -124,8 +169,8 @@ const Chat = (props) => {
           })
         );
       }
-      if(msg.msg === "changed" && msg.collection === "stream-room-messages") {
-        dispatch(recieveMessage(msg.fields.args))
+      if (msg.msg === "changed" && msg.collection === "stream-room-messages") {
+        dispatch(recieveMessage(msg.fields.args));
       }
     };
 
@@ -146,44 +191,44 @@ const Chat = (props) => {
           params: [{ resume: token?.authToken }],
         })
       );
-      subscribeToRoom()
+      subscribeToRoom();
     });
 
     sock.addEventListener("message", processSocketMessage);
   };
 
   const stopSocket = () => {
-    if (socket.current.readyState === WebSocket.OPEN) socket.current.close()
-    socket.current = null
-    
+    if (socket.current.readyState === WebSocket.OPEN) socket.current.close();
+    socket.current = null;
   };
   const subscribeToRoom = () => {
     const randid = Math.random().toString(16).substr(2, 8);
     if (socket.current.readyState === WebSocket.OPEN) {
-      console.log(visit?.room_id)
-      socket.current.send(JSON.stringify({
-        msg: "sub",
-        id: `${visit?.room_id}-${token?.userId}`,
-        name: 'stream-room-messages',
-        params: [
-          visit?.room_id,
-          false
-        ],
-      }));
+      console.log(visit?.room_id);
+      socket.current.send(
+        JSON.stringify({
+          msg: "sub",
+          id: `${visit?.room_id}-${token?.userId}`,
+          name: "stream-room-messages",
+          params: [visit?.room_id, false],
+        })
+      );
     }
   };
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && socket.current) subscribeToRoom();
+    if (typeof window !== "undefined" && socket.current) subscribeToRoom();
   }, [visit, visit?.room_id]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') startSocket();
-    
+    if (typeof window !== "undefined") startSocket();
+
     return () => {
       if (socket.current) stopSocket();
     };
   }, [token]);
+  //attachment
+  const attach = useRef()
   return (
     <div className="flex flex-col flex-grow">
       <div className="flex flex-row justify-between shadow-lg p-4">
@@ -233,8 +278,13 @@ const Chat = (props) => {
             sendmsg();
           }}
         >
-          <Button className="" color="white" variant="contained">
-            <MicIcon />
+          <Button
+            className=""
+            color="white"
+            variant="contained"
+            onClick={recording}
+          >
+            {!record ? <MicIcon /> : <ImPause2 />}
           </Button>
           <TextField
             value={text}
@@ -244,8 +294,18 @@ const Chat = (props) => {
             className="flex-grow bg-white"
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">
-                  <AttachFileIcon />
+                <InputAdornment position="end" >
+                  <input type="file" ref={attach} multiple="multiple" hidden onChange={(e) => {
+                    // one file 
+                    // upload(e.target.files[0])
+                    console.log(e)
+                    //multiple file
+                    
+                    Array.from(e.target.files).map((e)=>upload(e))
+                    
+                  }}></input>
+                  <IconButton onClick={()=>attach.current.click()}>   <AttachFileIcon /></IconButton>
+               
                 </InputAdornment>
               ),
             }}
