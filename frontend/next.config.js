@@ -15,6 +15,10 @@ const nextConfig = {
         source: "/api/:path*/",
         destination: `${process.env.BACKEND_BASE_URL}/api/:path*/`,
       },
+      {
+        source: "/file-upload/:path*",
+        destination: `${process.env.NEXT_PUBLIC_ROCKETCHAT}/file-upload/:path*`,
+      }
     ];
   },
   i18n: {

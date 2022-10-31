@@ -25,6 +25,9 @@ import {
 import { AiTwotoneBank } from "react-icons/ai";
 import MicRecorder from "mic-recorder-to-mp3";
 import { ImPause2 } from "react-icons/im";
+import VoiceMessage from "../../../components/chat/VoiceMessage";
+import ImageMessage from "../../../components/chat/ImageMessage";
+import FileMessage from "../../../components/chat/FileMessage";
 //
 const recorder = new MicRecorder({ bitRate: 128 });
 
@@ -259,6 +262,7 @@ const Chat = (props) => {
               className={`flex ${
                 token.userId === msg.u._id ? "flex-row" : "flex-row-reverse"
               } my-2`}
+              key={msg._id}
             >
               <div
                 className={`${
@@ -266,6 +270,10 @@ const Chat = (props) => {
                 } basis-[400px] max-w-[90%] md:max-w-[60%] p-2 rounded-lg text-base text-black`}
               >
                 {msg.msg}{" "}
+                {(msg.attachments && msg.attachments?.length>0 && msg.attachments[0].audio_url) && <VoiceMessage msg={msg}/>}
+                {(msg.attachments && msg.attachments?.length>0 && msg.attachments[0].image_url) && <ImageMessage msg={msg}/>}
+                {(msg.attachments && msg.attachments?.length>0 && msg.attachments[0].type == 'file') && <FileMessage msg={msg}/>}
+
               </div>
             </div>
           ))}
