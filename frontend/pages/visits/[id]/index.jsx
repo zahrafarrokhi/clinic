@@ -12,9 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ProfileModal from "../../../components/doctors/ProfileModal";
 import Navigation from "../../../components/navigation/Navigation";
 import { getVisitPatient } from "../../../lib/slices/visits";
-import MicIcon from "@mui/icons-material/Mic";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import SendIcon from "@mui/icons-material/Send";
+
 import {
   getToken,
   listMessages,
@@ -22,14 +20,14 @@ import {
   sendVisitMessage,
   uploadFile,
 } from "../../../lib/slices/chat";
-import { AiTwotoneBank } from "react-icons/ai";
-import MicRecorder from "mic-recorder-to-mp3";
-import { ImPause2 } from "react-icons/im";
-import VoiceMessage from "../../../components/chat/VoiceMessage";
-import ImageMessage from "../../../components/chat/ImageMessage";
-import FileMessage from "../../../components/chat/FileMessage";
+
+
+
+import AvatarChat from "../../../components/chat/AvatarChat";
+import TotalMessage from "../../../components/chat/msg/TotalMessage";
+import ChatInput from "../../../components/chat/ChatInput";
 //
-const recorder = new MicRecorder({ bitRate: 128 });
+
 
 const Chat = (props) => {
  
@@ -61,11 +59,10 @@ const Chat = (props) => {
   useEffect(() => {
     Token();
   }, [patient]);
-  const [open, setOpen] = useState(false);
-  //state text
-  const [text, setText] = useState("");
+ 
+
   // chat(message)
-  const sendmsg = async () => {
+  const sendmsg = async (text) => {
     try {
       await dispatch(
         sendVisitMessage({
@@ -77,7 +74,7 @@ const Chat = (props) => {
         })
       ).unwrap(); // {text: ''}
 
-      setText("");
+      // setText("");
 
       // cred without rest
       // async ({visit_id,p_id, cred}, thunkAPI) => {}
@@ -114,45 +111,7 @@ const Chat = (props) => {
     if (id && patient?.id) lstMessages();
   }, [patient, id]);
 
- //recording
- const [record, setRecord] = useState(false);
- const upload = async(file)=>{
-  await dispatch(uploadFile({visit_id:visit.id,p_id:patient.id,payload: {file}})).unwrap();
- }
- function recording() {
-   //
-   if (!record) {
-     recorder
-       .start()
-       .then(() => {
-         console.log("alloo");
-         setRecord(true);
-       })
-       .catch((e) => {
-         console.error(e);
-       });
 
-   } else {
-     recorder
-       .stop()
-       .getMp3()
-       .then(([buffer, blob]) => {
-         const file = new File(buffer, "me-at-thevoice.mp3", {
-           type: blob.type,
-           lastModified: Date.now(),
-
-         });
-         upload(file);
-         setRecord(false);
-       })
-       .catch((e) => {
-         alert("We could not retrieve your message");
-         console.log(e);
-         setRecord(false);
-       });
-   }
- }
-  
 
   //socket
   const socket = useRef();
@@ -230,24 +189,11 @@ const Chat = (props) => {
       if (socket.current) stopSocket();
     };
   }, [token]);
-  //attachment
-  const attach = useRef()
+  
   return (
     <div className="flex flex-col flex-grow">
-      <div className="flex flex-row justify-between shadow-lg p-4">
-        <div className="flex items-center font-bold gap-3">
-          <Avatar src={visit?.doctor?.image}></Avatar>
-          <div className="font-bold text-sm">
-            {visit?.doctor?.first_name} {visit?.doctor?.last_name}
-          </div>{" "}
-          \
-          <div className="font-bold text-sm">
-            {visit?.doctor?.department?.faname}
-          </div>
-        </div>
-        <Button onClick={() => setOpen(true)}>مشاهده پروفایل دکتر</Button>
-        <ProfileModal open={open} setOpen={setOpen} data={visit?.doctor} />
-      </div>
+      {/* profileChat */}
+     <AvatarChat />
       <div
         className="flex relative flex-grow flex-col-reverse"
         style={{
@@ -258,70 +204,12 @@ const Chat = (props) => {
       >
         <div className="absolute inset-0 flex flex-col-reverse overflow-auto pb-24  px-4">
           {messages?.map((msg) => (
-            <div
-              className={`flex ${
-                token.userId === msg.u._id ? "flex-row" : "flex-row-reverse"
-              } my-2`}
-              key={msg._id}
-            >
-              <div
-                className={`${
-                  token.userId === msg.u._id ? "bg-accent900" : "bg-white"
-                } basis-[400px] max-w-[90%] md:max-w-[60%] p-2 rounded-lg text-base text-black`}
-              >
-                {msg.msg}{" "}
-                {(msg.attachments && msg.attachments?.length>0 && msg.attachments[0].audio_url) && <VoiceMessage msg={msg}/>}
-                {(msg.attachments && msg.attachments?.length>0 && msg.attachments[0].image_url) && <ImageMessage msg={msg}/>}
-                {(msg.attachments && msg.attachments?.length>0 && msg.attachments[0].type == 'file') && <FileMessage msg={msg}/>}
-
-              </div>
-            </div>
+            // msg(props) = msg(field of map)
+           <TotalMessage msg={msg}/>
           ))}
         </div>
 
-        <form
-          className="px-4 absolute left-0 right-0 bottom-4 flex gap-3"
-          onSubmit={(e) => {
-            e.preventDefault();
-            sendmsg();
-          }}
-        >
-          <Button
-            className=""
-            color="white"
-            variant="contained"
-            onClick={recording}
-          >
-            {!record ? <MicIcon /> : <ImPause2 />}
-          </Button>
-          <TextField
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            variant="outlined"
-            fullWidth
-            className="flex-grow bg-white"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end" >
-                  <input type="file" ref={attach} multiple="multiple" hidden onChange={(e) => {
-                    // one file 
-                    // upload(e.target.files[0])
-                    console.log(e)
-                    //multiple file
-                    
-                    Array.from(e.target.files).map((e)=>upload(e))
-                    
-                  }}></input>
-                  <IconButton onClick={()=>attach.current.click()}>   <AttachFileIcon /></IconButton>
-               
-                </InputAdornment>
-              ),
-            }}
-          ></TextField>
-          <Button className="" color="white" variant="contained" type="submit">
-            <SendIcon className="rotate-180" />
-          </Button>
-        </form>
+        <ChatInput send={sendmsg} />
       </div>
     </div>
   );

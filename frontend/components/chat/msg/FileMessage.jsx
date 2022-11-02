@@ -1,4 +1,4 @@
-import { Button, LinearProgress } from '@mui/material';
+import { alpha, Button, LinearProgress } from '@mui/material';
 import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux';
 import BlobLoader from './BlobLoader';
@@ -33,7 +33,12 @@ export default function FileMessage(props) {
           element.remove();
         })
 
-      }}>
+        
+      }}
+      sx={(theme) => ({
+        backgroundColor: alpha(theme.palette.primary.main, 0.3),
+      })}
+      >
         <ArrowCircleDownIcon className='my-2 mx-2'/> 
         {msg.attachments[0].title}
 

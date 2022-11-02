@@ -21,6 +21,7 @@ const Confirm = () => {
     const startTimer = () => {
       if (timerRef.current) clearInterval(timerRef.current);
       const timerInterval = setInterval(() => {
+        // setTime(time - 1) // This is wrong because time is state and on every call will have the same value
         if (time > 0) setTime((t) => (t > 0 ? t - 1 : t));
         else clearInterval(timerRef.current);
       }, 1000);
