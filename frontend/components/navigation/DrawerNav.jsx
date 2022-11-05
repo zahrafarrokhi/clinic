@@ -87,10 +87,10 @@ const NavFields = [
   {
     items: [
       {
-        id: "transactions",
+        id: "payments",
         name: "تراکنش ها",
-        route: "/transactions/",
-        isActive: () => /^\/transactions/g,
+        route: "/payment/",
+        isActive: () => /^\/payment/g,
         icon: CreditScoreIcon,
         users: [""],
       },
