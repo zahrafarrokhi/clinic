@@ -66,7 +66,7 @@ function Doctors() {
 }
 
 Doctors.getLayout = (page) => {
-  return <Navigation>{page}</Navigation>;
+  return <Navigation showBottomNavigation>{page}</Navigation>;
 };
 
 export default Doctors;

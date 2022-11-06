@@ -20,7 +20,7 @@ class VisitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Visit
         fields = "__all__"
-        read_only_fields = ['status','payment', 'user', 'room_id', 'room_name']
+        read_only_fields = ['status', 'payment', 'user', 'room_id', 'room_name']
 
     # create
     def validate(self, attrs):
@@ -39,8 +39,11 @@ class VisitSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # user is who has logged in
-        payment = BasePaymentService.create_payment(user=self.context['request'].user,amount=validated_data['doctor'].amount)
-        visit = Visit(doctor=validated_data['doctor'],patient=validated_data['patient'],payment=payment)
+        payment = BasePaymentService.create_payment(user=self.context['request'].user,
+                                                    amount=validated_data['doctor'].amount,
+                                                    description=f"Visit with {validated_data['doctor'].full_name}",
+                                                    )
+        visit = Visit(doctor=validated_data['doctor'], patient=validated_data['patient'], payment=payment)
         visit.save()
 
         return visit

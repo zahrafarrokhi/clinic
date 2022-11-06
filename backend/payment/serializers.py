@@ -37,7 +37,11 @@ class VisitSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # user is who has logged in
-        payment = BasePaymentService.create_payment(user=self.context['request'].user,amount=validated_data['doctor'].amount)
+        payment = BasePaymentService.create_payment(
+            user=self.context['request'].user,
+            amount=validated_data['doctor'].amount,
+            description=f"Visit with {validated_data['doctor'].full_name}",
+        )
         visit = Visit(user=self.context['request'].user,doctor=validated_data['doctor'],patient=validated_data['patient'],payment=payment)
         visit.save()
 

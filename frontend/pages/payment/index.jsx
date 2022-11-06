@@ -47,13 +47,16 @@ import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 import throttle from "lodash.throttle";
 import RangeDatePicker from "../../components/RangeDatePicker";
 import { format } from "date-fns";
-import { convertStrToJalali } from "../../lib/utils";
+import { convertStrToJalali, stringifyPrice } from "../../lib/utils";
 import Image from "next/image";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { useTheme } from "@mui/system";
 import { useRef } from "react";
 import { useRouter } from "next/router";
 import { lime } from "@mui/material/colors";
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -216,10 +219,28 @@ const Payments = () => {
   };
   //mobile filter
   const [openModal, setOpenModal] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   return (
+  <Navigation showHeader={!isMobile}>  
     <div className="flex flex-col p-4 md:p-8">
-     
-        
+     {/* header */}
+     <AppBar color="white" className="md:hidden border-b border-0 border-border border-solid" elevation={0}>
+      <Toolbar className="flex justify-between md:justify-end items-center h-[80px]">
+        <Box className="flex items-center">
+          <IconButton className="md:hidden" onClick={() => router.back()}>
+            <ArrowForwardOutlinedIcon  className="text-xl" />
+          </IconButton>
+         تراکنش ها
+        </Box>
+
+        {/* <IoLogoGitlab className="md:hidden text-3xl" /> */}
+
+     {/* <PatientSelection/> */}
+      </Toolbar>
+    </AppBar>    
+    <Toolbar className=" h-[80px]" />
+
       {/* search & filter */}
       <div className="flex flex-wrap justify-between my-4 items-center px-1">
         <div className="flex gap-5 w-full md:w-auto">
@@ -561,12 +582,16 @@ const Payments = () => {
               >
                 {/* image show on mobile */}
                 <StyledTableCell
-                  className="order-first col-span-3 row-span-2 relative md:hidden"
+                  className="order-first col-span-2 row-span-2 flex justify-center items-center md:hidden"
                   align="center"
                 >
-                 
-                </StyledTableCell>
 
+                  {row.status ===  'successful' &&<TaskAltIcon color="success"/>}
+                  {row.status ===  'failed' &&<HighlightOffIcon color="error"/>}
+                  {row.status ===  'pending' &&<HelpOutlineIcon color="chip_warning"/>}
+                  
+                </StyledTableCell>
+                {/* for desktop  */}
                 <StyledTableCell
                   className="hidden md:table-cell "
                   align="center"
@@ -574,28 +599,31 @@ const Payments = () => {
                   {index + 1}
                 </StyledTableCell>
                 <StyledTableCell
-                  className="order-4 col-span-5 text-textGray md:text-black "
+                  className="order-3 col-span-5 text-textGray md:text-black "
                   align="center"
                 >
                   <CalendarMonthIcon className="mx-2 my-auto align-middle text-sm" />
                   {convertStrToJalali(row.created_at)}
                 </StyledTableCell>
-                <StyledTableCell className="order-1 col-span-4" align="center">
-                  {row.amount}
+                <StyledTableCell className="order-2 col-span-2 col-end-12" align="center">
+                  {stringifyPrice(row.amount)}
                 </StyledTableCell>
                 <StyledTableCell
-                  className="order-3 col-span-4 text-textGray md:text-black"
+                  className="order-1 col-span-5  md:text-black"
                   align="center"
                 >
+                  {row.description}
                 </StyledTableCell>
                 <StyledTableCell
-                  className="hidden md:table-cell"
+                  className=" order-4 col-span-2 col-end-12 text-textGray md:table-cell"
                   align="center"
                 >
-                  {row.id}
+                  {row.rrn}
                 </StyledTableCell>
-                <StyledTableCell className="order-2 col-span-5" align="center">
+                {/* for desktop */}
+                <StyledTableCell className="hidden md:table-cell" align="center">
                   <Chip
+
                     variant="status"
                     label={VISIT_STATUS_TEXT[row.status]}
                     color={VISIT_STATUS_COLOR[row.status]}
@@ -617,9 +645,10 @@ const Payments = () => {
         />
       </div>
     </div>
+    </Navigation>
   );
 };
-Payments.getLayout = (page) => {
-  return <Navigation>{page}</Navigation>;
-};
+// Payments.getLayout = (page) => {
+//   return <Navigation showHeader={false}>{page}</Navigation>;
+// };
 export default Payments;

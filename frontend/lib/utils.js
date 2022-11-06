@@ -39,3 +39,11 @@ export const convertStrToJalali = (str, format='yyyy/MM/dd') => {
   return covertDateToJalai(convertStrToDate(str), format)
 }
 
+export const stringifyPrice = (num, type = "ریال") => {
+  let ans = String(num);
+  for (let i = ans.length - 3; i > 0; i -= 3) {
+    ans = `${ans.substring(0, i)},${ans.substring(i)}`;
+  }
+  return ans + (type ? " " + type : "");
+};
+

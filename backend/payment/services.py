@@ -9,8 +9,8 @@ from payment.models import Payment
 class BasePaymentService:
     settings = PAYMENT_SETTINGS['AP']
     @classmethod
-    def create_payment(cls, user,amount):
-        payment = Payment(user=user,amount=amount)
+    def create_payment(cls, user, amount, description=""):
+        payment = Payment(user=user, amount=amount, description=description)
         payment.save()
         try:
             response = requests.post(cls.settings['urls']['get_token'],

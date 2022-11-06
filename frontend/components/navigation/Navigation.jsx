@@ -20,7 +20,7 @@ import VaccinesIcon from "@mui/icons-material/Vaccines";
 import BiotechIcon from "@mui/icons-material/Biotech";
 
 export default function Navigation(props) {
-  const { children } = props;
+  const { children, showBottomNavigation,showHeader=true } = props;
 
   //use for openig  or closing drawer
   const [open, setOpen] = useState(false);
@@ -44,12 +44,13 @@ export default function Navigation(props) {
           position: "relative",
         }}
       >
-        <Header openDrawer={() => setOpen(true)} />
+       {showHeader && <Header openDrawer={() => setOpen(true)} />}
         <Box className="flex-grow flex flex-col">
-          <Toolbar className="h-[80px]"></Toolbar>
+          {showHeader && <Toolbar className="h-[80px]"></Toolbar>}
           {children}
         </Box>
-        <Paper className="md:hidden"sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+        {/* mobile navigation */}
+       {showBottomNavigation && <Paper className="md:hidden"sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3} >
 
         <BottomNavigation
           showLabels
@@ -87,7 +88,7 @@ export default function Navigation(props) {
               icon={<HiOutlineDocumentDuplicate />}
             />
         </BottomNavigation>
-        </Paper>
+        </Paper>} 
       </Box>
     </Box>
   );

@@ -2,6 +2,7 @@ import { Button, Dialog, Slide, useMediaQuery, useTheme } from "@mui/material";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { useDispatch, useSelector } from "react-redux";
 import { createVisitPatient } from "../../lib/slices/visits";
+import { stringifyPrice } from "../../lib/utils";
 
 const PaymentDialog = (props)=>{
   const { open, setOpen,data } = props;
@@ -107,7 +108,14 @@ const PaymentDialog = (props)=>{
 <br/>
 توجه داشته باشید که ویزیت شما به صورت‌ آنلاین است و برای ویزیت در مطب باید با شماره‌های مطب تماس بگیرید.
       </div>
-      <div className="flex flex-col md:flex-row mx-8 mb-8 mt-2 justify-end">
+      <div className="flex flex-col md:flex-row mx-8 mb-8 md:mt-2 justify-end gap-3">
+        <span className="flex text-lg font-bold text-primary items-center justify-center">
+          {stringifyPrice(data.amount)}
+          <span className="flex text-sm italic font-bold mx-2 text-primary items-center justify-center">
+            
+            ({stringifyPrice(data.amount / 10, 'تومان')})
+          </span>
+        </span>
 
         <Button variant="contained" color="primary" className="md:text-lg" onClick={visitPayment}>تایید و پرداخت</Button>
       </div>

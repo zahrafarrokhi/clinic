@@ -106,7 +106,7 @@ class CustomOTP(admin.ModelAdmin):
     readonly_fields = ('user', 'created_at', 'updated_at')
     search_fields = ('user', 'is_active', 'created_at', 'updated_at', 'exp_date')
     list_display = ('user', 'is_active', 'created_at', 'updated_at', 'exp_date', 'value',)
-    ordering = ('created_at', 'user',)
+    ordering = ('-created_at', 'user',)
     fields = None
     fieldsets = (
         ('info', {'fields': ('user', 'is_active', 'value',)}),

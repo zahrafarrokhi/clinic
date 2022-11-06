@@ -30,7 +30,7 @@ class PaymentListView(mixins.ListModelMixin, viewsets.GenericViewSet):
         'created_at': ['date__lte', 'date__gte'],
     }
     # search
-    search_fields = ['amount', 'created_at', 'id']
+    search_fields = ['amount', 'created_at', 'id', 'description']
     def get_queryset(self):
         user = self.request.user
         return Payment.objects.filter(user=user)

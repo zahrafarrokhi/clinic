@@ -14,7 +14,7 @@ class Payment(models.Model):
     rrn = models.CharField(max_length=100,blank=True,null=True)
     # token for payment zarinpal send to site  at first time
     ref_id = models.CharField(max_length=100,null=True,blank=True)
-
+    description = models.CharField(max_length=200, default="", blank=True)
     class Status(models.TextChoices):
         successful = 'successful', _('Successful')
         failed = 'failed', _('Failed')
