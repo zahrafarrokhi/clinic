@@ -239,7 +239,7 @@ const Payments = () => {
      {/* <PatientSelection/> */}
       </Toolbar>
     </AppBar>    
-    <Toolbar className=" h-[80px]" />
+    <Toolbar className=" h-[80px] md:hidden" />
 
       {/* search & filter */}
       <div className="flex flex-wrap justify-between my-4 items-center px-1">

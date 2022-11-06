@@ -56,6 +56,7 @@ module.exports = {
       blue: '#276a9c',
       error: '#d32f2f',
       danger: '#f05454',
+      danger__contrastText: '#ffffff',
       disabled: '#cfcdcd',
       secondaryBorder: '#cfcdcd',
 

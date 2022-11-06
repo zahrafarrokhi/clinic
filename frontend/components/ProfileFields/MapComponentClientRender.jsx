@@ -113,7 +113,7 @@ const MapComponent = (props) => {
 
   const position = useMemo(() => value?.coordinates || center, [value])
   const setPosition = useCallback((val) => {
-    if(active) onChange({...(value || {}), coordinates: val})
+    if(active) onChange({...(value || {type: 'Point'}), coordinates: val})
   }, [value, onChange, active])
   // const [position, setPosition] = useState(value?.coordinates || center)
 

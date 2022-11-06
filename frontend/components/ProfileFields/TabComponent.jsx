@@ -157,7 +157,7 @@ export const tabs = [
     users: [],
     form: [
       {
-        id: "address_name",
+        id: "name",
         label: "نام آدرس",
         component: TextField,
       },
@@ -177,7 +177,7 @@ export const tabs = [
       },
       {
         id: "reciever",
-        label: "نام",
+        label: "نام دریافت کننده",
         validators: [NotNull],
         editable: false,
         component: TextField,
@@ -242,7 +242,7 @@ export default function TabComponent() {
         <Tabs value={selectedTab} onChange={handleChange}>
           {/* each tab has  label & value(has default index)*/}
           {tabs.map((t) => (
-            <Tab label={t.name} value={t.id} className="text-base"/>
+            <Tab label={t.name} value={t.id} className="text-xs md:text-base"/>
           ))}
         </Tabs>
         {tabs.filter(item => selectedTab === item.id && item.createData).length > 0 && <div className="flex flex-row  items-center gap-2" >
@@ -252,7 +252,9 @@ export default function TabComponent() {
         >
         <AddIcon className="text-lg"/>
         </Button>
-        افزودن آدرس دیگر
+        <span className="hidden md:flex">
+          افزودن آدرس دیگر
+          </span>
      </div>}
       </Box>
       {tabs.map((f) => (

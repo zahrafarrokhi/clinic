@@ -40,6 +40,20 @@ export const createAddress = createAsyncThunk(
     }
   },
 );
+
+
+export const deleteAddress = createAsyncThunk(
+  'address/delete',
+  async (payload, thunkAPI) => {
+    try {
+      const response = await axios.delete(`/api/patients/address/${payload}`);
+      return payload;
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  },
+);
+
 const internalInitialState = {
   addresses: [],
   error: null,
@@ -87,6 +101,19 @@ export const addressSlice = createSlice({
       state.loading = IDLE;
     });
     builder.addCase(createAddress.pending, (state, action) => {
+      state.loading = LOADING;
+    });
+
+    // deleteAddress
+    builder.addCase(deleteAddress.fulfilled, (state, action) => {
+      state.addresses = state.addresses.filter(item=>item.id!==action.payload)
+      state.loading = IDLE;
+    });
+    builder.addCase(deleteAddress.rejected, (state, action) => {
+      state.error = action.payload.error;
+      state.loading = IDLE;
+    });
+    builder.addCase(deleteAddress.pending, (state, action) => {
       state.loading = LOADING;
     });
    
