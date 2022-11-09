@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'doctor',
     'visit',
     'chat',
+    'support',
 
 
 ]
