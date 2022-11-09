@@ -15,6 +15,7 @@ import { doctorSlice } from './slices/doctors';
 import { visitSlice } from './slices/visits';
 import { chatSlice } from './slices/chat';
 import { paymentSlice } from './slices/payment';
+import { ticketSlice } from './slices/support';
 
 
 const makeStore = (initialState) => {
@@ -37,7 +38,7 @@ const makeStore = (initialState) => {
       visitReducer :visitSlice.reducer,
       chatReducer :chatSlice.reducer,
       paymentReducer:paymentSlice.reducer,
-      
+      ticketReducer:ticketSlice.reducer,
     });
 
     const rootReducer = (state, action) => {

@@ -5,13 +5,23 @@ from rest_framework.permissions import IsAuthenticated
 from authentication.models import User
 from support.models import Ticket
 from support.serializers import TicketSerializer
-
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.pagination import LimitOffsetPagination
 
 # Create your views here.
 class TicketView(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = TicketSerializer
     permission_classes = [IsAuthenticated]
-
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filterset_fields = {
+        'status': ['exact', 'in'],
+        'created_at': ['date__lte', 'date__gte'],
+    }
+    search_fields = ['subject',  'id', 'created_at']
+    ordering_fields = ['created_at', 'id', 'subject', 'status']
+    # pagination
+    pagination_class = LimitOffsetPagination
     def get_queryset(self):
         user = self.request.user
         if user.type == User.SUPPORT:
