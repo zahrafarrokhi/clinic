@@ -1,7 +1,16 @@
 from django.contrib import admin
-from support.models import Ticket,Message
+from support.models import Ticket, Message
+
+
+class InlineMessage(admin.StackedInline):
+    model = Message
+
+    fields = ('user', 'text', 'file')
+    ordering = ('created_at', )
+
 
 class TicketAdmin(admin.ModelAdmin):
+    inlines = [InlineMessage]
     search_fields = ('id', 'user', 'subject', 'status')
     list_display = ('id', 'user', 'subject', 'created_at',
                     'status')
