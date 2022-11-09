@@ -55,6 +55,7 @@ import { useRef } from "react";
 import { useRouter } from "next/router";
 import AddIcon from "@mui/icons-material/Add";
 import { listTickets } from "../../lib/slices/support";
+import { NextLinkComposed } from "../../components/NextLinkComposed";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -208,7 +209,13 @@ const Support = () => {
       {/* header(text & btn) */}
       <div className="flex flex-wrap justify-between my-4 items-center px-1">
         <div className="text-sm text-gray font-bold">پشتیبانی</div>
-        <Button variant="contained">
+        {/* link */}
+        {/* <Button variant="contained" onClick={()=>router.push("/support/new")}>
+          <AddIcon className="text-lg" />
+          <Typography>تیکت جدید</Typography>
+        </Button> */}
+
+        <Button variant="contained" to="/support/new/" LinkComponent={NextLinkComposed}>
           <AddIcon className="text-lg" />
           <Typography>تیکت جدید</Typography>
         </Button>
