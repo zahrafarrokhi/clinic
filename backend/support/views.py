@@ -4,13 +4,13 @@ from rest_framework.permissions import IsAuthenticated
 
 from authentication.models import User
 from support.models import Ticket
-from support.serializers import TicketSerializer
+from support.serializers import TicketSerializer, MessageSerializer, CreateMessageSerializer, CreateTicketSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
 
 # Create your views here.
-class TicketView(mixins.ListModelMixin, viewsets.GenericViewSet):
+class TicketView(mixins.ListModelMixin,mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = TicketSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
@@ -28,3 +28,13 @@ class TicketView(mixins.ListModelMixin, viewsets.GenericViewSet):
             return Ticket.objects.all()
         else:
             return Ticket.objects.filter(user=user)
+class CreateTicketView(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    serializer_class = CreateTicketSerializer
+    permission_classes = [IsAuthenticated]
+
+
+
+class MessageView(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    serializer_class = CreateMessageSerializer
+    permission_classes = [IsAuthenticated]
+

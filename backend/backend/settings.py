@@ -217,3 +217,6 @@ ROCKETCHAT_SETTINGS = {
     "admin_token": env("ROCKETCHAT_ADMIN_TOKEN"),
     "admin_user_id": env("ROCKETCHAT_ADMIN_USERID"),
 }
+
+FILE_UPLOAD_SIZE_LIMIT = 8 * 1024 * 1024
+
