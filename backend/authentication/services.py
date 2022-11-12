@@ -28,13 +28,14 @@ class TokenService():
 class EmailService:
     @staticmethod
     def send_email(recipient_list, subject, template, variables):
-        message = render_to_string(template, variables)
-        try:
-
-            send_mail(subject=subject, html_message=message, message=strip_tags(
-                message), from_email=None, recipient_list=recipient_list, fail_silently=False)
-        except Exception as e:
-            raise e
+        pass
+        # message = render_to_string(template, variables)
+        # try:
+        #
+        #     send_mail(subject=subject, html_message=message, message=strip_tags(
+        #         message), from_email=None, recipient_list=recipient_list, fail_silently=False)
+        # except Exception as e:
+        #     raise e
 
     @staticmethod
     def send_otp(user, token, **message_payload):

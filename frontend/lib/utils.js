@@ -36,6 +36,7 @@ export const convertStrToDate = (str) => {
 }
 
 export const convertStrToJalali = (str, format='yyyy/MM/dd') => {
+  if(!str) return ""
   return covertDateToJalai(convertStrToDate(str), format)
 }
 

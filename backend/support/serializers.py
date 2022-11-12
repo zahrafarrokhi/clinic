@@ -24,6 +24,9 @@ class CreateMessageSerializer(serializers.ModelSerializer):
         if file is None and text is None:
             raise ValidationError(_("Empty message"))
 
+        if attrs['ticket'].status == Ticket.Status.closed:
+            raise ValidationError(_("This room is closed"))
+
         return attrs
 
     def create(self, validated_data):
@@ -77,3 +80,21 @@ class CreateTicketSerializer(serializers.ModelSerializer):
             msg = Message.objects.create(user=user, ticket=ticket, file=f)
 
         return ticket
+
+class CloseTicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = '__all__'
+        read_only_fields = ['user', 'status', ]
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        if user.type != User.SUPPORT :
+            raise ValidationError(_("you arent allowed to do this"))
+
+
+        return attrs
+    def update(self, instance, validated_data):
+        instance.status = Ticket.Status.closed
+        instance.save()
+        return instance

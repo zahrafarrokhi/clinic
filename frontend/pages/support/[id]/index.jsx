@@ -1,11 +1,11 @@
-import { Chip } from '@mui/material';
+import { Button, Chip } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { TICKET_STATUS_COLOR, TICKET_STATUS_TEXT } from '..';
 import ChatInput from '../../../components/chat/ChatInput';
 import Navigation from '../../../components/navigation/Navigation';
-import { createMessage, getTicket } from '../../../lib/slices/support';
+import { closeTicket, createMessage, getTicket } from '../../../lib/slices/support';
 import { convertStrToJalali } from '../../../lib/utils';
 
 // http://localhost:8000/test.mp3
@@ -48,6 +48,15 @@ export default function Ticket() {
 
   const upload = (file) => submit({file})
   const sendmsg = (text) => submit({text})
+
+  const close = async () => {
+    try {
+      await dispatch(closeTicket(id)).unwrap()
+    } catch(e) {
+
+    }
+  }
+
   return (
     <div className="flex flex-col flex-grow">
       <div className="flex flex-row justify-between shadow-lg p-4">
@@ -57,9 +66,14 @@ export default function Ticket() {
       <div>{convertStrToJalali(ticket?.created_at)}</div>  
       </div>
       
-      <div className="font-bold text-sm">
+      <div className="flex font-bold text-sm">
         {ticket?.subject}
+       { user?.type === 'support'&& <Button className="py-0 text-sm" onClick={close}>
+          بستن تیکت
+      </Button>}
       </div>
+          
+    
     </div>
     <Chip
       variant="status"
@@ -97,7 +111,7 @@ export default function Ticket() {
           ))}
         </div>
 
-        <ChatInput send={sendmsg} upload={upload}/>
+       {ticket.status != 'closed'&& <ChatInput send={sendmsg} upload={upload}/>}
       </div>
     </div>
   );

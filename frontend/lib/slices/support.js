@@ -92,6 +92,21 @@ export const getTicket = createAsyncThunk(
     }
   }
 );
+
+export const closeTicket = createAsyncThunk(
+  "support/close",
+  async (id, thunkAPI) => {
+    try {
+      const response = await axios.patch(`/api/support/close-ticket/${id}`)
+      console.log(response, response.data);
+
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
 const internalInitialState = {
   tickets: [],
   ticket: null,
@@ -196,6 +211,25 @@ export const ticketSlice = createSlice({
       //total data => action.payload.data
       //up => {...respose.data } or response.data => action.payload
       state.ticket = action.payload.data;
+  
+      return state;
+    }); 
+
+    //closeTicket
+    builder.addCase(closeTicket.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(closeTicket.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(closeTicket.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      //total data => action.payload.data
+      //up => {...respose.data } or response.data => action.payload
+      state.ticket.status = action.payload.data.status;
   
       return state;
     }); 

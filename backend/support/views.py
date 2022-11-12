@@ -4,7 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from authentication.models import User
 from support.models import Ticket
-from support.serializers import TicketSerializer, MessageSerializer, CreateMessageSerializer, CreateTicketSerializer
+from support.serializers import TicketSerializer, MessageSerializer, CreateMessageSerializer, CreateTicketSerializer, \
+    CloseTicketSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
@@ -38,3 +39,9 @@ class MessageView(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = CreateMessageSerializer
     permission_classes = [IsAuthenticated]
 
+class CloseTicket(mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    serializer_class = CloseTicketSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Ticket.objects.all()
