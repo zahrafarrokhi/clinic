@@ -29,6 +29,11 @@ class CreateMessageSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
         # validated_data => ticket,file,text
+        # ticket = validated_data['ticket']
+        # if user.type == user.SUPPORT:
+        #     ticket.status = Ticket.Status.responded
+        # else:
+        #     ticket.status = Ticket.Status.waiting_for_response
         return Message.objects.create(user=user,**validated_data)
 
 class MessageSerializer(serializers.ModelSerializer):
