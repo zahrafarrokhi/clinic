@@ -114,12 +114,12 @@ const CustomTableSortLabel = (props) => {
     </StyledTableCell>
   );
 };
-const TICKET_STATUS_TEXT = {
+export const TICKET_STATUS_TEXT = {
   waiting_for_response: "در انتظار پاسخ",
   responded: "پاسخ داده شده",
   closed: "بسته شده",
 };
-const TICKET_STATUS_COLOR = {
+export const TICKET_STATUS_COLOR = {
   waiting_for_response: "warning",
   responded: "success",
   closed: "default",

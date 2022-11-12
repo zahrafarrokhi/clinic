@@ -12,7 +12,7 @@ const recorder = new MicRecorder({ bitRate: 128 });
 
 export default function ChatInput(props) {
 
-  const {send} = props;
+  const {send,upload} = props;
     //state text
     const [text, setText] = useState("");
    //recording
@@ -22,9 +22,7 @@ export default function ChatInput(props) {
  const dispatch = useDispatch();
  const visit = useSelector((state) => state.visitReducer?.visit);
  const patient = useSelector((state) => state.patientReducer?.patient);
- const upload = async(file)=>{
-  await dispatch(uploadFile({visit_id:visit.id,p_id:patient.id,payload: {file}})).unwrap();
- }
+
  function recording() {
    //
    if (!record) {

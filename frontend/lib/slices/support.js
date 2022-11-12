@@ -44,8 +44,8 @@ export const createMessage = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const fd = new FormData();       
-      fd.append('file', data.file);
-      fd.append('text', data.text);
+      if(data.file) fd.append('file', data.file);
+      if(data.text) fd.append('text', data.text);
       fd.append('ticket', data.ticket);
       const response = await axios.post(`/api/support/messages/`, fd);
 
@@ -72,6 +72,20 @@ export const createTicketWithFile = createAsyncThunk(
 
       console.log(response, response.data);
     
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
+export const getTicket = createAsyncThunk(
+  "support/get",
+  async (id, thunkAPI) => {
+    try {
+      const response = await axios.get(`/api/support/tickets/${id}`)
+      console.log(response, response.data);
+
       return { data: response.data };
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.response.data });
@@ -125,7 +139,7 @@ export const ticketSlice = createSlice({
       state.loading = IDLE;
       //total data => action.payload.data
       //up => {...respose.data } or response.data => action.payload
-      state.ticket = action.payload.data;
+      // state.ticket = action.payload.data;
 
       return state;
     });
@@ -142,9 +156,8 @@ export const ticketSlice = createSlice({
     }));
     builder.addCase(createMessage.fulfilled, (state, action) => {
       state.loading = IDLE;
-      //total data => action.payload.data
-      //up => {...respose.data } or response.data => action.payload
-      // state.tickets = action.payload.data;
+      
+      state.ticket.messages = [...state.ticket.messages, action.payload.data];
 
       return state;
     });
@@ -167,7 +180,28 @@ export const ticketSlice = createSlice({
   
       return state;
     }); 
+
+     //getTicket
+     builder.addCase(getTicket.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(getTicket.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(getTicket.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      //total data => action.payload.data
+      //up => {...respose.data } or response.data => action.payload
+      state.ticket = action.payload.data;
+  
+      return state;
+    }); 
   },
 });
 
 export const { reset } = ticketSlice.actions;
+
+

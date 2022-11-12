@@ -111,6 +111,10 @@ const Chat = (props) => {
     if (id && patient?.id) lstMessages();
   }, [patient, id]);
 
+  const upload = async(file)=>{
+    await dispatch(uploadFile({visit_id:visit.id,p_id:patient.id,payload: {file}})).unwrap();
+   }
+
 
 
   //socket
@@ -209,7 +213,7 @@ const Chat = (props) => {
           ))}
         </div>
 
-        <ChatInput send={sendmsg} />
+        <ChatInput send={sendmsg} upload={upload}/>
       </div>
     </div>
   );

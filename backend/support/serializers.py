@@ -15,11 +15,13 @@ class CreateMessageSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         if user.type != User.SUPPORT and user != attrs['ticket'].user:
             raise ValidationError(_("you arent allowed to do this"))
-        if attrs['file'] is not None and attrs['file'].size > settings.FILE_UPLOAD_SIZE_LIMIT:
+        file = attrs.get('file', None)
+        text = attrs.get('text', None)
+        if file is not None and file.size > settings.FILE_UPLOAD_SIZE_LIMIT:
             raise serializers.ValidationError(
                 _("File is too big!"))
 
-        if attrs['file'] is None and attrs['text'] is None:
+        if file is None and text is None:
             raise ValidationError(_("Empty message"))
 
         return attrs

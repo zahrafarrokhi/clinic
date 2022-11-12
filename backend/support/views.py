@@ -10,7 +10,7 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
 
 # Create your views here.
-class TicketView(mixins.ListModelMixin,mixins.CreateModelMixin, viewsets.GenericViewSet):
+class TicketView(mixins.ListModelMixin,mixins.CreateModelMixin,mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = TicketSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]

@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from . import views
 router = DefaultRouter()
-# list,create
+# list,create,retrive
 router.register(r'tickets',views.TicketView,basename='ticket')
 router.register(r'ticket-create',views.CreateTicketView,basename='ticket-create')
 router.register(r'messages',views.MessageView,basename='messages')

@@ -110,10 +110,10 @@ const PaymentDialog = (props)=>{
       </div>
       <div className="flex flex-col md:flex-row mx-8 mb-8 md:mt-2 justify-end gap-3">
         <span className="flex text-lg font-bold text-primary items-center justify-center">
-          {stringifyPrice(data.amount)}
+          {stringifyPrice(data?.amount)}
           <span className="flex text-sm italic font-bold mx-2 text-primary items-center justify-center">
             
-            ({stringifyPrice(data.amount / 10, 'تومان')})
+            ({stringifyPrice(data?.amount / 10, 'تومان')})
           </span>
         </span>
 
