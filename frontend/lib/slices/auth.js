@@ -142,6 +142,7 @@ export const authSlice = createSlice({
     state.loading = IDLE;
     state.access = action.payload.access;
     state.refresh = action.payload.refresh;
+    state.user = action.payload.user;
     return state;
   });
 

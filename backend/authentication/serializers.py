@@ -105,6 +105,9 @@ class validateOtpSerializer(serializers.Serializer):
 
 class TokenObtainPairSerializer(serializers.Serializer):
     token_class = RefreshToken
+    user = UserSerializer(read_only=True)
+    access = serializers.CharField(read_only=True)
+    refresh = serializers.CharField(read_only=True)
 
     @classmethod
     def get_token(cls, user):
@@ -115,6 +118,8 @@ class TokenObtainPairSerializer(serializers.Serializer):
 
         data["refresh"] = str(refresh)
         data["access"] = str(refresh.access_token)
+
+        data["user"] = self.user
 
         # if api_settings.UPDATE_LAST_LOGIN:
             # update_last_login(None, self.user)
