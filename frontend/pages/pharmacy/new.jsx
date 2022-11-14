@@ -5,7 +5,7 @@ import Header from '../../components/pharmacy/Header';
 export default function Pharmacy() {
   return (
     <div className='px-6 py-4'>
-      <Header state="delivery"/>
+      <Header state="send"/>
     </div>
   )
 }
