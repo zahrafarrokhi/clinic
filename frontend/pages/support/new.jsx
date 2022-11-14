@@ -54,6 +54,7 @@ export default function NewTicket() {
         
           text:state.text,
           files:attachment,
+          patient:patient?.id
          
         }
       )).unwrap()

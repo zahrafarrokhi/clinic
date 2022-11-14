@@ -68,6 +68,7 @@ export const createTicketWithFile = createAsyncThunk(
         fd.append(f.name, f);
       fd.append('text', data.text);
       fd.append('subject', data.subject);
+      if(data.patient){fd.append('patient', data.patient);}
       const response = await axios.post(`/api/support/ticket-create/`, fd);
 
       console.log(response, response.data);

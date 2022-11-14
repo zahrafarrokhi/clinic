@@ -74,7 +74,8 @@ class CreateTicketSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
         subject = validated_data['subject']
-        ticket = Ticket.objects.create(user=user,status=Ticket.Status.waiting_for_response,subject=subject)
+        patient = validated_data.get('patient', None)
+        ticket = Ticket.objects.create(user=user,status=Ticket.Status.waiting_for_response,subject=subject, patient=patient)
         msg = Message.objects.create(user=user, ticket=ticket, text=validated_data['text'])
         for f in self.context['request'].FILES:
             msg = Message.objects.create(user=user, ticket=ticket, file=f)

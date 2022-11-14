@@ -18,7 +18,7 @@ class TicketAdmin(admin.ModelAdmin):
     fields = None
     fieldsets = (
         ('General Info',
-         {'fields': ('user', 'subject', 'created_at', 'updated_at', 'status',
+         {'fields': ('user', 'subject', 'created_at', 'updated_at', 'status', 'patient'
                      )}),
 
     )

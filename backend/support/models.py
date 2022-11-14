@@ -3,6 +3,9 @@ from django.db import models
 from authentication.models import User
 from django.utils.translation import gettext_lazy as _
 
+from patient.models import Patient
+
+
 class Ticket(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     subject = models.CharField(max_length=30)
@@ -15,7 +18,7 @@ class Ticket(models.Model):
         closed = 'closed', _('Closed')
 
     status = models.CharField(choices=Status.choices, default=Status.waiting_for_response, max_length=30)
-
+    patient = models.ForeignKey(Patient,on_delete=models.CASCADE,blank=True,null=True)
 
 class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
