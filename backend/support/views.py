@@ -43,5 +43,13 @@ class CloseTicket(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     serializer_class = CloseTicketSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return Ticket.objects.all()
+# with destroy(front patch to delete)
+# class CloseTicket(mixins.DestroyModelMixin, viewsets.GenericViewSet):
+#     serializer_class = CloseTicketSerializer
+#     permission_classes = [IsAuthenticated, IsSupport]
+#     def get_queryset(self):
+#         return Ticket.objects.all()
+#
+#     def perform_destroy(self, instance):
+#         instance.status = Ticket.Status.closed
+#         instance.save()
