@@ -29,6 +29,7 @@ import { useState } from "react";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { logout } from "../../lib/utils";
 import { useEffect } from "react";
+import { ASSISTANT, DOCTOR, LABORATORY, PATIENT, PHARMACY, SUPPORT } from "../../lib/USER_TYPES";
 
 const NavFields = [
   //field
@@ -47,7 +48,7 @@ const NavFields = [
           />
         ),
 
-        users: [""],
+        users: [PATIENT],
       },
       {
         id: "pharmacy",
@@ -55,7 +56,7 @@ const NavFields = [
         route: "/pharmacy/",
         isActive: () => /^\/pharmacy/g,
         icon: VaccinesIcon,
-        users: [""],
+        users: [PATIENT, PHARMACY],
       },
       {
         id: "laboratory",
@@ -63,7 +64,7 @@ const NavFields = [
         route: "/laboratory/",
         isActive: () => /^\/laboratory/g,
         icon: BiotechIcon,
-        users: [""],
+        users: [LABORATORY, PATIENT],
       },
     ],
   },
@@ -80,7 +81,20 @@ const NavFields = [
             className={`${props.className} text-2xl`}
           />
         ),
-        users: [""],
+        users: [DOCTOR, ASSISTANT, PATIENT],
+      },
+      {
+        id: "reports",
+        name: "گزارشات",
+        route: "/reports/",
+        isActive: () => /^\/visits/g,
+        icon: (props) => (
+          <HiOutlineDocumentDuplicate
+            {...props}
+            className={`${props.className} text-2xl`}
+          />
+        ),
+        users: [DOCTOR, LABORATORY, PHARMACY],
       },
     ],
   },
@@ -92,7 +106,7 @@ const NavFields = [
         route: "/payment/",
         isActive: () => /^\/payment/g,
         icon: CreditScoreIcon,
-        users: [""],
+        users: [DOCTOR, PATIENT, LABORATORY, PHARMACY],
       },
       {
         id: "profile",
@@ -100,7 +114,7 @@ const NavFields = [
         route: "/profile/",
         isActive: () => /^\/profile/g,
         icon: ManageAccountsIcon,
-        users: [""],
+        users: [DOCTOR, PATIENT, LABORATORY, PHARMACY, SUPPORT],
       },
     ],
   },
@@ -112,7 +126,7 @@ const NavFields = [
         route: "/support/",
         isActive: () => /^\/support/g,
         icon: SupportAgentIcon,
-        users: [""],
+        users: [DOCTOR, PATIENT, LABORATORY, PHARMACY, SUPPORT],
       },
     ],
   },
@@ -198,8 +212,8 @@ export default function DrawerNav(props) {
             <>
               {field.items.map((nav) => {
                 const isActive = nav.isActive().test(router.asPath);
-                return (
-                  <ListItem key={nav.id}>
+                return nav.users.includes(user.type)  && (
+                 <ListItem key={nav.id}>
                     <Link href={nav.route} passHref>
                       <ListItemButton
                         className={`${isActive ? "text-primary" : ""}`}
