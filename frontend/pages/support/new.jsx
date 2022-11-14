@@ -5,9 +5,11 @@ import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 import Navigation from "../../components/navigation/Navigation";
 import { useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createMessage, createTicket, createTicketWithFile } from "../../lib/slices/support";
 export default function NewTicket() {
+  const user = useSelector((state) => state.authReducer?.user);
+  const patient = useSelector((state) => state.patientReducer?.patient);
   const ref = useRef();
   const [attachment,setAttachment]=useState([])
   //redux
@@ -79,16 +81,22 @@ export default function NewTicket() {
           className="flex-grow md:flex-grow-0"
           size="small"
           label="نام و نام خانوادگی"
+          value={user?.type=='patient'? `${patient.first_name} ${patient.last_name}` : user?.type }
+          disabled
         ></TextField>
         <TextField
           className="flex-grow md:flex-grow-0"
           size="small"
           label="پست الکترونیک"
+          value={user?.email}
+          disabled
         ></TextField>
         <TextField
           className="flex-grow md:flex-grow-0"
           size="small"
           label="شماره‌ی همراه"
+          value={user?.phone_number}
+          disabled
         ></TextField>
       </div>
 
