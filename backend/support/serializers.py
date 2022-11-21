@@ -71,6 +71,13 @@ class CreateTicketSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['user', 'status',]
 
+    def validate(self,attrs):
+        patient = attrs['patient']
+        user = self.context['request'].user
+        if user != patient.user:
+            raise serializers.ValidationError(_("you arent allowed to do this"))
+        return attrs
+
     def create(self, validated_data):
         user = self.context['request'].user
         subject = validated_data['subject']
