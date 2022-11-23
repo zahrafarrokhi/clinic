@@ -16,6 +16,7 @@ import { visitSlice } from './slices/visits';
 import { chatSlice } from './slices/chat';
 import { paymentSlice } from './slices/payment';
 import { ticketSlice } from './slices/support';
+import { pharmacySlice } from './slices/pharmacy';
 
 
 const makeStore = (initialState) => {
@@ -39,6 +40,7 @@ const makeStore = (initialState) => {
       chatReducer :chatSlice.reducer,
       paymentReducer:paymentSlice.reducer,
       ticketReducer:ticketSlice.reducer,
+      pharmacyReducer:pharmacySlice.reducer,
     });
 
     const rootReducer = (state, action) => {
@@ -86,3 +88,5 @@ const makeStore = (initialState) => {
   return store;
 };
 export const wrapper = createWrapper(makeStore, { storeKey: 'key' });
+
+
