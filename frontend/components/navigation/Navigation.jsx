@@ -41,7 +41,7 @@ export default function Navigation(props) {
           flexDirection: "column",
           // width: "100%",
           [theme.breakpoints.up('md')]: {
-            width: "calc(100% - 240px)",brave
+            width: "calc(100% - 240px)",
           },
           height: "100%",
           position: "relative",
