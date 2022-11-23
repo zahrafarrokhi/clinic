@@ -5,6 +5,7 @@ from pharmacy.models import PharmacyPrescription, PharmacyPrescriptionPic
 
 
 class PharmacyPrescriptionSerializer(serializers.ModelSerializer):
+
     class Meta :
         model = PharmacyPrescription
         fields = '__all__'

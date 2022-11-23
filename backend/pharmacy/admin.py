@@ -3,7 +3,7 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib import admin
 
-from doctor import models
+from pharmacy import models
 from pharmacy.models import PharmacyPrescriptionPic
 
 
@@ -38,6 +38,7 @@ class PharmacyPrescriptionAdmin(admin.ModelAdmin):
          {'fields': ('patient', 'created_at', 'updated_at', 'code', 'description')}),
     )
     inlines = [InlinePicture]
+    readonly_fields = ('created_at', 'updated_at', )
 
 
 class PharmacyPrescriptionPicAdmin(admin.ModelAdmin):
