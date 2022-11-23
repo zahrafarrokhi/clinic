@@ -6,6 +6,8 @@ export default function Pharmacy() {
   return (
     <div className='px-6 py-4'>
       <Header state="delivery"/>
+      
+
     </div>
   )
 }
