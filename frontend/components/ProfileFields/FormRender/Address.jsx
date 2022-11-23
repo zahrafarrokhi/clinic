@@ -11,10 +11,10 @@ export default function Address(props) {
 
   useEffect(()=> {
     setState(data)
-    if (!data.id) {
+    if (!data.id || hide) {
       setActive(true)
     }
-  }, [data])
+  }, [data, hide])
   //redux
   const dispatch = useDispatch();
   const updateAddress = async ()=>{
@@ -22,6 +22,7 @@ export default function Address(props) {
       if (data.id) {
         await dispatch(formsTab.updateData(state)).unwrap();
         setActive(false)
+        if(hide) hide()
       }
       else {
         await dispatch(formsTab.createData(state)).unwrap();
@@ -61,7 +62,7 @@ export default function Address(props) {
            <Button variant="outlined" className="w-36" onClick={() => {
               setActive(false)
                 setState(data)
-                if (!data.id) {
+                if (hide) {
                   hide()
                 }
               }}>

@@ -11,6 +11,7 @@ import { Description } from "@mui/icons-material";
 import {CgDanger} from 'react-icons/cg'
 import AddIcon from '@mui/icons-material/Add';
 import { useRouter } from "next/router";
+import AddressSelection from "../../components/ProfileFields/AddressSelection";
 // import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 // import SquareRoundedIcon from '@mui/icons-material/SquareRounded';
 
@@ -221,6 +222,7 @@ export default function Pharmacy() {
         </DialogActions>
       </Dialog>
       </div>
+      <AddressSelection/>
       </Panel>
     </div>
   );
