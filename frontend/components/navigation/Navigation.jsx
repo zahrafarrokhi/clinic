@@ -36,13 +36,16 @@ export default function Navigation(props) {
     <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
       <DrawerNav open={open} setOpen={setOpen} />
       <Box
-        sx={{
+        sx={(theme) => ({
           display: "flex ",
           flexDirection: "column",
-          width: "100%",
+          // width: "100%",
+          [theme.breakpoints.up('md')]: {
+            width: "calc(100% - 240px)",brave
+          },
           height: "100%",
           position: "relative",
-        }}
+        })}
       >
        {showHeader && <Header openDrawer={() => setOpen(true)} />}
         <Box className="flex-grow flex flex-col">
