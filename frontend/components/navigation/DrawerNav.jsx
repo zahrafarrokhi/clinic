@@ -212,7 +212,7 @@ export default function DrawerNav(props) {
             <>
               {field.items.map((nav) => {
                 const isActive = nav.isActive().test(router.asPath);
-                return nav.users.includes(user.type)  && (
+                return nav.users.includes(user?.type)  && (
                  <ListItem key={nav.id}>
                     <Link href={nav.route} passHref>
                       <ListItemButton
