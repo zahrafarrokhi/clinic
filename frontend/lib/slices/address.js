@@ -56,6 +56,7 @@ export const deleteAddress = createAsyncThunk(
 
 const internalInitialState = {
   addresses: [],
+  address: null,
   error: null,
   loading: IDLE,
 };
@@ -64,6 +65,12 @@ export const addressSlice = createSlice({
   name: 'address',
   initialState: internalInitialState,
   reducers: {
+    setAddress: (state, action) => {
+      return ({
+        ...state,
+        address: state.addresses.filter(item => item.id === action.payload)[0]
+      })
+    },
     reset: () => internalInitialState,
   },
   extraReducers: (builder) => {
@@ -120,4 +127,4 @@ export const addressSlice = createSlice({
   },
 });
 
-export const { reset } = addressSlice.actions;
+export const { reset,setAddress } = addressSlice.actions;

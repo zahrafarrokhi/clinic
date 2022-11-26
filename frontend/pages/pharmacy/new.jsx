@@ -22,8 +22,11 @@ import AddressSelection from "../../components/ProfileFields/AddressSelection";
 
 const StyledFormControlLabel = styled((props) => <FormControlLabel {...props} />)(
   ({ theme, checked }) => ({
-    '.MuiFormControlLabel-label': checked && {
-      color: theme.palette.primary.main,
+    '.MuiFormControlLabel-label': {
+      fontSize: '0.9em',
+      ...(checked && {
+        color: theme.palette.primary.main,
+      })
     },
   }),
 );
@@ -54,7 +57,9 @@ const Panel = (props)=>{
     </div>
   );
 }
-export default function Pharmacy() {
+
+// درخواست دارو => RequestPrescription
+export default function RequestPrescription() {
   const [checked, setChecked] = useState("pres");
   const [attachment,setAttachment]=useState([]);
   const ref = useRef()
@@ -72,6 +77,9 @@ export default function Pharmacy() {
   const [code,setCode] = useState("")
   const [description,setDescription] = useState("")
   const dispatch = useDispatch();
+  // const address = useSelector((state) => state.addressReducer?.address);
+  const [addressId, setAddressId] = useState();
+
 
   const submit = async()=>{
     try {
@@ -79,7 +87,9 @@ export default function Pharmacy() {
       const res = await dispatch(createPrescription({
         patient:patient.id,
         code:code,
-        description:description
+        description:description,
+        address: addressId,
+        // address: address.id,
       })).unwrap()
     for (let attach of attachment){
       await dispatch(createPrescriptionPic({
@@ -191,6 +201,8 @@ export default function Pharmacy() {
          >
 
        </TextField>
+      <AddressSelection addressId={addressId} setAddressId={setAddressId}/>
+
        <div className="flex gap-2 items-center text-sm italic">
         <CgDanger />
        پس از تایید شما توسط آزمایشگاه بر اساس قوانین و مقررات هزینه آزمایش برای شما پیامک میشود.
@@ -222,12 +234,11 @@ export default function Pharmacy() {
         </DialogActions>
       </Dialog>
       </div>
-      <AddressSelection/>
       </Panel>
     </div>
   );
 }
 
-Pharmacy.getLayout = (page) => {
+RequestPrescription.getLayout = (page) => {
   return <Navigation>{page}</Navigation>;
 };

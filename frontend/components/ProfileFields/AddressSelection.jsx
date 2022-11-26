@@ -4,6 +4,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   FormControl,
   InputLabel,
   MenuItem,
@@ -19,7 +20,7 @@ import FaceRetouchingNaturalIcon from "@mui/icons-material/FaceRetouchingNatural
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
-import { listAddress } from "../../lib/slices/address";
+import { listAddress, setAddress } from "../../lib/slices/address";
 import { ChevronLeft } from "@mui/icons-material";
 import Address from "./FormRender/Address";
 import EditIcon from "@mui/icons-material/Edit";
@@ -95,51 +96,54 @@ const AddressSelection = (props) => {
 
   const [selectAdress,setSelectAdress]=useState({})
   // 
-  const [addressId, setAddressId] = useState();
+  // const [addressId, setAddressId] = useState();
+  const {addressId, setAddressId} = props
   const address = addressId ? addresses.find(ad=>ad.id === addressId) : {}
+  // const address = useSelector((state) => state.addressReducer?.address);
   const dispatch = useDispatch();
   const loadAddress = async () => {
     try {
       const res = await dispatch(listAddress()).unwrap();
       if(res.length) setAddressId(res[0].id)
+      // if(res.length) dispatch(setAddress(res[0].id))
     } catch (error) {}
   };
   useEffect(() => {
     loadAddress();
   }, []);
   return (
-    <div className="flex flex-row rounded-lg border border-solid border-gray">
-      <div className="flex flex-col flex-grow">
+    <div className="flex flex-row rounded-lg border border-solid border-gray p-2">
+      <div className=" flex flex-col flex-grow gap-2">
          
-      <div>به این آدرس ارسال می‌شود</div>
+      <div className="text-sm md:text-base">به این آدرس ارسال می‌شود</div>
       <Typography className="text-base">
         <LocationOnIcon className="text-sm" />
-        {address.address}
+        {address?.address}
       </Typography>
 
       <Typography className="text-sm flex items-center gap-2">
         <FaceRetouchingNaturalIcon className="text-sm" />
-        {address.reciever}
+        {address?.reciever}
       </Typography>
       <Typography className="text-sm flex items-center gap-2">
         <LocalPhoneIcon className="text-sm" />
-        {address.phone_number}
+        {address?.phone_number}
       </Typography>
       <Typography className="text-sm flex items-center gap-2">
         <MailOutlineIcon className="text-sm" />
-        {address.postal_code}
+        {address?.postal_code}
       </Typography>
       
 
-      <Button onClick={() => setOpen(true)}>
+      <Button onClick={() => setOpen(true)} className="self-start text-xs md:text-base">
         تغییر یا افزودن آدرس دیگر
         <ChevronLeft />
       </Button>           
       </div>
 
 
-      <div className="basis-[30%] grow md:grow-0 shrink-0 min-w-[200px] min-h-[200px]">
-      <MapComponent value={address.location} active={false}/>
+      <div className="w-[200px] h-[200px]">
+      <MapComponent value={address?.location} active={false} className="m-0 mt-0"/>
     </div>
 
       <Dialog
@@ -147,9 +151,15 @@ const AddressSelection = (props) => {
         keepMounted
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
+        size={'md'}
+        fullWidth
+        PaperProps={{
+          className: 'rounded-xl'
+        }}
       >
-        <DialogTitle>انتخاب آدرس</DialogTitle>
-        <DialogContent>
+        <DialogTitle className="text-base md:text-lg">انتخاب آدرس</DialogTitle>
+        <Divider />
+        <DialogContent className="pb-3">
           {addresses.map((ad) => (
             <div key={ad.id}>
               <Typography className="text-lg font-bold">{ad.name}</Typography>
@@ -173,12 +183,13 @@ const AddressSelection = (props) => {
               <Button
                 onClick={() => {
                   setAddressId(ad.id);
+                  // dispatch(setAddress(ad.id))
                   handleClose()
                 }}
-                color={addressId!== ad.id ? 'primary': 'chip_success'}
+                color={address?.id !== ad.id ? 'primary': 'chip_success'}
               >
-              {addressId!== ad.id ? "انتخاب این آدرس" : "انتخاب شده"}
-              {addressId!== ad.id && <ChevronLeft />}
+              {address?.id !== ad.id ? "انتخاب این آدرس" : "انتخاب شده"}
+              {address?.id !== ad.id && <ChevronLeft />}
               </Button>
               <Button variant="text" color="primary" onClick={() => {
                 setOpenEdit(true)
@@ -188,11 +199,12 @@ const AddressSelection = (props) => {
           <EditIcon className="text-sm mx-2"/>
           ویرایش
         </Button>
+        <Divider variant="inset"/>
             </div>
           ))}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => {
+        <DialogActions className="flex items-center justify-center pb-3">
+          <Button variant="outlined" onClick={() => {
             handleClose()
             setOpenNew(true)
           }}>افزودن یک آدرس جدید</Button>

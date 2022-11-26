@@ -44,8 +44,36 @@ export const createPrescriptionPic = createAsyncThunk(
 );
 
 
+//listPrescriptionsPatient
+export const listPrescriptionsPatient = createAsyncThunk(
+  "pharmacy/list",
+  async ({patient_id, ...data}, thunkAPI) => {
+    try {
+      const response = await axios.get(`/api/pharmacy/prescription/patient/${patient_id}/`, {params: data});
 
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+//getPrescriptionsPatient
+export const getPrescriptionPatient = createAsyncThunk(
+  "pharmacy/get",
+  async ({patient_id, id}, thunkAPI) => {
+    try {
+      const response = await axios.get(`/api/pharmacy/prescription/patient/${patient_id}/${id}/`, );
 
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
 
 const internalInitialState = {
   prescriptions: [],
@@ -99,8 +127,44 @@ export const pharmacySlice = createSlice({
       return state;
     });
 
+
+     //listPrescriptionsPatient
+     builder.addCase(listPrescriptionsPatient.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(listPrescriptionsPatient.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(listPrescriptionsPatient.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      //total data => action.payload.data
+      //up => {...respose.data } or response.data => action.payload
+    
+      state.prescriptions = action.payload.data;
+      return state;
+    });
   
-  
+    //getPrescriptionPatient
+    builder.addCase(getPrescriptionPatient.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(getPrescriptionPatient.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(getPrescriptionPatient.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      //total data => action.payload.data
+      //up => {...respose.data } or response.data => action.payload
+    
+      state.prescription = action.payload.data;
+      return state;
+    });
   },
 });
 

@@ -67,6 +67,8 @@ module.exports = {
       lightBlue: '#d5e1eb',
 
       //chip colors for visit status table 
+      chip_primary: '#54d2d2',
+      chip_primary__light: '#54d2d240',
       chip_warning: '#e08c0f',
       chip_warning__light: '#FFF3C8',
       chip_success: '#16843b',
