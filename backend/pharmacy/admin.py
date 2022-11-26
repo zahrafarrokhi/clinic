@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib import admin
 
 from pharmacy import models
-from pharmacy.models import PharmacyPrescriptionPic
+from pharmacy.models import PharmacyPrescriptionPic, PatientPrescriptionPic
 
 
 class PharmacyAdmin(admin.ModelAdmin):
@@ -20,8 +20,13 @@ class PharmacyAdmin(admin.ModelAdmin):
     )
 
 
-class InlinePicture(admin.StackedInline):
+class InlinePharmacyPicture(admin.StackedInline):
     model = PharmacyPrescriptionPic
+
+    fields = ('image', )
+
+class InlinePatientPicture(admin.StackedInline):
+    model = PatientPrescriptionPic
 
     fields = ('image', )
 
@@ -37,7 +42,7 @@ class PharmacyPrescriptionAdmin(admin.ModelAdmin):
         ('address info',
          {'fields': ('patient', 'status', 'created_at', 'updated_at', 'code', 'description', 'address')}),
     )
-    inlines = [InlinePicture]
+    inlines = [InlinePatientPicture, InlinePharmacyPicture]
     readonly_fields = ('created_at', 'updated_at', )
 
 

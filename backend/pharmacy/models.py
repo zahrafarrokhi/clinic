@@ -45,8 +45,14 @@ class PharmacyPrescription(models.Model):
         canceled = 'canceled', _('Canceled')
 
     status = models.CharField(choices=Status.choices, default=Status.waiting_for_response, max_length=30)
-
+    #pharmacy
+    pharmacy_description = models.TextField(null=True,blank=True)
+    price = models.BigIntegerField(null=True,blank=True)
 class PharmacyPrescriptionPic(models.Model):
+    image = models.ImageField(upload_to=img_upload_path_generator)
+    prescription =  models.ForeignKey(PharmacyPrescription, on_delete=models.CASCADE)
+
+class PatientPrescriptionPic(models.Model):
     image = models.ImageField(upload_to=img_upload_path_generator)
     prescription =  models.ForeignKey(PharmacyPrescription, on_delete=models.CASCADE)
 
