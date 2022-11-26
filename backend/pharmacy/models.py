@@ -3,10 +3,10 @@ from django.contrib.gis.db import models as gis_models
 
 from authentication.models import User
 from django.utils.crypto import get_random_string
-
+from django.utils.translation import gettext_lazy as _
 import string
 
-from patient.models import Patient
+from patient.models import Patient,Address
 
 
 def generate_random_str(length=5):
@@ -36,6 +36,15 @@ class PharmacyPrescription(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     description = models.TextField()
     code = models.CharField(max_length=40)
+    address = models.ForeignKey(Address,on_delete=models.CASCADE,null=True,blank=True)
+    class Status(models.TextChoices):
+        waiting_for_response = 'waiting_for_response', _('Waiting for response')
+        waiting_for_payment = 'waiting_for_payment', _('Waiting for payment')
+        waiting_for_delivery = 'waiting_for_delivery', _('Waiting for delivery')
+        delivered = 'delivered', _('Delivered')
+        canceled = 'canceled', _('Canceled')
+
+    status = models.CharField(choices=Status.choices, default=Status.waiting_for_response, max_length=30)
 
 class PharmacyPrescriptionPic(models.Model):
     image = models.ImageField(upload_to=img_upload_path_generator)

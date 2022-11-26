@@ -8,5 +8,9 @@ router.register(r'prescription-pic',views.PharmacyPrescriptionPicView,basename='
 
 
 urlpatterns = [
+    path('prescription/patient/<int:patient_id>/', views.PharmacyPrescriptionView.as_view({'get': 'list'}), name='prescription-patient-list'),
+    # path('prescription/patient/<int:patient_id>/<int:pk>/', views.PharmacyPrescriptionView.as_view({'get': 'retrieve'}),
+    #      name='visit-patient-retrieve'),
+
     path('', include(router.urls)),
 ]

@@ -28,14 +28,14 @@ class InlinePicture(admin.StackedInline):
 
 class PharmacyPrescriptionAdmin(admin.ModelAdmin):
     search_fields = ('patient', 'created_at',
-                     'code', 'description')
+                     'code', 'description', 'status')
     list_display = ('patient', 'created_at',
-                     'code', )
+                     'code', 'status')
     ordering = ('-created_at', )
     fields = None
     fieldsets = (
         ('address info',
-         {'fields': ('patient', 'created_at', 'updated_at', 'code', 'description')}),
+         {'fields': ('patient', 'status', 'created_at', 'updated_at', 'code', 'description', 'address')}),
     )
     inlines = [InlinePicture]
     readonly_fields = ('created_at', 'updated_at', )
