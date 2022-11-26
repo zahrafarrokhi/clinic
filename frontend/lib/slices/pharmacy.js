@@ -4,6 +4,7 @@ import axios from "../axios";
 export const IDLE = "idle";
 export const LOADING = "loading";
 
+// For patient
 
 //createPrescription
 export const createPrescription = createAsyncThunk(
@@ -75,6 +76,40 @@ export const getPrescriptionPatient = createAsyncThunk(
   }
 );
 
+// For pharmacy
+
+//listPrescriptionsPharmacy
+export const listPrescriptionsPharmacy = createAsyncThunk(
+  "pharmacy/list-pharmacy",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await axios.get(`/api/pharmacy/prescription-pharmacy/`, { params: payload});
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
+//getPrescriptionPharmacy
+export const getPrescriptionPharmacy = createAsyncThunk(
+  "pharmacy/get-pharmacy",
+  async ({id}, thunkAPI) => {
+    try {
+      const response = await axios.get(`/api/pharmacy/prescription-pharmacy/${id}/`, );
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
 const internalInitialState = {
   prescriptions: [],
   prescription: null,
@@ -89,6 +124,7 @@ export const pharmacySlice = createSlice({
     reset: () => internalInitialState,
   },
   extraReducers: (builder) => {
+    // For patient
     //createPrescription
     builder.addCase(createPrescription.pending, (state) => ({
       ...state,
@@ -158,6 +194,44 @@ export const pharmacySlice = createSlice({
       error: action.payload.error,
     }));
     builder.addCase(getPrescriptionPatient.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      //total data => action.payload.data
+      //up => {...respose.data } or response.data => action.payload
+    
+      state.prescription = action.payload.data;
+      return state;
+    });
+    // For pharmacy
+    //listPrescriptionsPharmacy
+    builder.addCase(listPrescriptionsPharmacy.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(listPrescriptionsPharmacy.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(listPrescriptionsPharmacy.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      //total data => action.payload.data
+      //up => {...respose.data } or response.data => action.payload
+    
+      state.prescriptions = action.payload.data;
+      return state;
+    });
+
+    //getPrescriptionPharmacy
+    builder.addCase(getPrescriptionPharmacy.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(getPrescriptionPharmacy.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(getPrescriptionPharmacy.fulfilled, (state, action) => {
       state.loading = IDLE;
       //total data => action.payload.data
       //up => {...respose.data } or response.data => action.payload

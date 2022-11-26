@@ -1,10 +1,11 @@
 import { Chip } from "@mui/material";
 import { useRouter } from "next/router";
+import { useMemo } from "react";
 import { useEffect } from "react";
 import { CgDanger } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
 import Navigation from "../../../components/navigation/Navigation";
-import { getPrescriptionPatient } from "../../../lib/slices/pharmacy";
+import { getPrescriptionPatient, getPrescriptionPharmacy } from "../../../lib/slices/pharmacy";
 import { convertStrToJalali } from "../../../lib/utils";
 
 const PRESCRIPTION_STATUS_TEXT = {
@@ -30,10 +31,12 @@ export default function Prescription() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { id } = router.query;
+  const user = useSelector((state) => state.authReducer?.user);
+  const loadAction = useMemo(() => user.type == 'patient'?getPrescriptionPatient:getPrescriptionPharmacy, [user]);
   const getPrescription = async () => {
     try {
       await dispatch(
-        getPrescriptionPatient({ patient_id: patient.id, id: id })
+        loadAction({ patient_id: patient?.id, id: id })
       ).unwrap();
     } catch (error) {}
   };

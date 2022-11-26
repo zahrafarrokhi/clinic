@@ -1,7 +1,7 @@
 import React from 'react'
 import Navigation from '../../components/navigation/Navigation';
 import Header from '../../components/pharmacy/Header';
-import { listPrescriptionsPatient } from '../../lib/slices/pharmacy';
+import { listPrescriptionsPatient, listPrescriptionsPharmacy } from '../../lib/slices/pharmacy';
 import {
   AppBar,
   Button,
@@ -150,19 +150,23 @@ export default function Pharmacy() {
   const current_page = useMemo(() => offset / LIMIT + 1, [offset]);
   const number_of_pages = useMemo(() => Math.ceil(count / LIMIT), [count]);
   //redux
+ 
+
   const prescriptions = useSelector((state) => state.pharmacyReducer?.prescriptions?.results);
   const patient = useSelector((state) => state.patientReducer?.patient);
   const dispatch = useDispatch();
   // route
   const router = useRouter()
+  const user = useSelector((state) => state.authReducer?.user);
+  const loadAction = useMemo(() => user?.type == 'patient'?listPrescriptionsPatient:listPrescriptionsPharmacy, [user]);
   const lstPrePatient = useMemo(
     () =>
       throttle(async ({ search }) => {
         try {
           await dispatch(
-            listPrescriptionsPatient({
+            loadAction({
               // url params
-              patient_id: patient.id,
+              patient_id: patient?.id,
               // queryparam-> backend: state
               //ordering
               ordering: `${order === "asc" ? "" : "-"}${orderBy}`,
@@ -186,12 +190,12 @@ export default function Pharmacy() {
           console.log(error);
         }
       }, 1000),
-    [patient, orderBy, order, status, offset, start, end]
+    [patient, orderBy, order, status, offset, start, end, loadAction]
   );
 
   useEffect(() => {
     lstPrePatient({ search });
-  }, [patient, orderBy, order, status, search, offset, start, end]);
+  }, [patient, orderBy, order, status, search, offset, start, end, loadAction]);
   // ordering
   const handleSort = (col) => {
     if (orderBy === col) {
@@ -330,14 +334,14 @@ const [selectedTab,setSelectedTab] = useState('open')
                     renderValue={(selected) =>
                       selected
                         .map(
-                          (item) => VISIT_STATUS_TEXT[item] || "مشاهده‌ی همه"
+                          (item) => PRESCRIPTION_STATUS_TEXT[item] || "مشاهده‌ی همه"
                         )
                         .join(", ")
                     }
                     // renderValue={(selected) => (
                     //   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                     //     {selected.map((value) => (
-                    //       <Chip key={value} label={VISIT_STATUS_TEXT[value] || "مشاهده‌ی همه"} color={VISIT_STATUS_COLOR[value] || 'default'} sx={{
+                    //       <Chip key={value} label={PRESCRIPTION_STATUS_TEXT[value] || "مشاهده‌ی همه"} color={PRESCRIPTION_STATUS_COLOR[value] || 'default'} sx={{
                     //         '& .MuiChip-label': {
                     //           fontSize: '0.875em'
                     //         }
@@ -374,12 +378,12 @@ const [selectedTab,setSelectedTab] = useState('open')
                       <ListItemText primary={"مشاهده‌ی همه"} />
                     </MenuItem>
 
-                    {Object.keys(VISIT_STATUS_TEXT).map((item) => {
+                    {Object.keys(PRESCRIPTION_STATUS_TEXT).map((item) => {
                       return (
-                        // <MenuItem value={item}>{VISIT_STATUS_TEXT[item]}</MenuItem>
+                        // <MenuItem value={item}>{PRESCRIPTION_STATUS_TEXT[item]}</MenuItem>
                         <MenuItem key={item} value={item}>
                           <Checkbox checked={status.indexOf(item) > -1} />
-                          <ListItemText primary={VISIT_STATUS_TEXT[item]} />
+                          <ListItemText primary={PRESCRIPTION_STATUS_TEXT[item]} />
                         </MenuItem>
                       );
                     })}
@@ -462,13 +466,13 @@ const [selectedTab,setSelectedTab] = useState('open')
               }}
               renderValue={(selected) =>
                 selected
-                  .map((item) => VISIT_STATUS_TEXT[item] || "مشاهده‌ی همه")
+                  .map((item) => PRESCRIPTION_STATUS_TEXT[item] || "مشاهده‌ی همه")
                   .join(", ")
               }
               // renderValue={(selected) => (
               //   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
               //     {selected.map((value) => (
-              //       <Chip key={value} label={VISIT_STATUS_TEXT[value] || "مشاهده‌ی همه"} color={VISIT_STATUS_COLOR[value] || 'default'} sx={{
+              //       <Chip key={value} label={PRESCRIPTION_STATUS_TEXT[value] || "مشاهده‌ی همه"} color={PRESCRIPTION_STATUS_COLOR[value] || 'default'} sx={{
               //         '& .MuiChip-label': {
               //           fontSize: '0.875em'
               //         }
@@ -505,12 +509,12 @@ const [selectedTab,setSelectedTab] = useState('open')
                 <ListItemText primary={"مشاهده‌ی همه"} />
               </MenuItem>
 
-              {Object.keys(VISIT_STATUS_TEXT).map((item) => {
+              {Object.keys(PRESCRIPTION_STATUS_TEXT).map((item) => {
                 return (
-                  // <MenuItem value={item}>{VISIT_STATUS_TEXT[item]}</MenuItem>
+                  // <MenuItem value={item}>{PRESCRIPTION_STATUS_TEXT[item]}</MenuItem>
                   <MenuItem key={item} value={item}>
                     <Checkbox checked={status.indexOf(item) > -1} />
-                    <ListItemText primary={VISIT_STATUS_TEXT[item]} />
+                    <ListItemText primary={PRESCRIPTION_STATUS_TEXT[item]} />
                   </MenuItem>
                 );
               })}
@@ -536,6 +540,14 @@ const [selectedTab,setSelectedTab] = useState('open')
               >
                 تاریخ
               </CustomTableSortLabel>
+              {user.type ==='pharmacy'&&<CustomTableSortLabel
+                order={order}
+                orderBy={orderBy}
+                id={"patient__last_name"}
+                onClick={() => handleSort("patient__last_name")}
+              >
+                نام بیمار
+              </CustomTableSortLabel>}
               <StyledTableCell
                 align="center"
               >
@@ -577,10 +589,15 @@ const [selectedTab,setSelectedTab] = useState('open')
                   className="text-sm col-span-3 text-textGray md:text-black "
                   align="center"
                 >
-                  <CalendarMonthIcon className="ml-2 my-auto align-middle text-sm hidden md:block" />
+                  <CalendarMonthIcon className="ml-2 my-auto align-middle text-sm hidden md:inline" />
                   {convertStrToJalali(row.created_at)}
                 </StyledTableCell>
-                
+                {user.type ==='pharmacy'&& <StyledTableCell
+                  className="text-sm col-span-3 text-textGray md:text-black "
+                  align="left"
+                >
+                {row.patient.first_name }   {row.patient.last_name }
+                </StyledTableCell>}
                 <StyledTableCell
                   className="hidden md:table-cell text-textGray md:text-black"
                   align="center"
@@ -596,8 +613,8 @@ const [selectedTab,setSelectedTab] = useState('open')
                 <StyledTableCell className="col-span-5" align="center">
                   <Chip
                     variant="status"
-                    label={VISIT_STATUS_TEXT[row.status]}
-                    color={VISIT_STATUS_COLOR[row.status]}
+                    label={PRESCRIPTION_STATUS_TEXT[row.status]}
+                    color={PRESCRIPTION_STATUS_COLOR[row.status]}
                   ></Chip>
                 </StyledTableCell>
                 <StyledTableCell
@@ -607,7 +624,7 @@ const [selectedTab,setSelectedTab] = useState('open')
                   {/* !(row.status === 'waiting_for_payment' || row.status === 'payment_failed') */}
                   {/* (row.status !== 'waiting_for_payment' && row.status !== 'payment_failed') */}
                   {/* (['waiting_for_payment', 'payment_failed'].indexOf(row.status) == -1) */}
-                <IconButton onClick={() => router.push(`/pharmacy/${row.id}`)}>
+                <IconButton onClick={() => router.push(user.type ==='pharmacy'?`/pharmacy/${row.id}/manage`:`/pharmacy/${row.id}`)}>
                   <ArrowBackIos color="backgroundGray" />
                   </IconButton>
                 </StyledTableCell>
