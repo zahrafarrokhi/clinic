@@ -43,6 +43,7 @@ export default function Navigation(props) {
           [theme.breakpoints.up('md')]: {
             width: "calc(100% - 240px)",
           },
+          width: '100%',
           height: "100%",
           position: "relative",
         })}
