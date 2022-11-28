@@ -1,4 +1,4 @@
-import { Button, Chip, Divider, TextField } from "@mui/material";
+import { Button, Chip, Divider, InputAdornment, TextField } from "@mui/material";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useMemo } from "react";
@@ -11,7 +11,7 @@ import {
   getPrescriptionPharmacy,
   updatePrescriptionPharmacy,
 } from "../../../lib/slices/pharmacy";
-import { convertStrToJalali } from "../../../lib/utils";
+import { convertStrToJalali, persianToEnglishDigits, preventLettersTyping, stringifyPrice } from "../../../lib/utils";
 
 const PRESCRIPTION_STATUS_TEXT = {
   waiting_for_response: "در انتظار پاسخ",
@@ -37,22 +37,26 @@ export default function Prescription() {
   const router = useRouter();
   const { id } = router.query;
   const user = useSelector((state) => state.authReducer?.user);
+  // Price & description
+  const [price,setPrice]= useState(0)
+  const [description,setDescription]=useState('')
   const getPrescription = async () => {
     try {
-      await dispatch(getPrescriptionPharmacy({ id: id })).unwrap();
+      const res = await dispatch(getPrescriptionPharmacy({ id: id })).unwrap();
+      setPrice(res.data.price)
+      setDescription(res.data.pharmacy_description)
     } catch (error) {}
   };
   useEffect(() => {
     getPrescription();
   }, [id]);
-  // Price & description
-  const [price,setPrice]= useState()
-  const [description,setDescription]=useState()
 
   const updatePrescription = async () => {
     try {
       await dispatch(updatePrescriptionPharmacy({ id: id,price, pharmacy_description:description })).unwrap();
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   return (
@@ -134,8 +138,8 @@ export default function Prescription() {
             <TextField 
                 label="جمع کل"
                 fullWidth
-                value={price}
-                onChange={(e)=>setPrice(e.target.value)}
+                value={stringifyPrice(price, '')}
+                onChange={(e)=>setPrice(Number(persianToEnglishDigits(preventLettersTyping(e.target.value))))}
                 
                 InputLabelProps={{
                   shrink: true,
@@ -147,7 +151,8 @@ export default function Prescription() {
                     '& legend': {
                       display: 'none'
                     }
-                  }
+                  }, 
+                  endAdornment: <InputAdornment position="end">ریال</InputAdornment>
                 }}
 
               >
@@ -183,7 +188,7 @@ export default function Prescription() {
           </div>
           <div className="flex justify-end gap-2">
             <Button onClick={()=> updatePrescription()} className="flex-grow md:flex-grow-0 md:w-32" variant="contained">ثبت و ارسال</Button>
-            <Button onClick={()=>{setPrice();setDescription()} } className="flex-grow md:flex-grow-0 md:w-32" variant="outlined">انصراف</Button>
+            <Button onClick={()=>{setPrice(0);setDescription('')} } className="flex-grow md:flex-grow-0 md:w-32" variant="outlined">انصراف</Button>
           </div>
         </div>
 
