@@ -85,20 +85,21 @@ export default function RequestPrescription() {
     try {
       
       const res = await dispatch(createPrescription({
+        // models in backend
         patient:patient.id,
         code:code,
         description:description,
         address: addressId,
         // address: address.id,
       })).unwrap()
-    for (let attach of attachment){
-      await dispatch(createPrescriptionPic({
-        pic:attach,
-        pre:res.data.id
-      
-      })).unwrap()
-    }
-    setOpen(true)
+      for (let attach of attachment){
+        await dispatch(createPrescriptionPic({
+          pic:attach,
+          pre:res.data.id
+        
+        })).unwrap()
+      }
+      setOpen(true)
     } catch (error) {
       
     }
