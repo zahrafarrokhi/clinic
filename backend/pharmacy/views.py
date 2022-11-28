@@ -49,6 +49,7 @@ class PharmacyView(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.Update
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
+        # list of prescription
         user = self.request.user
         if user.type == User.PHARMACY:
             queryset = PharmacyPrescription.objects.all()
