@@ -125,6 +125,25 @@ export const updatePrescriptionPharmacy = createAsyncThunk(
     }
   }
 );
+//createPrescriptionPicPharmacy
+export const createPrescriptionPicPharmacy = createAsyncThunk(
+  "pharmacy/createpic-pharmacy",
+  async (data, thunkAPI) => {
+    try {
+      const fd = new FormData(); 
+      // image,prescription from backend
+      fd.append('image', data.pic);
+      fd.append('prescription', data.pre);      
+      const response = await axios.post(`/api/pharmacy/prescription-pic-pharmacy/`, fd);
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
 
 const internalInitialState = {
   prescriptions: [],
@@ -277,6 +296,26 @@ export const pharmacySlice = createSlice({
       }
       return state;
     });
+
+     //createPrescriptionPicPharmacy
+     builder.addCase(createPrescriptionPicPharmacy.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(createPrescriptionPicPharmacy.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(createPrescriptionPicPharmacy.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      //total data => action.payload.data
+      //up => {...respose.data } or response.data => action.payload
+    
+      // state.prescription.images = [...state.prescription.images, action.payload.data];
+      return state;
+    });
+
   },
 
   
