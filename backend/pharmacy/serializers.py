@@ -7,9 +7,27 @@ from patient.serializers import PatientSerializer,AddressSerializers
 from pharmacy.models import PharmacyPrescription, PharmacyPrescriptionPic, PatientPrescriptionPic
 
 
+
+# pharmacyPic
+class PharmacyPrescriptionPicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PharmacyPrescriptionPic
+        fields = '__all__'
+
+    def validate_image(self, image):
+        if image is not None and image.size > settings.FILE_UPLOAD_SIZE_LIMIT:
+            raise serializers.ValidationError(
+                _("File is too big!"))
+        return image
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        if user.type != User.PHARMACY:
+            raise serializers.ValidationError(_("you arent allowed to do this"))
+        return attrs
 # patient
 class PatientPrescriptionSerializer(serializers.ModelSerializer):
-
+    pic = PharmacyPrescriptionPicSerializer(source="pharmacyprescriptionpic_set", read_only=True, many=True)
     class Meta :
         model = PharmacyPrescription
         fields = '__all__'
@@ -22,7 +40,7 @@ class PatientPrescriptionSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(_("you arent allowed to do this"))
         return attrs
 
-
+# # patientPic
 class PrescriptionPic(serializers.ModelSerializer):
     class Meta:
         model = PatientPrescriptionPic
@@ -66,19 +84,3 @@ class PharmacyPre(serializers.ModelSerializer):
         return instance
 
 
-class PharmacyPrescriptionPicSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PharmacyPrescriptionPic
-        fields = '__all__'
-
-    def validate_image(self, image):
-        if image is not None and image.size > settings.FILE_UPLOAD_SIZE_LIMIT:
-            raise serializers.ValidationError(
-                _("File is too big!"))
-        return image
-
-    def validate(self, attrs):
-        user = self.context['request'].user
-        if user.type != User.PHARMACY:
-            raise serializers.ValidationError(_("you arent allowed to do this"))
-        return attrs
