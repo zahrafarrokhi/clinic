@@ -2,6 +2,7 @@ from django.conf import settings
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 
+from authentication.models import User
 from patient.serializers import PatientSerializer,AddressSerializers
 from pharmacy.models import PharmacyPrescription, PharmacyPrescriptionPic, PatientPrescriptionPic
 
@@ -46,7 +47,7 @@ class PharmacyPre(serializers.ModelSerializer):
     patient = PatientSerializer(read_only=True)
     address = AddressSerializers(read_only=True)
     # PharmacyPrescription => PrescriptionPic
-    pic = PrescriptionPic(source="patient_prescription_pic_set",read_only=True)
+    pic = PrescriptionPic(source="patientprescriptionpic_set",read_only=True, many=True)
     class Meta:
         model = PharmacyPrescription
         fields = "__all__"
@@ -60,5 +61,24 @@ class PharmacyPre(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.price = validated_data['price']
         instance.pharmacy_description = validated_data['pharmacy_description']
+        instance.status = PharmacyPrescription.Status.waiting_for_payment
         instance.save()
         return instance
+
+
+class PharmacyPrescriptionPicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PharmacyPrescriptionPic
+        fields = '__all__'
+
+    def validate_image(self, image):
+        if image is not None and image.size > settings.FILE_UPLOAD_SIZE_LIMIT:
+            raise serializers.ValidationError(
+                _("File is too big!"))
+        return image
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        if user.type != User.PHARMACY:
+            raise serializers.ValidationError(_("you arent allowed to do this"))
+        return attrs

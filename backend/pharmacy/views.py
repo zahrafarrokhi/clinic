@@ -3,13 +3,15 @@ from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
 
 from authentication.models import User
-from pharmacy.models import PharmacyPrescription
-from pharmacy.serializers import PrescriptionPic, PatientPrescriptionSerializer, PharmacyPre
+from pharmacy.models import PharmacyPrescription, PharmacyPrescriptionPic
+from pharmacy.serializers import PrescriptionPic, PatientPrescriptionSerializer, PharmacyPre, \
+    PharmacyPrescriptionPicSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
 
 # Create your views here.
+# patient
 class PatientPrescriptionView(mixins.CreateModelMixin, mixins.ListModelMixin,
         mixins.RetrieveModelMixin,viewsets.GenericViewSet):
     serializer_class = PatientPrescriptionSerializer
@@ -30,11 +32,12 @@ class PatientPrescriptionView(mixins.CreateModelMixin, mixins.ListModelMixin,
         queryset = PharmacyPrescription.objects.filter(patient__user=self.request.user, patient=patient_id)
 
         return queryset
-class PharmacyPrescriptionPicView(mixins.CreateModelMixin,viewsets.GenericViewSet):
+class PatientPrescriptionPicView(mixins.CreateModelMixin,viewsets.GenericViewSet):
     serializer_class = PrescriptionPic
     permission_classes = [IsAuthenticated]
 
 
+# pharmacy
 class PharmacyView(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.UpdateModelMixin,viewsets.GenericViewSet):
     serializer_class = PharmacyPre
     permission_classes = [IsAuthenticated]
@@ -56,3 +59,7 @@ class PharmacyView(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.Update
             return queryset
         else:
             return []
+
+class PharmacyPrescriptionPicView(mixins.CreateModelMixin,viewsets.GenericViewSet):
+    serializer_class = PharmacyPrescriptionPicSerializer
+    permission_classes = [IsAuthenticated]
