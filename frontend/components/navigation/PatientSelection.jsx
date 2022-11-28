@@ -6,6 +6,13 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginAsPatient } from "../../lib/slices/patients";
 import { AiOutlinePlus } from 'react-icons/ai';
+import { NextLinkComposed } from "../NextLinkComposed";
+
+const USER_TYPE = {
+  pharmacy: 'داروخانه',
+  support: 'پشتیبانی',
+  laboratory: 'آزمایشگاه',
+}
 
 export default function PatientSelection(props) {
   const { onOpen = () => { }, onClose = () => { } } = props;
@@ -18,7 +25,8 @@ export default function PatientSelection(props) {
   //mobile
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  
+  // 
+  const user = useSelector((state) => state.authReducer?.user);
   const handleClose = () => {
     setOpen(false)
     setAnchorEl(null)
@@ -33,6 +41,7 @@ export default function PatientSelection(props) {
     dispatch(loginAsPatient(id))
     handleClose()
   }
+  
 //just only show on mobile
   const mobileAnimation = isMobile ? {
     TransitionComponent: Slide,
@@ -42,7 +51,9 @@ export default function PatientSelection(props) {
   } : {}
   return (
     <div>
-    <Button
+    {user?.type != 'patient'  &&  <Button LinkComponent={NextLinkComposed} to={'/profile'}> {USER_TYPE[user.type]}</Button>}  
+ 
+   {user?.type == 'patient'&&<Button
       id="basic-button"
       aria-controls={open ? 'basic-menu' : undefined}
       aria-haspopup="true"
@@ -52,7 +63,7 @@ export default function PatientSelection(props) {
         {patient?.first_name}  {patient?.last_name}
         <Divider orientation="vertical" className="h-full mx-1" ></Divider>
         <ChevronLeft className={`transition-all duration-300 ${open ? 'rotate-90' : '-rotate-90'}`}/>
-    </Button>
+    </Button>}
     <Menu
       id="basic-menu"
       anchorEl={anchorEl}
