@@ -110,6 +110,22 @@ export const getPrescriptionPharmacy = createAsyncThunk(
   }
 );
 
+//updatePrescriptionPharmacy
+export const updatePrescriptionPharmacy = createAsyncThunk(
+  "pharmacy/update-pharmacy",
+  async ({id,...data}, thunkAPI) => {
+    try {
+      const response = await axios.patch(`/api/pharmacy/prescription-pharmacy/${id}/`, {...data} );
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
 const internalInitialState = {
   prescriptions: [],
   prescription: null,
@@ -239,7 +255,31 @@ export const pharmacySlice = createSlice({
       state.prescription = action.payload.data;
       return state;
     });
+
+    //updatePrescriptionPharmacy
+    builder.addCase(updatePrescriptionPharmacy.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(updatePrescriptionPharmacy.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(updatePrescriptionPharmacy.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      //total data => action.payload.data
+      //up => {...respose.data } or response.data => action.payload
+    
+      state.prescription = action.payload.data;
+      if (state.prescriptions.results) {
+        state.prescriptions.results = [...state.prescriptions.results.filter(item => item.id != action.payload.data.id), action.payload.data]
+      }
+      return state;
+    });
   },
+
+  
 });
 
 export const { reset } = pharmacySlice.actions;

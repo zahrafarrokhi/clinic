@@ -1,5 +1,6 @@
-import { Chip, Divider, TextField } from "@mui/material";
+import { Button, Chip, Divider, TextField } from "@mui/material";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { useMemo } from "react";
 import { useEffect } from "react";
 import { CgDanger } from "react-icons/cg";
@@ -8,6 +9,7 @@ import Navigation from "../../../components/navigation/Navigation";
 import {
   getPrescriptionPatient,
   getPrescriptionPharmacy,
+  updatePrescriptionPharmacy,
 } from "../../../lib/slices/pharmacy";
 import { convertStrToJalali } from "../../../lib/utils";
 
@@ -43,6 +45,16 @@ export default function Prescription() {
   useEffect(() => {
     getPrescription();
   }, [id]);
+  // Price & description
+  const [price,setPrice]= useState()
+  const [description,setDescription]=useState()
+
+  const updatePrescription = async () => {
+    try {
+      await dispatch(updatePrescriptionPharmacy({ id: id,price, pharmacy_description:description })).unwrap();
+    } catch (error) {}
+  };
+
   return (
     <div className="flex flex-col p-6 gap-4">
       <Divider></Divider>
@@ -122,8 +134,8 @@ export default function Prescription() {
             <TextField 
                 label="جمع کل"
                 fullWidth
-                // value={description}
-                // onChange={(e)=>setDescription(e.target.value)}
+                value={price}
+                onChange={(e)=>setPrice(e.target.value)}
                 
                 InputLabelProps={{
                   shrink: true,
@@ -147,8 +159,8 @@ export default function Prescription() {
               <TextField 
                 label="توضیحات"
                 fullWidth
-                // value={description}
-                // onChange={(e)=>setDescription(e.target.value)}
+                value={description}
+                onChange={(e)=>setDescription(e.target.value)}
                 
                 InputLabelProps={{
                   shrink: true,
@@ -168,6 +180,10 @@ export default function Prescription() {
 
             </TextField>
             </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button onClick={()=> updatePrescription()} className="flex-grow md:flex-grow-0 md:w-32" variant="contained">ثبت و ارسال</Button>
+            <Button onClick={()=>{setPrice();setDescription()} } className="flex-grow md:flex-grow-0 md:w-32" variant="outlined">انصراف</Button>
           </div>
         </div>
 
