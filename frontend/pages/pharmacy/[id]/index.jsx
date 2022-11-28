@@ -32,11 +32,11 @@ export default function Prescription() {
   const router = useRouter();
   const { id } = router.query;
   const user = useSelector((state) => state.authReducer?.user);
-  const loadAction = useMemo(() => user.type == 'patient'?getPrescriptionPatient:getPrescriptionPharmacy, [user]);
+  // const loadAction = useMemo(() => user.type == 'patient'?getPrescriptionPatient:getPrescriptionPharmacy, [user]);
   const getPrescription = async () => {
     try {
       await dispatch(
-        loadAction({ patient_id: patient?.id, id: id })
+        getPrescriptionPatient({ patient_id: patient?.id, id: id })
       ).unwrap();
     } catch (error) {}
   };
