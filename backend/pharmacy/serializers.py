@@ -31,7 +31,7 @@ class PatientPrescriptionSerializer(serializers.ModelSerializer):
     class Meta :
         model = PharmacyPrescription
         fields = '__all__'
-        read_only_fields = ['status', 'pharmacy_description', 'price']
+        read_only_fields = ['status', 'pharmacy_description', 'price', 'delivery_price']
 
     def validate(self,attrs):
         patient = attrs['patient']
@@ -80,6 +80,7 @@ class PharmacyPre(serializers.ModelSerializer):
         instance.price = validated_data['price']
         instance.pharmacy_description = validated_data['pharmacy_description']
         instance.status = PharmacyPrescription.Status.waiting_for_payment
+        instance.delivery_price = validated_data['delivery_price']
         instance.save()
         return instance
 

@@ -48,6 +48,7 @@ class PharmacyPrescription(models.Model):
     #pharmacy
     pharmacy_description = models.TextField(null=True,blank=True)
     price = models.BigIntegerField(null=True,blank=True)
+    delivery_price = models.BigIntegerField(null=True,blank=True)
 class PharmacyPrescriptionPic(models.Model):
     image = models.ImageField(upload_to=img_upload_path_generator)
     prescription =  models.ForeignKey(PharmacyPrescription, on_delete=models.CASCADE)
