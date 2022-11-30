@@ -76,6 +76,22 @@ export const getPrescriptionPatient = createAsyncThunk(
   }
 );
 
+//setPharmacyTimeAndPayment
+export const setPharmacyTimeAndPayment = createAsyncThunk(
+  "pharmacy/payment",
+  async ({patient_id, id, ...data}, thunkAPI) => {
+    try {
+      const response = await axios.put(`/api/pharmacy/prescription/patient/payment/${patient_id}/${id}/`, {...data});
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
 // For pharmacy
 
 //listPrescriptionsPharmacy
@@ -234,6 +250,22 @@ export const pharmacySlice = createSlice({
       //up => {...respose.data } or response.data => action.payload
     
       state.prescription = action.payload.data;
+      return state;
+    });
+
+    // setPharmacyTimeAndPayment
+    builder.addCase(setPharmacyTimeAndPayment.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(setPharmacyTimeAndPayment.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(setPharmacyTimeAndPayment.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      state.prescription = {...state.prescription, ...action.payload.data};
       return state;
     });
     // For pharmacy

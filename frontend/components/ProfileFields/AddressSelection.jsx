@@ -122,7 +122,7 @@ const AddressSelection = (props) => {
     loadAddress();
   }, []);
   return (
-    <div className="flex flex-row rounded-lg border border-solid border-gray p-6">
+    <div className="flex flex-row flex-wrap rounded-lg border border-solid border-gray p-6">
       <div className=" flex flex-row flex-wrap flex-grow gap-3 items-start content-start">
         <div className="text-sm md:text-base basis-[90%] font-bold ">به این آدرس ارسال می‌شود</div>
         <Typography className="text-base  basis-[90%] ">
