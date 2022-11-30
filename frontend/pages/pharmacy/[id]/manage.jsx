@@ -5,6 +5,8 @@ import {
   Divider,
   InputAdornment,
   TextField,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -58,6 +60,8 @@ export default function Prescription() {
   const [description, setDescription] = useState("");
   // send
   const [send,setSend]= useState(0)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
   const getPrescription = async () => {
     try {
@@ -170,16 +174,16 @@ export default function Prescription() {
       </div>
       <div
         className={`flex flex-row ${
-          close ? "" : "relative -right-6 w-[calc(100%+3em)] pr-6 gap-2"
-        } `}
+          close ? "relative" : "md:relative md:-right-6 md:w-[calc(100%+3em)] md:pr-6 gap-2"
+        } flex-wrap`}
       >
-        <div className="flex flex-col basis-[20%] min-w-[100px] grow rounded-3xl border-solid border border-gray p-4 gap-2 self-start">
+        <div className="flex flex-col basis-[20%] min-w-[100px] grow rounded-3xl border-solid border border-gray p-4 gap-2 self-start flex-wrap">
           <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
             {" "}
             اطلاعات سفارش
           </div>
-          <div className="flex gap-2 felx-wrap">
-            <div className="flex flex-col flex-grow basis-[20%] max-w-full md:max-w-[30%]">
+          <div className="flex gap-2 flex-wrap">
+            <div className="flex flex-col flex-grow gap-4 basis-[20%] max-w-full md:max-w-[30%]">
               <TextField
                 label="جمع کل"
                 fullWidth
@@ -279,7 +283,7 @@ export default function Prescription() {
                 ))}
               </div>
             </div>
-            <div className="flex-grow basis-[70%]">
+            <div className="flex-grow basis-[70%] flex-grow flex-shrink-0">
               <TextField
                 label="توضیحات"
                 fullWidth
@@ -325,22 +329,22 @@ export default function Prescription() {
         </div>
         <div
           className={`bg-backgroundPrimary ${
-            close ? "w-0 " : "w-[29.5%] p-4"
-          } relative flex flex-col  transition-all duration-300`}
+            close ? "w-0 static md:relative" : "relative flex-grow rounded-lg md:rounded-none md:flex-grow-0 md:w-[29.5%] p-4 min-w-full md:min-w-fit"
+          }  flex flex-col  transition-all duration-300 `}
         >
           <Button
             variant="contained"
             color="primary"
             className={`z-10 absolute w-8 px-0 py-4 min-w-0 h-4 ${
               close
-                ? "rounded-l-none left-[100%] pr-2"
-                : "-right-0 rounded-r-none pl-2"
-            } top-[50%] translate-y-[-50%] rounded-full shadow-none  transition-all duration-300`}
+                ? (isMobile ? "rounded-full rounded-b-none bottom-0" : "rounded-full rounded-l-none left-[100%] pr-2")
+                : (isMobile ? "rounded-full rounded-t-none top-0" : "rounded-full top-0 rounded-r-none -right-0 pl-2")
+            } left-[50%] -translate-x-[50%] md:translate-x-0 md:top-[50%] md:translate-y-[-50%] shadow-none  transition-all duration-300`}
             onClick={() => setClose(!close)}
           >
             <ArrowBackIos
               color="backgroundGray"
-              className={`${close ? "rotate-180" : ""} text-sm`}
+              className={`${close ? "rotate-90 md:rotate-180" : "-rotate-90 md:rotate-0"} text-sm`}
             />
           </Button>
           {!close && (
