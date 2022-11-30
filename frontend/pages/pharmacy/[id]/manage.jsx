@@ -56,11 +56,14 @@ export default function Prescription() {
   // Price & description
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState("");
+  // send
+  const [send,setSend]= useState(0)
 
   const getPrescription = async () => {
     try {
       const res = await dispatch(getPrescriptionPharmacy({ id: id })).unwrap();
       setPrice(res.data.price);
+      setSend(res.data.delivery_price);
       setDescription(res.data.pharmacy_description);
       setImage(res.data.pic[0]);
     } catch (error) {}
@@ -79,6 +82,7 @@ export default function Prescription() {
           id: id,
           price,
           pharmacy_description: description,
+          delivery_price:send,
 
         })
       ).unwrap();
@@ -182,6 +186,34 @@ export default function Prescription() {
                 value={stringifyPrice(price, "")}
                 onChange={(e) =>
                   setPrice(
+                    Number(
+                      persianToEnglishDigits(
+                        preventLettersTyping(e.target.value)
+                      )
+                    )
+                  )
+                }
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  sx: {
+                    marginTop: "1.5em",
+                    "& legend": {
+                      display: "none",
+                    },
+                  },
+                  endAdornment: (
+                    <InputAdornment position="end">ریال</InputAdornment>
+                  ),
+                }}
+              ></TextField>
+                 <TextField
+                label="هزینه‌ی ارسال"
+                fullWidth
+                value={stringifyPrice(send, "")}
+                onChange={(e) =>
+                  setSend(
                     Number(
                       persianToEnglishDigits(
                         preventLettersTyping(e.target.value)

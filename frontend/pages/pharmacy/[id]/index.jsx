@@ -108,16 +108,16 @@ export default function Prescription() {
             جمع کل:
           </div>
           <div className="text-lg font-bold text-primary">
-            {stringifyPrice(prescription?.price)}
+            {stringifyPrice(prescription?.price + prescription?.delivery_price)}
           </div>
           </div>
           <div className="flex gap-2 flex-grow md:flex-grow-0">
           <Button
-                onClick={() => {}}
+                onClick={() => router.push(`/pharmacy/${id}/delivery`)}
                 className="flex-grow  basis-[45%] md:flex-grow-0 md:w-32"
                 variant="contained"
               >
-                ثبت و ارسال
+                تکمیل سفارش
               </Button>
               <Button
                 onClick={() => {}}
