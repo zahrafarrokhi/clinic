@@ -41,7 +41,7 @@ class PharmacyPrescriptionAdmin(admin.ModelAdmin):
     fieldsets = (
         ('address info',
          {'fields': ('patient', 'status', 'created_at', 'updated_at', 'code',
-                     'description', 'address', 'price', 'delivery_price', 'pharmacy_description')}),
+                     'description', 'address', 'price', 'delivery_price', 'pharmacy_description','day','time')}),
     )
     inlines = [InlinePatientPicture, InlinePharmacyPicture]
     readonly_fields = ('created_at', 'updated_at', )

@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 import string
 
 from patient.models import Patient,Address
+from payment.models import Payment
 
 
 def generate_random_str(length=5):
@@ -49,7 +50,11 @@ class PharmacyPrescription(models.Model):
     pharmacy_description = models.TextField(null=True,blank=True)
     price = models.BigIntegerField(null=True,blank=True)
     delivery_price = models.BigIntegerField(null=True,blank=True)
+    day = models.DateField(null=True,blank=True)
+    time = models.TimeField(null=True,blank=True)
+    payment = models.OneToOneField(Payment, on_delete=models.CASCADE,null=True,blank=True)
 class PharmacyPrescriptionPic(models.Model):
+
     image = models.ImageField(upload_to=img_upload_path_generator)
     prescription =  models.ForeignKey(PharmacyPrescription, on_delete=models.CASCADE)
 

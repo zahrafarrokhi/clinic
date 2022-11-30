@@ -4,6 +4,8 @@ from django.utils.translation import gettext_lazy as _
 
 from authentication.models import User
 from patient.serializers import PatientSerializer,AddressSerializers
+from payment.serializers import PaymentSerializer
+from payment.services import BasePaymentService
 from pharmacy.models import PharmacyPrescription, PharmacyPrescriptionPic, PatientPrescriptionPic
 
 
@@ -39,6 +41,33 @@ class PatientPrescriptionSerializer(serializers.ModelSerializer):
         if user != patient.user:
             raise serializers.ValidationError(_("you arent allowed to do this"))
         return attrs
+class PatientDatePrescriptionSerializer(serializers.ModelSerializer):
+    payment = PaymentSerializer(read_only=True)
+    class Meta :
+        model = PharmacyPrescription
+        fields = ['id', 'time', 'day', 'payment']
+
+    def validate(self,attrs):
+        patient = self.instance.patient
+        user = self.context['request'].user
+        if user != patient.user:
+            raise serializers.ValidationError(_("you arent allowed to do this"))
+
+        status = self.instance.status
+        if status != PharmacyPrescription.Status.waiting_for_payment:
+            raise serializers.ValidationError(_("you arent allowed to do this"))
+        return attrs
+
+    def update(self, instance, validated_data):
+        payment = BasePaymentService.create_payment(user=self.context['request'].user,
+                                                    amount=instance.price + instance.delivery_price,
+                                                    description="PharmacyPrescription",
+                                                    )
+        instance.time = validated_data['time']
+        instance.day = validated_data['day']
+        instance.payment = payment
+        instance.save()
+        return instance
 
 # # patientPic
 class PrescriptionPic(serializers.ModelSerializer):
