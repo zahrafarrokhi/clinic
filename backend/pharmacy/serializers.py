@@ -40,7 +40,29 @@ class PatientPrescriptionSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         if user != patient.user:
             raise serializers.ValidationError(_("you arent allowed to do this"))
+
+        if self.instance is not None and self.instance.status != PharmacyPrescription.Status.waiting_for_payment:
+            raise serializers.ValidationError(_("you arent allowed to do this"))
+
         return attrs
+
+class PatientCancelPrescriptionSerializer(serializers.ModelSerializer):
+    class Meta :
+        model = PharmacyPrescription
+        fields = ['status']
+        read_only_fields = ['status', ]
+
+    def validate(self,attrs):
+        if self.instance is not None and self.instance.status != PharmacyPrescription.Status.waiting_for_payment:
+            raise serializers.ValidationError(_("you arent allowed to do this"))
+
+        return attrs
+    def update(self, instance, validated_data):
+        instance.status = PharmacyPrescription.Status.canceled
+        instance.save()
+        return instance
+
+
 class PatientDatePrescriptionSerializer(serializers.ModelSerializer):
     payment = PaymentSerializer(read_only=True)
     class Meta :
@@ -95,6 +117,8 @@ class PharmacyPre(serializers.ModelSerializer):
     address = AddressSerializers(read_only=True)
     # PharmacyPrescription => PrescriptionPic
     pic = PrescriptionPic(source="patientprescriptionpic_set",read_only=True, many=True)
+    pharmacy_pic = PharmacyPrescriptionPicSerializer(source="pharmacyprescriptionpic_set", read_only=True, many=True)
+
     class Meta:
         model = PharmacyPrescription
         fields = "__all__"
@@ -113,4 +137,18 @@ class PharmacyPre(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class PharmacyDeliverPrescription(serializers.ModelSerializer):
+    class Meta :
+        model = PharmacyPrescription
+        fields = ['status']
+        read_only_fields = ['status', ]
 
+    def validate(self,attrs):
+        if self.instance is not None and self.instance.status != PharmacyPrescription.Status.waiting_for_delivery:
+            raise serializers.ValidationError(_("you arent allowed to do this"))
+
+        return attrs
+    def update(self, instance, validated_data):
+        instance.status = PharmacyPrescription.Status.delivered
+        instance.save()
+        return instance

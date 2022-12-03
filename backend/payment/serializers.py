@@ -17,8 +17,12 @@ class PaymentSerializer(serializers.ModelSerializer):
         BasePaymentService.get_result(instance)
 
         if instance.status == Payment.Status.successful:
-            instance.visit.status = instance.visit.Status.started
-            RocketChatService().create_channel(instance.visit)
+            if hasattr(instance, 'visit'):
+                instance.visit.status = instance.visit.Status.started
+                RocketChatService().create_channel(instance.visit)
+            elif hasattr(instance, 'pharmacy_prescription'):
+                instance.pharmacy_prescription.status = instance.pharmacy_prescription.Status.waiting_for_delivery
+                instance.pharmacy_prescription.save()
 
         return instance
 

@@ -10,7 +10,7 @@ router.register(r'prescription-pic',views.PatientPrescriptionPicView,basename='p
 # pharmacy
 router.register(r'prescription-pharmacy',views.PharmacyView,basename='prescription-pharmacy')
 router.register(r'prescription-pic-pharmacy',views.PharmacyPrescriptionPicView,basename='prescription-pic-pharmacy')
-
+router.register(r'pharmacy-deliver',views.PharmacyDeliver,basename='pharmacy-deliver')
 urlpatterns = [
     # patient
     path('prescription/patient/<int:patient_id>/', views.PatientPrescriptionView.as_view({'get': 'list'}), name='prescription-patient-list'),
@@ -19,5 +19,9 @@ urlpatterns = [
     # set time date  by patient
     path('prescription/patient/payment/<int:patient_id>/<int:pk>/', views.PatientDatePrescriptionView.as_view({'put': 'update'}),
          name='prescription-patient-update'),
+    # cancel perscription
+    path('prescription/patient/cancel/<int:patient_id>/<int:pk>/',
+         views.PatientCancelView.as_view({'patch': 'update'}),
+         name='prescription-patient-cancel'),
     path('', include(router.urls)),
 ]

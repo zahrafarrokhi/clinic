@@ -52,7 +52,7 @@ class PharmacyPrescription(models.Model):
     delivery_price = models.BigIntegerField(null=True,blank=True)
     day = models.DateField(null=True,blank=True)
     time = models.TimeField(null=True,blank=True)
-    payment = models.OneToOneField(Payment, on_delete=models.CASCADE,null=True,blank=True)
+    payment = models.OneToOneField(Payment, on_delete=models.CASCADE,null=True,blank=True, related_name="pharmacy_prescription")
 class PharmacyPrescriptionPic(models.Model):
 
     image = models.ImageField(upload_to=img_upload_path_generator)
