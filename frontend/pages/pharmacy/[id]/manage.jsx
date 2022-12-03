@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Navigation from "../../../components/navigation/Navigation";
 import {
   createPrescriptionPicPharmacy,
+  deliverPrescription,
   getPrescriptionPatient,
   getPrescriptionPharmacy,
   updatePrescriptionPharmacy,
@@ -60,6 +61,9 @@ export default function Prescription() {
   const [description, setDescription] = useState("");
   // send
   const [send,setSend]= useState(0)
+  //attachment pic
+  const [attachment, setAttachment] = useState([]);
+  const ref = useRef();
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
@@ -70,15 +74,13 @@ export default function Prescription() {
       setSend(res.data.delivery_price);
       setDescription(res.data.pharmacy_description);
       setImage(res.data.pic[0]);
+      setAttachment(res.data.pharmacy_pic);
     } catch (error) {}
   };
   useEffect(() => {
     getPrescription();
   }, [id]);
   
-  //attachment pic
-  const [attachment, setAttachment] = useState([]);
-  const ref = useRef();
   const updatePrescription = async () => {
     try {
       await dispatch(
@@ -101,6 +103,21 @@ export default function Prescription() {
       console.log(error);
     }
   };
+
+  // 
+  const deliver = async () => {
+    try {
+      await dispatch(
+        deliverPrescription({
+          id: id,
+
+        })
+      ).unwrap();
+    } catch (error) {
+      
+    }
+  }
+
   // pic
   const [image, setImage] = useState();
   // close
@@ -112,7 +129,7 @@ export default function Prescription() {
         <div className="flex text-sm text-gray">درخواست‌ها</div>
         <div className="flex justify-between items-center mx-2">
           <div className="flex gap-12 items-center ">
-            <div className="text-lg font-bold">{prescription.id}</div>
+            <div className="text-lg font-bold">{prescription?.id}</div>
             <Chip
               variant="status"
               label={PRESCRIPTION_STATUS_TEXT[prescription?.status]}
@@ -131,35 +148,35 @@ export default function Prescription() {
             </div>
           </div>
           <div className="flex flex-row gap-4 flex-wrap">
-            <div className="flex flex-row items-center gap-2 rounded-lg border border-solid border-gray p-1 px-2">
-              <div className="text-sm ">نام بیمار :</div>
+            <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
+              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">نام بیمار :</div>
               <div className="text-sm font-bold">
-                {prescription.patient.first_name}{" "}
-                {prescription.patient.last_name}
+                {prescription?.patient.first_name}{" "}
+                {prescription?.patient.last_name}
               </div>
             </div>
-            <div className="flex flex-row items-center gap-2 rounded-lg border border-solid border-gray p-1 px-2">
-              <div className="text-sm ">تاریخ:</div>
+            <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
+              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">تاریخ:</div>
               <div className="text-sm font-bold">
-                {convertStrToJalali(prescription.created_at)}
+                {convertStrToJalali(prescription?.created_at)}
               </div>
             </div>
-            <div className="flex flex-row items-center gap-2 rounded-lg border border-solid border-gray p-1 px-2">
-              <div className="text-sm ">نوع سفارش:</div>
+            <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
+              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">نوع سفارش:</div>
               <div className="text-sm font-bold">value</div>
             </div>
-            <div className="flex flex-row items-center gap-2 rounded-lg border border-solid border-gray p-1 px-2">
-              <div className="text-sm ">شماره سفارش:</div>
-              <div className="text-sm font-bold">{prescription.id}</div>
+            <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
+              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">شماره سفارش:</div>
+              <div className="text-sm font-bold">{prescription?.id}</div>
             </div>
-            <div className="flex flex-row items-center gap-2 rounded-lg border border-solid border-gray p-1 px-2">
-              <div className="text-sm ">شامل بیمه :</div>
+            <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
+              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">شامل بیمه :</div>
               <div className="text-sm font-bold">value</div>
             </div>
-            <div className="flex flex-row items-center gap-2 rounded-lg border border-solid border-gray p-1 px-2">
-              <div className="text-sm ">کد ملی :</div>
+            <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
+              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">کد ملی :</div>
               <div className="text-sm font-bold">
-                {prescription.patient.national_id}
+                {prescription?.patient.national_id}
               </div>
             </div>
           </div>
@@ -169,7 +186,7 @@ export default function Prescription() {
             {" "}
             توضیحات بیمار
           </div>
-          <div className="text-sm text-gray">{prescription.description}</div>
+          <div className="text-sm text-gray">{prescription?.description}</div>
         </div>
       </div>
       <div
@@ -197,6 +214,7 @@ export default function Prescription() {
                     )
                   )
                 }
+                disabled={prescription?.status!= 'waiting_for_response'}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -225,6 +243,7 @@ export default function Prescription() {
                     )
                   )
                 }
+                disabled={prescription?.status!= 'waiting_for_response'}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -241,6 +260,7 @@ export default function Prescription() {
                 }}
               ></TextField>
               <div>
+              {prescription?.status === 'waiting_for_response'&&
                 <Button
                   className="flex items-center gap-2"
                   // color="grayBtn"
@@ -249,6 +269,7 @@ export default function Prescription() {
                   <AddIcon className="text-lg p-1 w-8 h-8 rounded border border-solid border-primary" />
                   افزودن عکس
                 </Button>
+                }
               </div>
               <div className="flex gap-2 overflow-auto w-full">
                 <input
@@ -266,7 +287,7 @@ export default function Prescription() {
                     key={item}
                   >
                     <img
-                      src={URL.createObjectURL(item)}
+                      src={item?.image ? item.image : URL.createObjectURL(item)}
                       alt=""
                       className="max-w-[100px] max-h-[100px] rounded-lg"
                     />
@@ -289,6 +310,7 @@ export default function Prescription() {
                 fullWidth
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                disabled={prescription?.status!= 'waiting_for_response'}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -324,6 +346,18 @@ export default function Prescription() {
               >
                 انصراف
               </Button>
+            </div>
+          )}
+          {prescription?.status == "waiting_for_delivery" && (
+            <div className="flex justify-end gap-2">
+              <Button
+                onClick={() => deliver()}
+                className="flex-grow md:flex-grow-0 md:w-32"
+                variant="contained"
+              >
+                ارسال شد
+              </Button>
+              
             </div>
           )}
         </div>

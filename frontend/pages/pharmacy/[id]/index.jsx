@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { CgDanger } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
 import Navigation from "../../../components/navigation/Navigation";
-import { getPrescriptionPatient, getPrescriptionPharmacy } from "../../../lib/slices/pharmacy";
+import { getPrescriptionPatient, getPrescriptionPharmacy, patientCancelView } from "../../../lib/slices/pharmacy";
 import { convertStrToJalali, stringifyPrice } from "../../../lib/utils";
 
 const PRESCRIPTION_STATUS_TEXT = {
@@ -44,6 +44,15 @@ export default function Prescription() {
   useEffect(() => {
     if (id && patient) getPrescription();
   }, [patient, id]);
+
+  //cancel prescription
+  const cancel = async () => {
+    try {
+      await dispatch(
+        patientCancelView({ patient_id: patient?.id, id: id })
+      ).unwrap();
+    } catch (error) {}
+  };
   return (
     <div className="flex flex-col p-6 gap-4">
       <div className="flex flex-col rounded-3xl border-solid border border-gray p-4 gap-2">
@@ -61,29 +70,30 @@ export default function Prescription() {
           </div>
         </div>
         <div className="flex flex-row gap-4 flex-wrap">
-          <div className="flex flex-row items-center gap-2 rounded-lg border border-solid border-gray p-1 px-2">
-            <div className="text-sm ">تاریخ:</div>
+          <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
+            <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto ">تاریخ:</div>
             <div className="text-sm font-bold">
               {convertStrToJalali(prescription.created_at)}
             </div>
           </div>
-          <div className="flex flex-row items-center gap-2 rounded-lg border border-solid border-gray p-1 px-2">
-            <div className="text-sm ">نوع سفارش:</div>
+          <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
+            <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto ">نوع سفارش:</div>
             <div className="text-sm font-bold">value</div>
           </div>
-          <div className="flex flex-row items-center gap-2 rounded-lg border border-solid border-gray p-1 px-2">
-            <div className="text-sm ">شماره سفارش:</div>
+          <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
+            <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto ">شماره سفارش:</div>
             <div className="text-sm font-bold">{prescription.id}</div>
           </div>
-          <div className="flex flex-row items-center gap-2 rounded-lg border border-solid border-gray p-1 px-2">
-            <div className="text-sm ">شامل بیمه :</div>
+          <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
+            <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto ">شامل بیمه :</div>
             <div className="text-sm font-bold">value</div>
           </div>
         </div>
       </div>
-      <div className="flex gap-2 items-center text-sm italic">
-        <CgDanger />
-        کاربر گرامی نسخه شما توسط داروخانه بررسی نشده است. پس از تایید توسط داروخانه هزینه نسخه برای شما پیامک میشود       </div>
+      {prescription?.status === 'waiting_for_response' && <div className="flex gap-2 items-center text-sm italic">
+        <div><CgDanger /></div>
+        کاربر گرامی نسخه شما توسط داروخانه بررسی نشده است. پس از تایید توسط داروخانه هزینه نسخه برای شما پیامک میشود       
+        </div>}
       {prescription?.status != 'waiting_for_response' && <div className="flex flex-col rounded-3xl border-solid border border-gray p-4 gap-12">
       <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
            نتیجه
@@ -111,7 +121,7 @@ export default function Prescription() {
             {stringifyPrice(prescription?.price + prescription?.delivery_price)}
           </div>
           </div>
-          <div className="flex gap-2 flex-grow md:flex-grow-0">
+         {prescription?.status == 'waiting_for_payment' &&<div className="flex gap-2 flex-grow md:flex-grow-0">
           <Button
                 onClick={() => router.push(`/pharmacy/${id}/delivery`)}
                 className="flex-grow  basis-[45%] md:flex-grow-0 md:w-32"
@@ -120,15 +130,24 @@ export default function Prescription() {
                 تکمیل سفارش
               </Button>
               <Button
-                onClick={() => {}}
+                onClick={cancel}
                 className="flex-grow basis-[45%] md:flex-grow-0 md:w-32"
                 variant="outlined"
               >
                 انصراف
               </Button>
-          </div>
+          </div>} 
         </div>
 </div>}
+{prescription?.status === 'waiting_for_payment' && <div className="flex gap-2 items-center text-sm italic">
+        <div><CgDanger /></div>
+        کاربر گرامی اعتبار پرداخت و ارسال این نسخه تا پایان روز جاری برای شما امکان‌پذیر می‌باشد. در غیر این صورت نسخه لغو خواهد شد.
+            </div>}
+
+            {prescription?.status === 'canceled' && <div className="flex gap-2 items-center text-sm italic">
+        <div><CgDanger /></div>
+        کاربر گرامی اعتبار پرداخت نسخه شما به پایان رسید و سفارش شما لغو گردید. در صورت علاقه میتوانید مجددا درخواست خود را ثبت نمایید.
+         </div>}
     </div>
   );
 }

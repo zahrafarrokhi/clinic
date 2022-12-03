@@ -51,7 +51,7 @@ export default function PatientSelection(props) {
   } : {}
   return (
     <div>
-    {user?.type != 'patient'  &&  <Button LinkComponent={NextLinkComposed} to={'/profile'}> {USER_TYPE[user.type]}</Button>}  
+    {user?.type != 'patient'  &&  <Button LinkComponent={NextLinkComposed} to={'/profile'}> {USER_TYPE[user?.type]}</Button>}  
  
    {user?.type == 'patient'&&<Button
       id="basic-button"

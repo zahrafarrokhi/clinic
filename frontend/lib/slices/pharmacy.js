@@ -91,6 +91,21 @@ export const setPharmacyTimeAndPayment = createAsyncThunk(
     }
   }
 );
+// cancel
+export const patientCancelView = createAsyncThunk(
+  "pharmacy/cancel",
+  async ({patient_id, id, ...data}, thunkAPI) => {
+    try {
+      const response = await axios.patch(`/api/pharmacy/prescription/patient/cancel/${patient_id}/${id}/`, {...data});
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
 
 // For pharmacy
 
@@ -151,6 +166,22 @@ export const createPrescriptionPicPharmacy = createAsyncThunk(
       fd.append('image', data.pic);
       fd.append('prescription', data.pre);      
       const response = await axios.post(`/api/pharmacy/prescription-pic-pharmacy/`, fd);
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
+//deliverPrescription
+export const deliverPrescription = createAsyncThunk(
+  "pharmacy/deliver-prescription",
+  async ({id,...data}, thunkAPI) => {
+    try {
+      const response = await axios.patch(`/api/pharmacy/pharmacy-deliver/${id}/`, {...data} );
 
       console.log(response, response.data);
     
@@ -268,6 +299,22 @@ export const pharmacySlice = createSlice({
       state.prescription = {...state.prescription, ...action.payload.data};
       return state;
     });
+  
+     // patientCancelView
+     builder.addCase(patientCancelView.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(patientCancelView.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(patientCancelView.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      state.prescription = {...state.prescription, ...action.payload.data};
+      return state;
+    });
     // For pharmacy
     //listPrescriptionsPharmacy
     builder.addCase(listPrescriptionsPharmacy.pending, (state) => ({
@@ -347,6 +394,23 @@ export const pharmacySlice = createSlice({
       // state.prescription.images = [...state.prescription.images, action.payload.data];
       return state;
     });
+
+    // deliverPrescription
+    builder.addCase(deliverPrescription.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(deliverPrescription.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(deliverPrescription.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      state.prescription = {...state.prescription, ...action.payload.data};
+      return state;
+    });
+  
 
   },
 

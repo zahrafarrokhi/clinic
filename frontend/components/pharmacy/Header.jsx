@@ -36,7 +36,7 @@ export default function Header(props) {
       <div className='text-lg font-bold '>{tabsList[state].title}</div>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', }} className="mx-6">
         <Tabs value={state}  aria-label="basic tabs example" onChange={handleChange}>
-          {Object.keys(tabsList).map(item => <Tab key={item} value={tabsList[item].id} label={tabsList[item].title} />)}
+          {Object.keys(tabsList).map(item => <Tab key={item} value={tabsList[item].id} label={tabsList[item].title} className="text-xs md:text-base"/>)}
         </Tabs>
       </Box>
     </div>
