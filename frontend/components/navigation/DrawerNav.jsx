@@ -84,17 +84,43 @@ const NavFields = [
         users: [DOCTOR, ASSISTANT, PATIENT],
       },
       {
-        id: "reports",
+        id: "reports-doctor",
         name: "گزارشات",
-        route: "/reports/",
-        isActive: () => /^\/visits/g,
+        route: "/reports/doctor/",
+        isActive: () => /^\/reports\/doctor/g,
         icon: (props) => (
           <HiOutlineDocumentDuplicate
             {...props}
             className={`${props.className} text-2xl`}
           />
         ),
-        users: [DOCTOR, LABORATORY, PHARMACY],
+        users: [DOCTOR],
+      },
+      {
+        id: "reports-pharmacy",
+        name: "گزارشات",
+        route: "/reports/pharmacy/",
+        isActive: () => /^\/reports\/pharmacy/g,
+        icon: (props) => (
+          <HiOutlineDocumentDuplicate
+            {...props}
+            className={`${props.className} text-2xl`}
+          />
+        ),
+        users: [PHARMACY],
+      },
+      {
+        id: "reports-laboratory",
+        name: "گزارشات",
+        route: "/reports/laboratory/",
+        isActive: () => /^\/reports\/laboratory/g,
+        icon: (props) => (
+          <HiOutlineDocumentDuplicate
+            {...props}
+            className={`${props.className} text-2xl`}
+          />
+        ),
+        users: [ LABORATORY],
       },
     ],
   },

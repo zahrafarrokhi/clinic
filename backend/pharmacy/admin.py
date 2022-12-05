@@ -52,8 +52,16 @@ class PharmacyPrescriptionPicAdmin(admin.ModelAdmin):
     list_display = ('image', 'prescription')
     ordering = ('image', 'prescription')
 
+class PharmacyPaymentAdmin(admin.ModelAdmin):
+    search_fields = ('amount', 'created_at')
+    list_display = ('amount', 'created_at')
+    ordering = ('-created_at', )
+    readonly_fields = ('created_at', 'updated_at', )
+
+
 
 admin.site.register(models.Pharmacy, PharmacyAdmin)
+admin.site.register(models.PharmacyPayment, PharmacyPaymentAdmin)
 admin.site.register(models.PharmacyPrescription, PharmacyPrescriptionAdmin)
 admin.site.register(models.PharmacyPrescriptionPic, PharmacyPrescriptionPicAdmin)
 

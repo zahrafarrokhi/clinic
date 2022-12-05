@@ -11,6 +11,10 @@ router.register(r'prescription-pic',views.PatientPrescriptionPicView,basename='p
 router.register(r'prescription-pharmacy',views.PharmacyView,basename='prescription-pharmacy')
 router.register(r'prescription-pic-pharmacy',views.PharmacyPrescriptionPicView,basename='prescription-pic-pharmacy')
 router.register(r'pharmacy-deliver',views.PharmacyDeliver,basename='pharmacy-deliver')
+# chart
+router.register(r'pharmacy-chart',views.Chart,basename='pharmacy-chart')
+# fields
+router.register(r'pharmacy-fields',views.ReportFields,basename='pharmacy-fields')
 urlpatterns = [
     # patient
     path('prescription/patient/<int:patient_id>/', views.PatientPrescriptionView.as_view({'get': 'list'}), name='prescription-patient-list'),

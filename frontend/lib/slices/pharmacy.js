@@ -192,9 +192,43 @@ export const deliverPrescription = createAsyncThunk(
   }
 );
 
+//getChart
+export const getChart = createAsyncThunk(
+  "pharmacy/getChart",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await axios.get(`/api/pharmacy/pharmacy-chart/`, );
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
+//getFields
+export const getFields = createAsyncThunk(
+  "pharmacy/getFields",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await axios.get(`/api/pharmacy/pharmacy-fields/`, );
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
 const internalInitialState = {
   prescriptions: [],
   prescription: null,
+  chart: [],
+  fields: [],
   error: null,
   loading: IDLE, // false ,not busy
 };
@@ -408,6 +442,39 @@ export const pharmacySlice = createSlice({
     builder.addCase(deliverPrescription.fulfilled, (state, action) => {
       state.loading = IDLE;
       state.prescription = {...state.prescription, ...action.payload.data};
+      return state;
+    });
+  
+
+    // getChart
+    builder.addCase(getChart.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(getChart.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(getChart.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      state.chart = action.payload.data;
+      return state;
+    });
+  
+    // getFields
+    builder.addCase(getFields.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(getFields.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(getFields.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      state.fields = action.payload.data;
       return state;
     });
   

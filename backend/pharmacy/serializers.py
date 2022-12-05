@@ -152,3 +152,11 @@ class PharmacyDeliverPrescription(serializers.ModelSerializer):
         instance.status = PharmacyPrescription.Status.delivered
         instance.save()
         return instance
+
+class ChartSerializer(serializers.Serializer):
+    date = serializers.DateField()
+    prescription = serializers.IntegerField()
+
+class ReportFieldsSerializer(serializers.Serializer):
+    title = serializers.CharField()
+    value = serializers.CharField()
