@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'chat',
     'support',
     'pharmacy',
+    'laboratory',
 
 
 ]
@@ -220,7 +221,7 @@ ROCKETCHAT_SETTINGS = {
     "admin_user_id": env("ROCKETCHAT_ADMIN_USERID"),
 }
 
-FILE_UPLOAD_SIZE_LIMIT = 8 * 1024 * 1024
+FILE_UPLOAD_SIZE_LIMIT = 8 * 1024 * 1024 * 1024
 
 #celery
 CELERY_BROKER_URL = env('CELERY_BROKER_URL')
