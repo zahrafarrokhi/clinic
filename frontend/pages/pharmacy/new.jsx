@@ -63,13 +63,13 @@ export default function RequestPrescription() {
   const [checked, setChecked] = useState("pres");
   const [attachment,setAttachment]=useState([]);
   const ref = useRef()
-  const route = useRouter()
+  const router = useRouter()
 
   // dialog
   const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
-    route.push('/pharmacy/')
+    router.push('/pharmacy/')
 
   };
 //redux

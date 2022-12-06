@@ -6,6 +6,10 @@ import AddIcon from '@mui/icons-material/Add';
 import AddressSelection from "../../components/ProfileFields/AddressSelection";
 import {CgDanger} from 'react-icons/cg'
 import Header from '../../components/pharmacy/Header';
+import { useDispatch, useSelector } from 'react-redux';
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { createPrescription, createPrescriptionPic } from '../../lib/slices/laboratory';
+import { useRouter } from 'next/router';
 
 // label style
 const StyledFormControlLabel = styled((props) => <FormControlLabel {...props} />)(
@@ -53,16 +57,39 @@ export default function New() {
   const ref = useRef()
   const [attachment,setAttachment]=useState([]);
   const [addressId, setAddressId] = useState();
+  const router =useRouter()
 
   // dialog
   const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
-    route.push('/laboratory/')
+    router.push('/laboratory/')
 
   };
 
-  const submit = async()=>{}
+  const patient = useSelector((state) => state.patientReducer?.patient);
+  const dispatch = useDispatch()
+
+  const submit = async()=>{
+    try {
+      const response = await dispatch(createPrescription({
+        code,
+        description,
+        patient:patient.id,
+        address: addressId,
+
+      })).unwrap();
+      for (let pic of attachment) {
+        await dispatch(createPrescriptionPic({
+          prescription: response.data.id,
+          image: pic,
+        })).unwrap();
+      }
+      setOpen(true)
+    } catch(e) {
+
+    }
+  }
   return (
     <div className="px-6 py-4 w-full">
       <Header state="send"/>
