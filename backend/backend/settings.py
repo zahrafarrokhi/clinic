@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import environ
 import os
-
+from celery.schedules import crontab
 env = environ.Env(
     # You can set default values here
     DEBUG=(bool, False)
@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework',
     'django_filters',
+    'django_celery_beat',
     'rest_framework_gis',
     'constant_data',
     'authentication',
@@ -220,4 +221,22 @@ ROCKETCHAT_SETTINGS = {
 }
 
 FILE_UPLOAD_SIZE_LIMIT = 8 * 1024 * 1024
+
+#celery
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Tehran'
+
+CELERY_BEAT_SCHEDULE = {
+
+    "close_pharmacy_prescriptions": {
+        "task": "close_pharmacy_prescriptions",
+        "schedule": crontab(hour=0, minute=5),
+    },
+
+
+}
 

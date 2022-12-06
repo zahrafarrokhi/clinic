@@ -34,6 +34,16 @@ services:
     env_file:
       - ./backend/.env
     entrypoint: ./entrypoint_celery.sh
+  celery_beat:
+    build: .
+    image: creativity-backend
+    volumes:
+      - static:/app/static
+      - media:/app/media
+    env_file:
+      - ./backend/.env
+    entrypoint: ./entrypoint_celery_beat.sh
+
 
   postgres_db:
 #    image: postgres:12-alpine3.16
@@ -49,6 +59,14 @@ services:
     environment:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-postgres}
       DJANGO_DATABASE: ${DATABASE_NAME:-django}
+
+
+  rabbitmq:
+    image: rabbitmq:3.9.7-management-alpine
+    restart: unless-stopped
+    ports:
+      - 5672:5672
+
 
 volumes:
   static:
