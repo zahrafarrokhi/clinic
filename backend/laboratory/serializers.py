@@ -52,6 +52,9 @@ class PatientPrescriptionPicSerializer(serializers.ModelSerializer):
 
 
 # laboratory
+class TimeSerializer(serializers.Serializer):
+    start_time = serializers.TimeField()
+    end_time = serializers.TimeField()
 
 class LaboratoryPrescriptionSerializer(serializers.ModelSerializer):
     patient = PatientSerializer(read_only=True)
@@ -59,6 +62,7 @@ class LaboratoryPrescriptionSerializer(serializers.ModelSerializer):
     pic = PatientPrescriptionPicSerializer(many=True, source="patientprescriptionpic_set",read_only=True)
     # related_name="tests" , source and fieldname have the same name => we dont need source
     tests = TestPrescriptionSerializer(many=True)
+    time = TimeSerializer(many=True)
     class Meta:
         model = LaboratoryPrescription
         fields = '__all__'
@@ -68,12 +72,14 @@ class LaboratoryPrescriptionSerializer(serializers.ModelSerializer):
     # def validate(self, attrs):
     #     pass
 
+    # def validate_time(self, time):
+
     def update(self, instance, validated_data):
         instance.price = validated_data['price']
         instance.doctor_name = validated_data['doctor_name']
         instance.delivery_price = validated_data['delivery_price']
         instance.laboratory_description = validated_data['laboratory_description']
-
+        instance.time = validated_data['time']
         tests_data = validated_data['tests']
         tests = []
         for test_data in tests_data:

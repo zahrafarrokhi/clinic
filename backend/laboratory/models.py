@@ -39,6 +39,7 @@ class LaboratoryPrescription(models.Model):
     doctor_name =  models.CharField(max_length=40,null=True, blank=True)
     delivery_price = models.BigIntegerField(null=True, blank=True)
     laboratory_description = models.TextField(null=True, blank=True)
+    time = models.JSONField(null=True, blank=True)
 
  # patient upload pic & lab see that
 class PatientPrescriptionPic(models.Model):
