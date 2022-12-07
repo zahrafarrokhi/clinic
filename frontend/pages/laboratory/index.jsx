@@ -1,7 +1,7 @@
 import React from 'react'
 import Navigation from '../../components/navigation/Navigation';
 import Header from '../../components/pharmacy/Header';
-import { listPrescriptionsPatient } from '../../lib/slices/laboratory';
+import { listPrescriptionsLaboratory, listPrescriptionsPatient } from '../../lib/slices/laboratory';
 import {
   AppBar,
   Button,
@@ -160,7 +160,7 @@ export default function LaboratoryList() {
   // route
   const router = useRouter()
   const user = useSelector((state) => state.authReducer?.user);
-  const loadAction = useMemo(() => user?.type == 'patient'?listPrescriptionsPatient:null, [user]);
+  const loadAction = useMemo(() => user?.type == 'patient'?listPrescriptionsPatient:listPrescriptionsLaboratory, [user]);
   const lstPrePatient = useMemo(
     () =>
       throttle(async ({ search }) => {
@@ -542,7 +542,7 @@ const [selectedTab,setSelectedTab] = useState('open')
               >
                 تاریخ
               </CustomTableSortLabel>
-              {user.type ==='pharmacy'&&<CustomTableSortLabel
+              {user.type ==='laboratory'&&<CustomTableSortLabel
                 order={order}
                 orderBy={orderBy}
                 id={"patient__last_name"}
@@ -594,9 +594,9 @@ const [selectedTab,setSelectedTab] = useState('open')
                   <CalendarMonthIcon className="ml-2 my-auto align-middle text-sm hidden md:inline" />
                   {convertStrToJalali(row.created_at)}
                 </StyledTableCell>
-                {user.type ==='pharmacy'&& <StyledTableCell
+                {user.type ==='laboratory'&& <StyledTableCell
                   className="text-sm col-span-3 text-textGray md:text-black "
-                  align="left"
+                  align="center"
                 >
                 {row.patient.first_name }   {row.patient.last_name }
                 </StyledTableCell>}

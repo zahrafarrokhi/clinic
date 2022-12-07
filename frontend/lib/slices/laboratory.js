@@ -65,7 +65,7 @@ export const listPrescriptionsPatient = createAsyncThunk(
 //getPrescriptionsPatient
 export const getPrescriptionPatient = createAsyncThunk(
   "laboratory/get",
-  async ({patient_id, id}, thunkAPI) => {
+  async ({id, patient_id}, thunkAPI) => {
     try {
       const response = await axios.get(`/api/laboratory/patient/${patient_id}/prescription/${id}/`, );
 
@@ -78,6 +78,56 @@ export const getPrescriptionPatient = createAsyncThunk(
   }
 );
 
+// Laboratory
+
+//listPrescriptionsLaboratory
+export const listPrescriptionsLaboratory = createAsyncThunk(
+  "laboratory/list-laboratory",
+  async ({patient_id, id}, thunkAPI) => {
+    try {
+      const response = await axios.get(`/api/laboratory/laboratory-prescription/`, );
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
+//getPrescriptionLaboratory
+export const getPrescriptionLaboratory = createAsyncThunk(
+  "laboratory/get-laboratory",
+  async ({id}, thunkAPI) => {
+    try {
+      const response = await axios.get(`/api/laboratory/laboratory-prescription/${id}/`, );
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
+
+//updatePrescriptionLaboratory
+export const updatePrescriptionLaboratory = createAsyncThunk(
+  "laboratory/update-laboratory",
+  async ({id, ...data}, thunkAPI) => {
+    try {
+      const response = await axios.patch(`/api/laboratory/laboratory-prescription/${id}/`, {...data});
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
 
 const internalInitialState = {
   prescriptions: [],
@@ -163,6 +213,63 @@ export const laboratorySlice = createSlice({
       error: action.payload.error,
     }));
     builder.addCase(getPrescriptionPatient.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      //total data => action.payload.data
+      //up => {...respose.data } or response.data => action.payload
+    
+      state.prescription = action.payload.data;
+      return state;
+    });
+
+    //listPrescriptionsLaboratory
+    builder.addCase(listPrescriptionsLaboratory.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(listPrescriptionsLaboratory.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(listPrescriptionsLaboratory.fulfilled, (state, action) => {
+      state.loading = IDLE;
+    
+      state.prescriptions = action.payload.data;
+      return state;
+    });
+
+    //getPrescriptionLaboratory
+    builder.addCase(getPrescriptionLaboratory.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(getPrescriptionLaboratory.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(getPrescriptionLaboratory.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      //total data => action.payload.data
+      //up => {...respose.data } or response.data => action.payload
+    
+      state.prescription = action.payload.data;
+      return state;
+    });
+  
+
+
+    //updatePrescriptionLaboratory
+    builder.addCase(updatePrescriptionLaboratory.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(updatePrescriptionLaboratory.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(updatePrescriptionLaboratory.fulfilled, (state, action) => {
       state.loading = IDLE;
       //total data => action.payload.data
       //up => {...respose.data } or response.data => action.payload
