@@ -1,4 +1,4 @@
-import { Button, Chip, IconButton } from "@mui/material";
+import { Button, Chip, Divider, IconButton } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
@@ -11,6 +11,7 @@ import {
 } from "../../../lib/slices/laboratory";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { convertStrToJalali, stringifyPrice } from "../../../lib/utils";
+import Tests from "../../../components/laboratory/Tests";
 
 const PRESCRIPTION_STATUS_TEXT = {
   waiting_for_response: "در انتظار پاسخ",
@@ -76,7 +77,7 @@ export default function Prescription() {
               تاریخ:
             </div>
             <div className="text-sm font-bold">
-              {convertStrToJalali(prescription.created_at)}
+              {convertStrToJalali(prescription?.created_at)}
             </div>
           </div>
           <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
@@ -89,7 +90,7 @@ export default function Prescription() {
             <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto ">
               شماره سفارش:
             </div>
-            <div className="text-sm font-bold">{prescription.id}</div>
+            <div className="text-sm font-bold">{prescription?.id}</div>
           </div>
           <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
             <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto ">
@@ -109,30 +110,39 @@ export default function Prescription() {
         </div>
       )}
       {prescription?.status != "waiting_for_response" && (
+        <Tests disabled tests={prescription?.tests || []}/>
+      )}
+      {prescription?.status != "waiting_for_response" && (
         <div className="flex flex-col rounded-3xl border-solid border border-gray p-4 gap-12">
-          <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
-            نتیجه
+          
+          <div className="">
+            <span className="text-sm text-gray">توضیحات:</span>
+            <span className="text-lg font-bold">
+              {prescription?.laboratory_description}
+            </span>
           </div>
+         
           <div className="justify-between flex flex-row gap-2 flex-wrap">
-            <div className="flex flex-col basis-[40%]">
-              <div className="text-sm text-gray">توضیحات</div>
-              <div className="text-lg font-bold">
-                {prescription?.pharmacy_description}
+            
+          <div className="flex gap-4 items-center">
+              <div className="text-sm font-bold">هزینه‌ی آزمایش:</div>
+              <div className="text-lg font-bold text-primary">
+                {stringifyPrice(
+                  prescription?.price + prescription?.delivery_price
+                )}
               </div>
             </div>
-            <div className="flex flex-col basis-[40%]">
-              <div className="text-sm text-gray">تصاویر پیوست شده</div>
-              <div className="flex gap-2 overflow-auto w-full">
-                {prescription?.pic?.map((p) => (
-                  <div className="relative aspect-video w-[150px]">
-                    <Image layout="fill" src={p.image} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="justify-between flex flex-row gap-2 flex-wrap">
             <div className="flex gap-4 items-center">
+              <div className="text-sm font-bold">هزینه‌ی مراجعه:</div>
+              <div className="text-lg font-bold text-primary">
+                {stringifyPrice(
+                  prescription?.delivery_price
+                )}
+              </div>
+            </div>
+
+            <div className="flex gap-4 items-center">
+            <Divider orientation="vertical"/>
               <div className="text-sm font-bold">جمع کل:</div>
               <div className="text-lg font-bold text-primary">
                 {stringifyPrice(
@@ -140,28 +150,29 @@ export default function Prescription() {
                 )}
               </div>
             </div>
-            {prescription?.status == "waiting_for_payment" && (
-              <div className="flex gap-2 flex-grow md:flex-grow-0">
-                <Button
-                  onClick={() => router.push(`/pharmacy/${id}/delivery`)}
-                  className="flex-grow  basis-[45%] md:flex-grow-0 md:w-32"
-                  variant="contained"
-                >
-                  تکمیل سفارش
-                </Button>
-                <Button
-                  onClick={cancel}
-                  className="flex-grow basis-[45%] md:flex-grow-0 md:w-32"
-                  variant="outlined"
-                >
-                  انصراف
-                </Button>
-              </div>
-            )}
           </div>
         </div>
       )}
 
+
+      {prescription?.status == "waiting_for_payment" && (
+        <div className="flex gap-2 justify-end md:flex-grow-0">
+          <Button
+            onClick={() => router.push(`/laboratory/${id}/delivery`)}
+            className="basis-[45%] md:0 md:basis-[10em] md:flex-grow-0 md:w-32"
+            variant="contained"
+          >
+            تکمیل سفارش
+          </Button>
+          <Button
+            // onClick={cancel}
+            className="basis-[45%] flex-grow md:flex-grow-0 md:basis-[10em] md:w-32"
+            variant="outlined"
+          >
+            انصراف
+          </Button>
+        </div>
+      )}
 
       {prescription?.status === "canceled" && (
         <div className="flex gap-2 items-center text-sm italic">

@@ -85,7 +85,7 @@ export default function Prescription() {
               تاریخ:
             </div>
             <div className="text-sm font-bold">
-              {convertStrToJalali(prescription.created_at)}
+              {convertStrToJalali(prescription?.created_at)}
             </div>
           </div>
           <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
@@ -98,7 +98,7 @@ export default function Prescription() {
             <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto ">
               شماره سفارش:
             </div>
-            <div className="text-sm font-bold">{prescription.id}</div>
+            <div className="text-sm font-bold">{prescription?.id}</div>
           </div>
           <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
             <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto ">
