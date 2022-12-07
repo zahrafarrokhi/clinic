@@ -6,14 +6,28 @@ from django.utils.translation import gettext_lazy as _
 from backend import settings
 from patient.serializers import PatientSerializer
 
+from datetime import date, time
+
+from payment.serializers import PaymentSerializer
+from payment.services import BasePaymentService
+
+
 # patient & lab
 class TestPrescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestPrescription
         fields = '__all__'
+
+class TimeSerializer(serializers.Serializer):
+    start_time = serializers.TimeField()
+    end_time = serializers.TimeField()
+    date = serializers.DateField()
+
 # patient
 class PatientPrescriptionSerializer(serializers.ModelSerializer):
     # pic = PharmacyPrescriptionPicSerializer(source="pharmacyprescriptionpic_set", read_only=True, many=True)
+    tests = TestPrescriptionSerializer(many=True)
+
     class Meta :
         model = LaboratoryPrescription
         fields = '__all__'
@@ -51,10 +65,41 @@ class PatientPrescriptionPicSerializer(serializers.ModelSerializer):
         return attrs
 
 
+
+class PatientPaymentPrescriptionSerializer(serializers.ModelSerializer):
+    payment = PaymentSerializer(read_only=True)
+    selected_time = TimeSerializer()
+    class Meta :
+        model = LaboratoryPrescription
+        fields = ['id', 'selected_time', 'payment']
+
+    def validate(self,attrs):
+        patient = self.instance.patient
+        user = self.context['request'].user
+        if user != patient.user:
+            raise serializers.ValidationError(_("you arent allowed to do this"))
+
+        status = self.instance.status
+        if status != LaboratoryPrescription.Status.waiting_for_payment:
+            raise serializers.ValidationError(_("you arent allowed to do this"))
+        return attrs
+
+    def update(self, instance, validated_data):
+        payment = BasePaymentService.create_payment(user=self.context['request'].user,
+                                                    amount=instance.price + instance.delivery_price,
+                                                    description="Laboratory Prescription",
+                                                    )
+        instance.selected_time = {
+            'start_time': validated_data['selected_time']['start_time'].strftime('%H:%M:%S', ),
+            'end_time': validated_data['selected_time']['end_time'].strftime('%H:%M:%S', ),
+            'date': validated_data['selected_time']['date'].strftime("%Y-%m-%d", ),
+        }
+        instance.payment = payment
+        instance.save()
+        return instance
+
+
 # laboratory
-class TimeSerializer(serializers.Serializer):
-    start_time = serializers.TimeField()
-    end_time = serializers.TimeField()
 
 class LaboratoryPrescriptionSerializer(serializers.ModelSerializer):
     patient = PatientSerializer(read_only=True)
@@ -79,9 +124,16 @@ class LaboratoryPrescriptionSerializer(serializers.ModelSerializer):
         instance.doctor_name = validated_data['doctor_name']
         instance.delivery_price = validated_data['delivery_price']
         instance.laboratory_description = validated_data['laboratory_description']
-        instance.time = validated_data['time']
+        print(validated_data['time'])
+        instance.time = [
+            {
+                'start_time': item['start_time'].strftime('%H:%M:%S', ),
+                'end_time':  item['end_time'].strftime('%H:%M:%S',),
+                'date': item['date'].strftime("%Y-%m-%d", ),
+            } for item in validated_data['time']]
+
         tests_data = validated_data['tests']
-        tests = []
+
         for test_data in tests_data:
             # test_data.pop('id')
             test_data.update({
@@ -89,7 +141,6 @@ class LaboratoryPrescriptionSerializer(serializers.ModelSerializer):
             })
             test = TestPrescription(**test_data)
             test.save()
-            tests.append(test)
-
+        instance.status = LaboratoryPrescription.Status.waiting_for_payment
         instance.save()
         return instance

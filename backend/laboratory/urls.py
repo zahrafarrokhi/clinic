@@ -9,6 +9,8 @@ general_router = routers.DefaultRouter()
 general_router.register(r'prescription-pic',views.PatientPrescriptionPicView,basename='laboratory-prescription-pic')
 # laboratory
 general_router.register(r'laboratory-prescription',views.LaboratoryPrescriptionView,basename='laboratory-prescription')
+# patient
+patient_router.register(r'prescription-payment', views.PatientPaymentPrescriptionView, basename='patient-prescription-payment')
 urlpatterns = [
 
     path('patient/<int:patient_id>/', include(patient_router.urls)),

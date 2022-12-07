@@ -67,7 +67,24 @@ export const getPrescriptionPatient = createAsyncThunk(
   "laboratory/get",
   async ({id, patient_id}, thunkAPI) => {
     try {
-      const response = await axios.get(`/api/laboratory/patient/${patient_id}/prescription/${id}/`, );
+      const response = await axios.get(`/api/laboratory/patient/${patient_id}/prescriptions/${id}/`, );
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
+
+//getPrescriptionPaymentPatient
+export const getPrescriptionPaymentPatient = createAsyncThunk(
+  "laboratory/payment",
+  async ({id, patient_id, ...data}, thunkAPI) => {
+    try {
+      const response = await axios.put(`/api/laboratory/patient/${patient_id}/prescription-payment/${id}/`, {...data});
 
       console.log(response, response.data);
     
@@ -213,6 +230,25 @@ export const laboratorySlice = createSlice({
       error: action.payload.error,
     }));
     builder.addCase(getPrescriptionPatient.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      //total data => action.payload.data
+      //up => {...respose.data } or response.data => action.payload
+    
+      state.prescription = action.payload.data;
+      return state;
+    });
+
+    //getPrescriptionPaymentPatient
+    builder.addCase(getPrescriptionPaymentPatient.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(getPrescriptionPaymentPatient.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(getPrescriptionPaymentPatient.fulfilled, (state, action) => {
       state.loading = IDLE;
       //total data => action.payload.data
       //up => {...respose.data } or response.data => action.payload

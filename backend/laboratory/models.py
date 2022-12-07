@@ -5,6 +5,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 import string
 
+from payment.models import Payment
 
 
 def generate_random_str(length=5):
@@ -40,8 +41,13 @@ class LaboratoryPrescription(models.Model):
     delivery_price = models.BigIntegerField(null=True, blank=True)
     laboratory_description = models.TextField(null=True, blank=True)
     time = models.JSONField(null=True, blank=True)
+    #payment
+    payment = models.OneToOneField(Payment, on_delete=models.CASCADE, null=True, blank=True,
+                                   related_name="laboratory_prescription")
+    selected_time = models.JSONField(null=True, blank=True)
 
- # patient upload pic & lab see that
+
+# patient upload pic & lab see that
 class PatientPrescriptionPic(models.Model):
     image = models.ImageField(upload_to=img_upload_path_generator)
     # pic for which prescription

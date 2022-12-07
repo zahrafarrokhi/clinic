@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from authentication.models import User
 from laboratory.models import LaboratoryPrescription
 from laboratory.serializers import PatientPrescriptionSerializer, PatientPrescriptionPicSerializer, \
-    LaboratoryPrescriptionSerializer
+    LaboratoryPrescriptionSerializer, PatientPaymentPrescriptionSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
@@ -36,6 +36,16 @@ class PatientPrescriptionView(mixins.CreateModelMixin, mixins.ListModelMixin,
 class PatientPrescriptionPicView(mixins.CreateModelMixin,viewsets.GenericViewSet):
     serializer_class = PatientPrescriptionPicSerializer
     permission_classes = [IsAuthenticated]
+
+class PatientPaymentPrescriptionView(mixins.UpdateModelMixin,viewsets.GenericViewSet):
+    serializer_class = PatientPaymentPrescriptionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        patient_id = self.kwargs.get('patient_id', None)
+        queryset = LaboratoryPrescription.objects.filter(patient__user=self.request.user, patient=patient_id)
+
+        return queryset
 
 # laboratory
 

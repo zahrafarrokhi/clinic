@@ -11,14 +11,14 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/Edit";
 
 const TestItem = (props) => {
-  const { item, tests, setTests } = props;
+  const { item, tests, setTests,disabled } = props;
   const [openIcon, setOpenIcon] = useState(false);
   const [edit, setEdit] = useState(false);
   
 
   return (
     <div className="flex justify-around items-center border-0 border-b last:border-b-0 border-solid border-b-gray px-3 p-2">
-      <ClickAwayListener onClickAway={() => setOpenIcon(false)}>
+      {!disabled&&<ClickAwayListener onClickAway={() => setOpenIcon(false)}>
         <div className="flex flex-row basis-1/12 items-center text-lg">
           {openIcon ? (
             <>
@@ -37,7 +37,7 @@ const TestItem = (props) => {
             <div onClick={() => setOpenIcon(true)}>...</div>
           )}
         </div>
-      </ClickAwayListener>
+      </ClickAwayListener>}
       <div className="basis-4/12">
         {edit ? (
           <ClickAwayListener onClickAway={() => setEdit(false)}>
@@ -61,30 +61,30 @@ const TestItem = (props) => {
       <Button sx={{
         opacity: item.insurance ? 1 : 0.5,
         fontWeight: item.insurance ? 'bold' : 'normal',
-      }} key={item.insurance} onClick={() => setTests(
+      }} key={item.insurance} onClick={() => !disabled && setTests(
         [
           ...tests.filter((x) => x.id !== item.id),
           { ...item, insurance: !item.insurance },
         ].sort((a, b) => a.id - b.id)
       )
-      } className="basis-3/12">بیمه تکمیلی</Button>
+      } className="basis-3/12" >بیمه تکمیلی</Button>
       <Button sx={{
         opacity: item.sup_insurance ? 1 : 0.5,
         fontWeight: item.sup_insurance ? 'bold' : 'normal',
       }} onClick={(e) =>
-        setTests(
+        !disabled && setTests(
           [
             ...tests.filter((x) => x.id !== item.id),
             { ...item, sup_insurance: !item.sup_insurance},
           ].sort((a, b) => a.id - b.id)
         )
-      } className="basis-3/12">بیمه تامین اجتماعی</Button>
+      } className="basis-3/12" >بیمه تامین اجتماعی</Button>
     </div>
   );
 };
 
 export default function Tests(props) {
-  const {tests, setTests} =props;
+  const {tests, setTests, disabled} =props;
   // const [tests, setTests] = useState([
   //   // {name, insurance, sup_insurance}
   // ]);
@@ -100,7 +100,7 @@ export default function Tests(props) {
       <div className="flex justify-between">
         <div className="text-grayBtn">آزمایش‌ها</div>
 
-        <Button
+       {!disabled && <Button
           variant="outlined"
           className="flex items-center justify-center"
           onClick={() =>
@@ -116,11 +116,12 @@ export default function Tests(props) {
           }
         >
           <AiOutlinePlus className="text-primary mx-2 " />
-        </Button>
+        </Button>}
       </div>
-      <div className="flex flex-col rounded-3xl border-solid border border-gray gap-2">
+      <div className="flex flex-col rounded-3xl border-solid border border-gray gap-2 basis-20">
         {tests.map((item) => (
           <TestItem
+            disabled={disabled}
             key={item.id}
             item={item}
             tests={tests}

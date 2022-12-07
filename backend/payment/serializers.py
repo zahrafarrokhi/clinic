@@ -23,7 +23,9 @@ class PaymentSerializer(serializers.ModelSerializer):
             elif hasattr(instance, 'pharmacy_prescription'):
                 instance.pharmacy_prescription.status = instance.pharmacy_prescription.Status.waiting_for_delivery
                 instance.pharmacy_prescription.save()
-
+            elif hasattr(instance, 'laboratory_prescription'):
+                instance.laboratory_prescription.status = instance.laboratory_prescription.Status.waiting_for_delivery
+                instance.laboratory_prescription.save()
         return instance
 
 class VisitSerializer(serializers.ModelSerializer):

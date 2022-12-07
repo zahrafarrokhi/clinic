@@ -27,6 +27,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { getPrescriptionLaboratory, updatePrescriptionLaboratory } from "../../../lib/slices/laboratory";
 import AddressSelection from "../../../components/ProfileFields/AddressSelection";
 import Tests from "../../../components/laboratory/Tests";
+import Time from "../../../components/laboratory/Time";
 
 const PRESCRIPTION_STATUS_TEXT = {
   waiting_for_response: "در انتظار پاسخ",
@@ -68,6 +69,8 @@ export default function Prescription() {
 const [tests, setTests] = useState([
   // {name, insurance, sup_insurance}
 ]);
+// time
+const [selected,setSelected] = useState([])
   const getPrescription = async () => {
     try {
       const res = await dispatch(getPrescriptionLaboratory({ id: id })).unwrap();
@@ -77,6 +80,7 @@ const [tests, setTests] = useState([
       setImage(res.data.pic[0]);
       setDoctorName(res.data.doctor_name)
       setTests(res.data.tests);
+      setSelected(res.data.time || [])
     } catch (error) {}
   };
   useEffect(() => {
@@ -93,6 +97,7 @@ const [tests, setTests] = useState([
           delivery_price:send,
           doctor_name: doctorName,
           tests,
+          time: selected,
 
         })
       ).unwrap();
@@ -284,7 +289,7 @@ const [tests, setTests] = useState([
               ></TextField>
               </div>
 
-              <Tests tests={tests} setTests={setTests}/>
+              <Tests tests={tests} setTests={setTests} disabled={prescription?.status!= 'waiting_for_response'}/>
                 
               
               <TextField
@@ -360,10 +365,10 @@ const [tests, setTests] = useState([
             ساعت و تاریخ مراجعه
           </div>
           {/* <AddressSelection disabled addressId={prescription.address}/> */}
-          <div className="w-full md:w-fit">
+          <div className="w-full flex flex-col gap-4 items-start">
+            <Time selected={selected} setSelected={setSelected}  disabled={prescription?.status!= 'waiting_for_response'}/>
               <TextField
                 label="هزینه مراجعه"
-                fullWidth
                 value={stringifyPrice(send, "")}
                 onChange={(e) =>
                   setSend(
