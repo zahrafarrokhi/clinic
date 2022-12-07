@@ -199,7 +199,7 @@ const [tests, setTests] = useState([
         } flex-wrap md:flex-nowrap`}
       >
         <div
-          className={`bg-backgroundPrimary ${
+          className={`bg-backgroundPrimary md:order-1 ${
             close ? "w-0 static md:relative" : "relative flex-grow rounded-lg md:rounded-none md:flex-grow-0 md:w-[29.5%] p-4 min-w-full md:min-w-fit"
           }  flex flex-col  transition-all duration-300 `}
         >
