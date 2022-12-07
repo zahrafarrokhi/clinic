@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from laboratory.models import PatientPrescriptionPic
+from laboratory.models import PatientPrescriptionPic, TestPrescription
 from laboratory import models
 
 
@@ -9,6 +9,11 @@ class InlinePatientPicture(admin.StackedInline):
     model = PatientPrescriptionPic
 
     fields = ('image', )
+
+class InlineTest(admin.StackedInline):
+    model = TestPrescription
+
+    fields = ('test_name', 'insurance', 'sup_insurance')
 
 
 class LaboratoryPrescriptionAdmin(admin.ModelAdmin):
@@ -28,7 +33,7 @@ class LaboratoryPrescriptionAdmin(admin.ModelAdmin):
             }
          ),
     )
-    inlines = [InlinePatientPicture, ]
+    inlines = [InlinePatientPicture, InlineTest]
     readonly_fields = ('created_at', 'updated_at', )
 
 admin.site.register(models.LaboratoryPrescription, LaboratoryPrescriptionAdmin)
