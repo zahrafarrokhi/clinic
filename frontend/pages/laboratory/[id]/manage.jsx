@@ -36,6 +36,7 @@ import Tests from "../../../components/laboratory/Tests";
 import Time from "../../../components/laboratory/Time";
 import AddressViewer from "../../../components/ProfileFields/AddressViewer";
 import { AiOutlinePlus } from "react-icons/ai";
+import Accordion from "../../../components/Accordion";
 
 const PRESCRIPTION_STATUS_TEXT = {
   waiting_for_response: "در انتظار پاسخ",
@@ -148,19 +149,16 @@ export default function Prescription() {
 
   const createResultPic = async () => {
     try {
-
-      for (let item of attachment){
+      for (let item of attachment) {
         await dispatch(
           uploadPrescriptionResult({
             id: id,
             image: item,
           })
-        ).unwrap(); 
+        ).unwrap();
       }
-      await dispatch(updatePrescriptionStatusResult({ id })).unwrap()
-      setAttachment([])
-
-     
+      await dispatch(updatePrescriptionStatusResult({ id })).unwrap();
+      setAttachment([]);
     } catch (error) {
       console.log(error);
     }
@@ -320,7 +318,7 @@ export default function Prescription() {
           )}
         </div>
         <div className="flex flex-col basis-[20%] min-w-[100px] grow gap-4 self-start">
-          <div className="flex flex-col rounded-3xl border-solid border border-gray p-4 gap-4  flex-wrap">
+          <Accordion className="flex flex-col rounded-3xl border-solid border border-gray p-4 gap-4  flex-wrap">
             <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
               {" "}
               اطلاعات سفارش
@@ -419,8 +417,8 @@ export default function Prescription() {
                 </Button>
               </div>
             )}
-          </div>
-          <div className="flex flex-col rounded-3xl border-solid border border-gray p-4 gap-4  flex-wrap">
+          </Accordion>
+          <Accordion className="flex flex-col rounded-3xl border-solid border border-gray p-4 gap-4  flex-wrap">
             <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
               {" "}
               ساعت و تاریخ مراجعه
@@ -462,7 +460,7 @@ export default function Prescription() {
                 className="self-start"
               ></TextField>
             </div>
-          </div>
+          </Accordion>
           {prescription?.status == "waiting_for_response" && (
             <div className="flex justify-end gap-2">
               <Button
@@ -499,55 +497,92 @@ export default function Prescription() {
           )}
 
           <div className="flex flex-col rounded-3xl border-solid border border-gray bg-backgroundPrimary p-4 gap-4  flex-wrap">
-          <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
+            <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
               نتیجه‌ی آزمایش
-            </div>  
+            </div>
             <div>
-            {prescription?.status === 'waiting_for_result' && <Button variant="contained" color="primary" className="w-full md:w-fit my-2"
-                      onClick={() => ref.current.click()}
-
-        >
-          
-        <AiOutlinePlus  className="mx-2" />
-          افزودن نتیجه‌ی آزمایش
-          </Button>}
-          <input type="file" hidden ref={ref} multiple onChange={(e)=>setAttachment([...attachment,...e.target.files])}/>
-          </div>
-
-          <div className="flex flex-row gap-4">
-
-            <div className="relative  flex-grow md:h-[600px] flex justify-center items-center ">    
-            <img src={imageResult} alt="" className="max-h-full max-w-full rounded-lg"/>   
+              {prescription?.status === "waiting_for_result" && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="w-full md:w-fit my-2"
+                  onClick={() => ref.current.click()}
+                >
+                  <AiOutlinePlus className="mx-2" />
+                  افزودن نتیجه‌ی آزمایش
+                </Button>
+              )}
+              <input
+                type="file"
+                hidden
+                ref={ref}
+                multiple
+                onChange={(e) =>
+                  setAttachment([...attachment, ...e.target.files])
+                }
+              />
             </div>
-            <div className="flex flex-col basis-[150px]overflow-y-auto">
-            {attachment.map((item)=>
-          <div className="relative  max-w-full md:w-[150px] md:h-[150px] flex justify-center items-center " key={item}>
-            <img src={URL.createObjectURL(item)} alt="" className="max-w-[150px] max-h-[150px] rounded-lg"   onClick={() => setImageResult(URL.createObjectURL(item))}/>
-            <Button variant="outlined" onClick={()=>setAttachment(attachment.filter(i=>item !== i))}className="absolute left-1 bottom-1 rounded-full aspect-square p-2 min-w-fit" ><DeleteOutlineIcon className="text-xl "/></Button>
 
-          </div>
-          
-          )}
+            <div className="flex flex-row gap-4">
+              <div className="relative  flex-grow md:h-[600px] flex justify-center items-center ">
+                <img
+                  src={imageResult}
+                  alt=""
+                  className="max-h-full max-w-full rounded-lg"
+                />
+              </div>
+              <div className="flex flex-col basis-[150px]overflow-y-auto">
+                {attachment.map((item) => (
+                  <div
+                    className="relative  max-w-full md:w-[150px] md:h-[150px] flex justify-center items-center "
+                    key={item}
+                  >
+                    <img
+                      src={URL.createObjectURL(item)}
+                      alt=""
+                      className="max-w-[150px] max-h-[150px] rounded-lg"
+                      onClick={() => setImageResult(URL.createObjectURL(item))}
+                    />
+                    <Button
+                      variant="outlined"
+                      onClick={() =>
+                        setAttachment(attachment.filter((i) => item !== i))
+                      }
+                      className="absolute left-1 bottom-1 rounded-full aspect-square p-2 min-w-fit"
+                    >
+                      <DeleteOutlineIcon className="text-xl " />
+                    </Button>
+                  </div>
+                ))}
 
-{prescription?.results?.map((item)=>
-          <div className="relative  max-w-full md:w-[150px] md:h-[150px] flex justify-center items-center " key={item}>
-            <img src={item.image} alt="" className="max-w-[150px] max-h-[150px] rounded-lg"   onClick={() => setImageResult(item.image)}/>
-          </div>
-          
-          )}
+                {prescription?.results?.map((item) => (
+                  <div
+                    className="relative  max-w-full md:w-[150px] md:h-[150px] flex justify-center items-center "
+                    key={item}
+                  >
+                    <img
+                      src={item.image}
+                      alt=""
+                      className="max-w-[150px] max-h-[150px] rounded-lg"
+                      onClick={() => setImageResult(item.image)}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          
 
-          <div className="flex justify-end">
-          {prescription?.status === 'waiting_for_result' && <Button variant="contained" color="primary" className="w-full md:w-fit my-2"
-           onClick={createResultPic}
-        >
-            ثبت و ارسال
-          </Button>}
-          </div>
-
-
+            <div className="flex justify-end">
+              {prescription?.status === "waiting_for_result" && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="w-full md:w-fit my-2"
+                  onClick={createResultPic}
+                >
+                  ثبت و ارسال
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>

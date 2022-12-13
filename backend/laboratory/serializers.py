@@ -49,6 +49,7 @@ class LaboratoryResultPicSerializer(serializers.ModelSerializer):
 class PatientPrescriptionSerializer(serializers.ModelSerializer):
     # pic = PharmacyPrescriptionPicSerializer(source="pharmacyprescriptionpic_set", read_only=True, many=True)
     tests = TestPrescriptionSerializer(many=True)
+    results = LaboratoryResultPicSerializer(many=True, read_only=True, source="laboratoryresultpic_set")
 
     class Meta :
         model = LaboratoryPrescription

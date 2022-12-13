@@ -1,7 +1,7 @@
 import { Button, Chip, Divider, IconButton } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useEffect } from "react";
 import { CgDanger } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,7 @@ const PRESCRIPTION_STATUS_TEXT = {
   waiting_for_response: "در انتظار پاسخ",
   waiting_for_payment: "در انتظار پرداخت",
   waiting_for_test: "در انتظار نمونه‌گیر",
+  waiting_for_result: "در انتظار نتیجه",
   result: "نتیجه‌ی آزمایش",
   canceled: "لغو شده",
 };
@@ -24,6 +25,7 @@ const PRESCRIPTION_STATUS_COLOR = {
   waiting_for_response: "warning",
   waiting_for_payment: "error",
   waiting_for_test: "primary",
+  waiting_for_result: "primary",
   result: "success",
   canceled: "default",
 };
@@ -37,6 +39,7 @@ export default function Prescription() {
   const router = useRouter();
   const { id } = router.query;
   const user = useSelector((state) => state.authReducer?.user);
+  const [imageResult, setImageResult] = useState();
   // const loadAction = useMemo(() => user.type == 'patient'?getPrescriptionPatient:getPrescriptionPharmacy, [user]);
   const getPrescription = async () => {
     try {
@@ -109,6 +112,41 @@ export default function Prescription() {
           آزمایشگاه هزینه نسخه برای شما پیامک میشود
         </div>
       )}
+
+      {prescription?.status == 'result' && (
+        <div className="flex flex-col rounded-3xl border-solid border border-gray bg-backgroundPrimary p-4 gap-4  flex-wrap">
+        <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
+          نتیجه‌ی آزمایش
+        </div>
+
+        <div className="flex flex-row gap-4">
+          <div className="relative  flex-grow md:h-[600px] flex justify-center items-center ">
+            <img
+              src={imageResult}
+              alt=""
+              className="max-h-full max-w-full rounded-lg"
+            />
+          </div>
+          <div className="flex flex-col basis-[150px]overflow-y-auto">
+
+            {prescription?.results?.map((item) => (
+              <div
+                className="relative  max-w-full md:w-[150px] md:h-[150px] flex justify-center items-center "
+                key={item}
+              >
+                <img
+                  src={item.image}
+                  alt=""
+                  className="max-w-[150px] max-h-[150px] rounded-lg"
+                  onClick={() => setImageResult(item.image)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      )}
+
       {prescription?.status != "waiting_for_response" && (
         <Tests disabled tests={prescription?.tests || []}/>
       )}

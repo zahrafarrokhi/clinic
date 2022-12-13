@@ -117,7 +117,7 @@ const PRESCRIPTION_STATUS_TEXT = {
   waiting_for_response: "در انتظار پاسخ",
   waiting_for_payment: "در انتظار پرداخت",
   waiting_for_test: "در انتظار نمونه‌گیر",
-  waiting_for_results: "در انتظار نتیجه",
+  waiting_for_result: "در انتظار نتیجه",
   result: "نتیجه‌ی آزمایش",
   canceled: "لغو شده",
 };
@@ -125,7 +125,7 @@ const PRESCRIPTION_STATUS_COLOR = {
   waiting_for_response: "warning",
   waiting_for_payment: "error",
   waiting_for_test: "primary",
-  waiting_for_results: "primary",
+  waiting_for_result: "primary",
   result: "success",
   canceled: "default",
 };
