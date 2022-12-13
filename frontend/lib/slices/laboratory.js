@@ -100,9 +100,9 @@ export const getPrescriptionPaymentPatient = createAsyncThunk(
 //listPrescriptionsLaboratory
 export const listPrescriptionsLaboratory = createAsyncThunk(
   "laboratory/list-laboratory",
-  async ({patient_id, id}, thunkAPI) => {
+  async (data, thunkAPI) => {
     try {
-      const response = await axios.get(`/api/laboratory/laboratory-prescription/`, );
+      const response = await axios.get(`/api/laboratory/laboratory-prescription/`, { params: data });
 
       console.log(response, response.data);
     
@@ -145,6 +145,58 @@ export const updatePrescriptionLaboratory = createAsyncThunk(
     }
   }
 );
+
+//updatePrescriptionStatus
+export const updatePrescriptionStatus = createAsyncThunk(
+  "laboratory/update-status",
+  async ({id, ...data}, thunkAPI) => {
+    try {
+      const response = await axios.patch(`/api/laboratory/laboratory-status/${id}/`, {...data});
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
+// uploadPrescriptionResult
+export const uploadPrescriptionResult = createAsyncThunk(
+  "laboratory/upload-result",
+  async ({id, image}, thunkAPI) => {
+    try {
+      const fd = new FormData();
+      fd.append('prescription', id)
+      fd.append('image', image)
+      const response = await axios.post(`/api/laboratory/laboratory-result-image/`, fd);
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
+//updatePrescriptionStatusResult
+export const updatePrescriptionStatusResult = createAsyncThunk(
+  "laboratory/update-status-result",
+  async ({id, ...data}, thunkAPI) => {
+    try {
+      const response = await axios.patch(`/api/laboratory/laboratory-status-result/${id}/`, {...data});
+
+      console.log(response, response.data);
+    
+      return { data: response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.response.data });
+    }
+  }
+);
+
 
 const internalInitialState = {
   prescriptions: [],
@@ -311,6 +363,63 @@ export const laboratorySlice = createSlice({
       //up => {...respose.data } or response.data => action.payload
     
       state.prescription = action.payload.data;
+      return state;
+    });
+
+
+    //updatePrescriptionStatus
+    builder.addCase(updatePrescriptionStatus.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(updatePrescriptionStatus.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(updatePrescriptionStatus.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      state.prescription.status = action.payload.data.status;
+      // or
+      // state.prescription = {...state.prescription, ...action.payload.data};
+      return state;
+    });
+
+
+    //uploadPrescriptionResult
+    builder.addCase(uploadPrescriptionResult.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(uploadPrescriptionResult.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(uploadPrescriptionResult.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      state.prescription.results = [...state.prescription.results, action.payload.data]
+      // state.prescription.status = action.payload.data.status;
+      // or
+      // state.prescription = {...state.prescription, ...action.payload.data};
+      return state;
+    });
+
+    //updatePrescriptionStatusResult
+    builder.addCase(updatePrescriptionStatusResult.pending, (state) => ({
+      ...state,
+      loading: LOADING,
+    }));
+    builder.addCase(updatePrescriptionStatusResult.rejected, (state, action) => ({
+      ...state,
+      loading: IDLE,
+      error: action.payload.error,
+    }));
+    builder.addCase(updatePrescriptionStatusResult.fulfilled, (state, action) => {
+      state.loading = IDLE;
+      state.prescription.status = action.payload.data.status;
+      // or
+      // state.prescription = {...state.prescription, ...action.payload.data};
       return state;
     });
   

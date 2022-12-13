@@ -6,7 +6,7 @@ export default function Time(props) {
   const { selected, setSelected, disabled } = props;
   // const [selected,setSelected] = useState([])
   const now = new Date();
-  const days = eachDayOfInterval({
+  const days = disabled ? selected.filter((item, index, arr) => index == arr.findIndex((next) => next.date == item.date)).map(item => new Date(item.date)) : eachDayOfInterval({
     start: add(now, { days: 1 }),
     end: add(now, { days: 7 }),
   });

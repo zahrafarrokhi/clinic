@@ -24,16 +24,24 @@ import {
 } from "../../../lib/utils";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { getPrescriptionLaboratory, updatePrescriptionLaboratory } from "../../../lib/slices/laboratory";
+import {
+  getPrescriptionLaboratory,
+  updatePrescriptionLaboratory,
+  updatePrescriptionStatus,
+  updatePrescriptionStatusResult,
+  uploadPrescriptionResult,
+} from "../../../lib/slices/laboratory";
 import AddressSelection from "../../../components/ProfileFields/AddressSelection";
 import Tests from "../../../components/laboratory/Tests";
 import Time from "../../../components/laboratory/Time";
+import AddressViewer from "../../../components/ProfileFields/AddressViewer";
+import { AiOutlinePlus } from "react-icons/ai";
 
 const PRESCRIPTION_STATUS_TEXT = {
   waiting_for_response: "در انتظار پاسخ",
   waiting_for_payment: "در انتظار پرداخت",
   waiting_for_test: "در انتظار نمونه‌گیر",
-  waiting_for_results: "در انتظار نتیجه",
+  waiting_for_result: "در انتظار نتیجه",
   result: "نتیجه‌ی آزمایش",
   canceled: "لغو شده",
 };
@@ -41,7 +49,7 @@ const PRESCRIPTION_STATUS_COLOR = {
   waiting_for_response: "warning",
   waiting_for_payment: "error",
   waiting_for_test: "primary",
-  waiting_for_results: "primary",
+  waiting_for_result: "primary",
   result: "success",
   canceled: "default",
 };
@@ -59,34 +67,38 @@ export default function Prescription() {
   const [description, setDescription] = useState("");
   const [doctorName, setDoctorName] = useState("");
   // send
-  const [send,setSend]= useState(0)
+  const [send, setSend] = useState(0);
   //attachment pic
   const [attachment, setAttachment] = useState([]);
   const ref = useRef();
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-// test
-const [tests, setTests] = useState([
-  // {name, insurance, sup_insurance}
-]);
-// time
-const [selected,setSelected] = useState([])
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  // test
+  const [tests, setTests] = useState([
+    // {name, insurance, sup_insurance}
+  ]);
+  // time
+  const [selected, setSelected] = useState([]);
+  // result Image
+  const [imageResult, setImageResult] = useState();
   const getPrescription = async () => {
     try {
-      const res = await dispatch(getPrescriptionLaboratory({ id: id })).unwrap();
+      const res = await dispatch(
+        getPrescriptionLaboratory({ id: id })
+      ).unwrap();
       setPrice(res.data.price || 0);
       setSend(res.data.delivery_price || 0);
       setDescription(res.data.laboratory_description);
       setImage(res.data.pic[0]);
-      setDoctorName(res.data.doctor_name)
+      setDoctorName(res.data.doctor_name);
       setTests(res.data.tests);
-      setSelected(res.data.time || [])
+      setSelected(res.data.time || []);
     } catch (error) {}
   };
   useEffect(() => {
     getPrescription();
   }, [id]);
-  
+
   const updatePrescription = async () => {
     try {
       await dispatch(
@@ -94,39 +106,65 @@ const [selected,setSelected] = useState([])
           id: id,
           price,
           laboratory_description: description,
-          delivery_price:send,
+          delivery_price: send,
           doctor_name: doctorName,
           tests,
           time: selected,
-
         })
       ).unwrap();
       // for (let attach of attachment){
       //   await dispatch(createPrescriptionPicPharmacy({
       //     pic:attach,
       //     pre: id
-        
+
       //   })).unwrap()
       // }
     } catch (error) {
       console.log(error);
     }
   };
-
-  // 
+  const updateStatus = async () => {
+    try {
+      await dispatch(
+        updatePrescriptionStatus({
+          id: id,
+          // tatus set in backend and user dosent change status
+        })
+      ).unwrap();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  //
   const deliver = async () => {
     try {
       // await dispatch(
       //   deliverPrescription({
       //     id: id,
-
       //   })
       // ).unwrap();
-    } catch (error) {
-      
-    }
-  }
+    } catch (error) {}
+  };
 
+  const createResultPic = async () => {
+    try {
+
+      for (let item of attachment){
+        await dispatch(
+          uploadPrescriptionResult({
+            id: id,
+            image: item,
+          })
+        ).unwrap(); 
+      }
+      await dispatch(updatePrescriptionStatusResult({ id })).unwrap()
+      setAttachment([])
+
+     
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // pic
   const [image, setImage] = useState();
   // close
@@ -158,32 +196,44 @@ const [selected,setSelected] = useState([])
           </div>
           <div className="flex flex-row gap-4 flex-wrap ">
             <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
-              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">نام بیمار :</div>
+              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">
+                نام بیمار :
+              </div>
               <div className="text-sm font-bold">
                 {prescription?.patient.first_name}{" "}
                 {prescription?.patient.last_name}
               </div>
             </div>
             <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
-              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">تاریخ:</div>
+              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">
+                تاریخ:
+              </div>
               <div className="text-sm font-bold">
                 {convertStrToJalali(prescription?.created_at)}
               </div>
             </div>
             <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
-              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">نوع سفارش:</div>
+              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">
+                نوع سفارش:
+              </div>
               <div className="text-sm font-bold">value</div>
             </div>
             <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
-              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">شماره سفارش:</div>
+              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">
+                شماره سفارش:
+              </div>
               <div className="text-sm font-bold">{prescription?.id}</div>
             </div>
             <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
-              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">شامل بیمه :</div>
+              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">
+                شامل بیمه :
+              </div>
               <div className="text-sm font-bold">value</div>
             </div>
             <div className="flex flex-row items-center gap-2 md:rounded-lg basis-full md:basis-auto flex-grow md:flex-grow-0  border-0 last:border-b-0 md:last:border-b border-b md:border border-solid border-gray p-1 px-2">
-              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">کد ملی :</div>
+              <div className="text-sm basis-[40%] text-left md:text-right md:basis-auto">
+                کد ملی :
+              </div>
               <div className="text-sm font-bold">
                 {prescription?.patient.national_id}
               </div>
@@ -200,12 +250,16 @@ const [selected,setSelected] = useState([])
       </div>
       <div
         className={`flex flex-row ${
-          close ? "relative" : "md:relative md:-right-6 md:w-[calc(100%+3em)] md:pr-6 gap-2"
+          close
+            ? "relative"
+            : "md:relative md:-right-6 md:w-[calc(100%+3em)] md:pr-6 gap-2"
         } flex-wrap md:flex-nowrap`}
       >
         <div
           className={`bg-backgroundPrimary md:order-1 ${
-            close ? "w-0 static md:relative" : "relative flex-grow rounded-lg md:rounded-none md:flex-grow-0 md:w-[29.5%] p-4 min-w-full md:min-w-fit"
+            close
+              ? "w-0 static md:relative"
+              : "relative flex-grow rounded-lg md:rounded-none md:flex-grow-0 md:w-[29.5%] p-4 min-w-full md:min-w-fit"
           }  flex flex-col  transition-all duration-300 `}
         >
           <Button
@@ -213,14 +267,20 @@ const [selected,setSelected] = useState([])
             color="primary"
             className={`z-10 absolute w-8 px-0 py-4 min-w-0 h-4 ${
               close
-                ? (isMobile ? "rounded-full rounded-t-none top-0" : "rounded-full rounded-l-none left-[100%] pr-2")
-                : (isMobile ? "rounded-full rounded-b-none bottom-0" : "rounded-full top-0 rounded-r-none -right-0 pl-2")
+                ? isMobile
+                  ? "rounded-full rounded-t-none top-0"
+                  : "rounded-full rounded-l-none left-[100%] pr-2"
+                : isMobile
+                ? "rounded-full rounded-b-none bottom-0"
+                : "rounded-full top-0 rounded-r-none -right-0 pl-2"
             } left-[50%] -translate-x-[50%] md:translate-x-0 md:top-[50%] md:translate-y-[-50%] shadow-none  transition-all duration-300`}
             onClick={() => setClose(!close)}
           >
             <ArrowBackIos
               color="backgroundGray"
-              className={`${close ? "-rotate-90 md:rotate-180" : "rotate-90 md:rotate-0"} text-sm`}
+              className={`${
+                close ? "-rotate-90 md:rotate-180" : "rotate-90 md:rotate-0"
+              } text-sm`}
             />
           </Button>
           {!close && (
@@ -260,44 +320,46 @@ const [selected,setSelected] = useState([])
           )}
         </div>
         <div className="flex flex-col basis-[20%] min-w-[100px] grow gap-4 self-start">
-        <div className="flex flex-col rounded-3xl border-solid border border-gray p-4 gap-4  flex-wrap">
-          <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
-            {" "}
-            اطلاعات سفارش
-          </div>
-          <div className="flex flex-col gap-4 flex-wrap">
-            <div className="w-full md:w-fit">
-              <TextField
-                label="نام دکتر"
-                fullWidth
-                value={doctorName}
-                onChange={(e) => setDoctorName(e.target.value)
-                }
-                disabled={prescription?.status!= 'waiting_for_response'}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                InputProps={{
-                  sx: {
-                    marginTop: "1.5em",
-                    "& legend": {
-                      display: "none",
+          <div className="flex flex-col rounded-3xl border-solid border border-gray p-4 gap-4  flex-wrap">
+            <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
+              {" "}
+              اطلاعات سفارش
+            </div>
+            <div className="flex flex-col gap-4 flex-wrap">
+              <div className="w-full md:w-fit">
+                <TextField
+                  label="نام دکتر"
+                  fullWidth
+                  value={doctorName}
+                  onChange={(e) => setDoctorName(e.target.value)}
+                  disabled={prescription?.status != "waiting_for_response"}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    sx: {
+                      marginTop: "1.5em",
+                      "& legend": {
+                        display: "none",
+                      },
                     },
-                  },
-                }}
-                className="self-start"
-              ></TextField>
+                  }}
+                  className="self-start"
+                ></TextField>
               </div>
 
-              <Tests tests={tests} setTests={setTests} disabled={prescription?.status!= 'waiting_for_response'}/>
-                
-              
+              <Tests
+                tests={tests}
+                setTests={setTests}
+                disabled={prescription?.status != "waiting_for_response"}
+              />
+
               <TextField
                 label="توضیحات"
                 fullWidth
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                disabled={prescription?.status!= 'waiting_for_response'}
+                disabled={prescription?.status != "waiting_for_response"}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -312,61 +374,64 @@ const [selected,setSelected] = useState([])
                 multiline
                 rows={5}
               ></TextField>
-               <div className="w-full md:w-fit">
-              <TextField
-                label="جمع کل"
-                fullWidth
-                value={stringifyPrice(price, "")}
-                onChange={(e) =>
-                  setPrice(
-                    Number(
-                      persianToEnglishDigits(
-                        preventLettersTyping(e.target.value)
+              <div className="w-full md:w-fit">
+                <TextField
+                  label="جمع کل"
+                  fullWidth
+                  value={stringifyPrice(price, "")}
+                  onChange={(e) =>
+                    setPrice(
+                      Number(
+                        persianToEnglishDigits(
+                          preventLettersTyping(e.target.value)
+                        )
                       )
                     )
-                  )
-                }
-                disabled={prescription?.status!= 'waiting_for_response'}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                InputProps={{
-                  sx: {
-                    marginTop: "1.5em",
-                    "& legend": {
-                      display: "none",
+                  }
+                  disabled={prescription?.status != "waiting_for_response"}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    sx: {
+                      marginTop: "1.5em",
+                      "& legend": {
+                        display: "none",
+                      },
                     },
-                  },
-                  endAdornment: (
-                    <InputAdornment position="end">ریال</InputAdornment>
-                  ),
-                }}
-                className="self-start"
-              ></TextField>
+                    endAdornment: (
+                      <InputAdornment position="end">ریال</InputAdornment>
+                    ),
+                  }}
+                  className="self-start"
+                ></TextField>
               </div>
-          </div>
-          
-          {prescription?.status == "waiting_for_delivery" && (
-            <div className="flex justify-end gap-2">
-              <Button
-                onClick={() => deliver()}
-                className="flex-grow md:flex-grow-0 md:w-32"
-                variant="contained"
-              >
-                ارسال شد
-              </Button>
-              
             </div>
-          )}
-        </div>
-        <div className="flex flex-col rounded-3xl border-solid border border-gray p-4 gap-4  flex-wrap">
-          <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
-            {" "}
-            ساعت و تاریخ مراجعه
+
+            {prescription?.status == "waiting_for_delivery" && (
+              <div className="flex justify-end gap-2">
+                <Button
+                  onClick={() => deliver()}
+                  className="flex-grow md:flex-grow-0 md:w-32"
+                  variant="contained"
+                >
+                  ارسال شد
+                </Button>
+              </div>
+            )}
           </div>
-          {/* <AddressSelection disabled addressId={prescription.address}/> */}
-          <div className="w-full flex flex-col gap-4 items-start">
-            <Time selected={selected} setSelected={setSelected}  disabled={prescription?.status!= 'waiting_for_response'}/>
+          <div className="flex flex-col rounded-3xl border-solid border border-gray p-4 gap-4  flex-wrap">
+            <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
+              {" "}
+              ساعت و تاریخ مراجعه
+            </div>
+            {/* <AddressSelection disabled addressId={prescription.address}/> */}
+            <div className="w-full flex flex-col gap-4 items-start">
+              <Time
+                selected={selected}
+                setSelected={setSelected}
+                disabled={prescription?.status != "waiting_for_response"}
+              />
               <TextField
                 label="هزینه مراجعه"
                 value={stringifyPrice(send, "")}
@@ -379,7 +444,7 @@ const [selected,setSelected] = useState([])
                     )
                   )
                 }
-                disabled={prescription?.status!= 'waiting_for_response'}
+                disabled={prescription?.status != "waiting_for_response"}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -396,9 +461,9 @@ const [selected,setSelected] = useState([])
                 }}
                 className="self-start"
               ></TextField>
-              </div>
+            </div>
           </div>
-        {prescription?.status == "waiting_for_response" && (
+          {prescription?.status == "waiting_for_response" && (
             <div className="flex justify-end gap-2">
               <Button
                 onClick={() => updatePrescription()}
@@ -419,14 +484,72 @@ const [selected,setSelected] = useState([])
               </Button>
             </div>
           )}
+          <AddressViewer address={prescription?.address} />
+
+          {prescription?.status == "waiting_for_test" && (
+            <div className="flex justify-end gap-2">
+              <Button
+                onClick={() => updateStatus()}
+                className="flex-grow md:flex-grow-0 md:w-32"
+                variant="contained"
+              >
+                نمونه‌گیر اعزام شد
+              </Button>
+            </div>
+          )}
+
+          <div className="flex flex-col rounded-3xl border-solid border border-gray bg-backgroundPrimary p-4 gap-4  flex-wrap">
+          <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
+              نتیجه‌ی آزمایش
+            </div>  
+            <div>
+            {prescription?.status === 'waiting_for_result' && <Button variant="contained" color="primary" className="w-full md:w-fit my-2"
+                      onClick={() => ref.current.click()}
+
+        >
+          
+        <AiOutlinePlus  className="mx-2" />
+          افزودن نتیجه‌ی آزمایش
+          </Button>}
+          <input type="file" hidden ref={ref} multiple onChange={(e)=>setAttachment([...attachment,...e.target.files])}/>
+          </div>
+
+          <div className="flex flex-row gap-4">
+
+            <div className="relative  flex-grow md:h-[600px] flex justify-center items-center ">    
+            <img src={imageResult} alt="" className="max-h-full max-w-full rounded-lg"/>   
+            </div>
+            <div className="flex flex-col basis-[150px]overflow-y-auto">
+            {attachment.map((item)=>
+          <div className="relative  max-w-full md:w-[150px] md:h-[150px] flex justify-center items-center " key={item}>
+            <img src={URL.createObjectURL(item)} alt="" className="max-w-[150px] max-h-[150px] rounded-lg"   onClick={() => setImageResult(URL.createObjectURL(item))}/>
+            <Button variant="outlined" onClick={()=>setAttachment(attachment.filter(i=>item !== i))}className="absolute left-1 bottom-1 rounded-full aspect-square p-2 min-w-fit" ><DeleteOutlineIcon className="text-xl "/></Button>
+
+          </div>
+          
+          )}
+
+{prescription?.results?.map((item)=>
+          <div className="relative  max-w-full md:w-[150px] md:h-[150px] flex justify-center items-center " key={item}>
+            <img src={item.image} alt="" className="max-w-[150px] max-h-[150px] rounded-lg"   onClick={() => setImageResult(item.image)}/>
+          </div>
+          
+          )}
+            </div>
+          </div>
+          
+
+          <div className="flex justify-end">
+          {prescription?.status === 'waiting_for_result' && <Button variant="contained" color="primary" className="w-full md:w-fit my-2"
+           onClick={createResultPic}
+        >
+            ثبت و ارسال
+          </Button>}
+          </div>
+
+
+          </div>
         </div>
-        
-      </div>
- 
-      <div className="flex gap-2 items-center text-sm italic">
-        <CgDanger />
-        کاربر گرامی نسخه شما توسط داروخانه بررسی نشده است. پس از تایید توسط
-        داروخانه هزینه نسخه برای شما پیامک میشود{" "}
       </div>
     </div>
   );

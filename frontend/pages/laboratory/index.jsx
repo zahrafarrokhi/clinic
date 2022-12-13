@@ -147,7 +147,7 @@ export default function LaboratoryList() {
   // const [filters, setFilters] = useState(DEFAULT_FILTERS)
   //pagination
   const LIMIT = 10;
-  const count = useSelector((state) => state.visitReducer?.visits?.count);
+  const count = useSelector((state) => state.laboratoryReducer?.prescriptions?.count);
   const [offset, setOffset] = useState(0);
   const current_page = useMemo(() => offset / LIMIT + 1, [offset]);
   const number_of_pages = useMemo(() => Math.ceil(count / LIMIT), [count]);
