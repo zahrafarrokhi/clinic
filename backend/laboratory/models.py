@@ -29,7 +29,7 @@ class LaboratoryPrescription(models.Model):
     class Status(models.TextChoices):
         waiting_for_response = 'waiting_for_response', _('Waiting for response')
         waiting_for_payment = 'waiting_for_payment', _('Waiting for payment')
-        waiting_for_delivery = 'waiting_for_test', _('Waiting for test')
+        waiting_for_test = 'waiting_for_test', _('Waiting for test')
         waiting_for_result = 'waiting_for_result', _('Waiting for result')
         result = 'result', _('Result')
         canceled = 'canceled', _('Canceled')
@@ -53,10 +53,16 @@ class PatientPrescriptionPic(models.Model):
     # pic for which prescription
     prescription =  models.ForeignKey(LaboratoryPrescription, on_delete=models.CASCADE)
 
-# lab ennter test and patient see that data
+# lab ennter test and patient see that data(laboratory)
 class TestPrescription(models.Model):
     # test for which prescription
     prescription =  models.ForeignKey(LaboratoryPrescription, on_delete=models.CASCADE,related_name="tests")
     test_name =  models.CharField(max_length=40,null=True, blank=True)
     insurance = models.BooleanField(default=False)
     sup_insurance = models.BooleanField(default=False)
+
+
+class LaboratoryResultPic(models.Model):
+    image = models.ImageField(upload_to=img_upload_path_generator)
+    # pic for which prescription
+    prescription =  models.ForeignKey(LaboratoryPrescription, on_delete=models.CASCADE)

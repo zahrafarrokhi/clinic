@@ -9,6 +9,12 @@ general_router = routers.DefaultRouter()
 general_router.register(r'prescription-pic',views.PatientPrescriptionPicView,basename='laboratory-prescription-pic')
 # laboratory
 general_router.register(r'laboratory-prescription',views.LaboratoryPrescriptionView,basename='laboratory-prescription')
+# laboratory status
+general_router.register(r'laboratory-status',views.LaboratoryStatusView,basename='laboratory-status')
+# laboratory status result
+general_router.register(r'laboratory-status-result',views.LaboratoryStatusResultView,basename='laboratory-status-result')
+# laboratory result image
+general_router.register(r'laboratory-result-image',views.LaboratoryResultPicView,basename='laboratory-result-image')
 # patient
 patient_router.register(r'prescription-payment', views.PatientPaymentPrescriptionView, basename='patient-prescription-payment')
 urlpatterns = [

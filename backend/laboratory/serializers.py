@@ -1,10 +1,11 @@
 from rest_framework import serializers
 
-from laboratory.models import LaboratoryPrescription, PatientPrescriptionPic, TestPrescription
+from authentication.models import User
+from laboratory.models import LaboratoryPrescription, PatientPrescriptionPic, TestPrescription, LaboratoryResultPic
 from django.utils.translation import gettext_lazy as _
 
 from backend import settings
-from patient.serializers import PatientSerializer
+from patient.serializers import PatientSerializer, AddressSerializers
 
 from datetime import date, time
 
@@ -18,10 +19,31 @@ class TestPrescriptionSerializer(serializers.ModelSerializer):
         model = TestPrescription
         fields = '__all__'
 
+# laboratory
 class TimeSerializer(serializers.Serializer):
     start_time = serializers.TimeField()
     end_time = serializers.TimeField()
     date = serializers.DateField()
+
+
+class LaboratoryResultPicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LaboratoryResultPic
+        fields = '__all__'
+
+    def validate_image(self, image):
+        if image is not None and image.size > settings.FILE_UPLOAD_SIZE_LIMIT:
+            raise serializers.ValidationError(
+                _("File is too big!"))
+        return image
+
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        if user.type != User.LABORATORY:
+            raise serializers.ValidationError(_("you arent allowed to do this"))
+        return attrs
+
 
 # patient
 class PatientPrescriptionSerializer(serializers.ModelSerializer):
@@ -108,6 +130,8 @@ class LaboratoryPrescriptionSerializer(serializers.ModelSerializer):
     # related_name="tests" , source and fieldname have the same name => we dont need source
     tests = TestPrescriptionSerializer(many=True)
     time = TimeSerializer(many=True)
+    address = AddressSerializers(read_only=True)
+    results = LaboratoryResultPicSerializer(many=True, read_only=True, source="laboratoryresultpic_set")
     class Meta:
         model = LaboratoryPrescription
         fields = '__all__'
@@ -143,4 +167,28 @@ class LaboratoryPrescriptionSerializer(serializers.ModelSerializer):
             test.save()
         instance.status = LaboratoryPrescription.Status.waiting_for_payment
         instance.save()
+        return instance
+
+class LaboratoryStatus(serializers.ModelSerializer):
+    class Meta:
+        model = LaboratoryPrescription
+        fields = ['status', ]
+        read_only_fields = ['status', ]
+
+    def update(self, instance, validated_data):
+        if instance.status == LaboratoryPrescription.Status.waiting_for_test:
+            instance.status = LaboratoryPrescription.Status.waiting_for_result
+            instance.save()
+        return instance
+
+class LaboratoryStatusResult(serializers.ModelSerializer):
+    class Meta:
+        model = LaboratoryPrescription
+        fields = ['status', ]
+        read_only_fields = ['status', ]
+
+    def update(self, instance, validated_data):
+        if instance.status == LaboratoryPrescription.Status.waiting_for_result:
+            instance.status = LaboratoryPrescription.Status.result
+            instance.save()
         return instance
