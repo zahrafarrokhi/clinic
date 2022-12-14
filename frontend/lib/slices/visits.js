@@ -132,7 +132,7 @@ export const createPrescrptionDoctorPic = createAsyncThunk(
 
 export const loadPatientPrescriptions = createAsyncThunk(
   'visits/load-patient-prescriptions',
-  async ({patient_id, queryparams}, thunkAPI) => {
+  async ({patient_id, ...queryparams}, thunkAPI) => {
     try {
       const response = await axios.get(`/api/visits/visit/patient/${patient_id}/prescription/`, { params: {...queryparams}});
       console.log(response, response.data);
