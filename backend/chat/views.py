@@ -3,7 +3,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from authentication.models import User
 from chat.services import RocketChatService
+from visit.models import Visit
 
 
 class UserObjExtension():
@@ -39,10 +41,14 @@ class SendMessage(APIView, UserObjExtension):
     permission_classes = [IsAuthenticated]
 
     def post(self,requset,visit_id, **kwargs):
-        # user = self.request.user
+        user = self.request.user
         obj = self.get_user_obj()
         visit = obj.visit_set.get(pk=visit_id)
-
+        if user.type == User.PATIENT:
+            visit.status = Visit.Status.waiting_for_response
+        else:
+            visit.status = Visit.Status.responded
+        visit.save()
         service = RocketChatService()
         service.login(obj)
         mesg = service.send_message(visit=visit,text=requset.data['text'])

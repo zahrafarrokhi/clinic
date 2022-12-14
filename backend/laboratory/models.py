@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 import string
 
 from payment.models import Payment
+from visit.models import DoctorPrescription
 
 
 def generate_random_str(length=5):
@@ -16,7 +17,7 @@ def generate_random_str(length=5):
 def img_upload_path_generator(instance, file_name):
     return 'uploads/prescriptions/pic{0}_{1}'.format(generate_random_str(12), file_name)
 
-# lab and patient
+# lab(update) and patient(create)
 class LaboratoryPrescription(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     # auto_now_add or read_only_fields
@@ -45,6 +46,16 @@ class LaboratoryPrescription(models.Model):
     payment = models.OneToOneField(Payment, on_delete=models.CASCADE, null=True, blank=True,
                                    related_name="laboratory_prescription")
     selected_time = models.JSONField(null=True, blank=True)
+
+    doctor_prescription = models.ForeignKey(DoctorPrescription, on_delete=models.CASCADE, null=True, blank=True)
+
+    @property
+    def images(self):
+        if self.doctor_prescription:
+            return self.doctor_prescription.doctorpic_set
+        return self.patientprescriptionpic_set
+
+
 
 
 # patient upload pic & lab see that

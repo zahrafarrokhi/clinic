@@ -496,7 +496,7 @@ export default function Prescription() {
             </div>
           )}
 
-          <div className="flex flex-col rounded-3xl border-solid border border-gray bg-backgroundPrimary p-4 gap-4  flex-wrap">
+          {(prescription?.status == "waiting_for_result" || prescription?.status == "result") &&<div className="flex flex-col rounded-3xl border-solid border border-gray bg-backgroundPrimary p-4 gap-4  flex-wrap">
             <div className="before:w-2 before:h-2 before:rounded-full before:bg-primary before:flex font-bold text-primary">
               نتیجه‌ی آزمایش
             </div>
@@ -583,7 +583,7 @@ export default function Prescription() {
                 </Button>
               )}
             </div>
-          </div>
+          </div>}
         </div>
       </div>
     </div>

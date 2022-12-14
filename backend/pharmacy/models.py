@@ -8,6 +8,7 @@ import string
 
 from patient.models import Patient,Address
 from payment.models import Payment
+from visit.models import DoctorPrescription
 
 
 def generate_random_str(length=5):
@@ -53,6 +54,15 @@ class PharmacyPrescription(models.Model):
     day = models.DateField(null=True,blank=True)
     time = models.TimeField(null=True,blank=True)
     payment = models.OneToOneField(Payment, on_delete=models.CASCADE,null=True,blank=True, related_name="pharmacy_prescription")
+
+    doctor_prescription = models.ForeignKey(DoctorPrescription, on_delete=models.CASCADE, null=True, blank=True)
+
+    @property
+    def images(self):
+        if self.doctor_prescription:
+            return self.doctor_prescription.doctorpic_set
+        return self.patientprescriptionpic_set
+
 class PharmacyPrescriptionPic(models.Model):
 
     image = models.ImageField(upload_to=img_upload_path_generator)

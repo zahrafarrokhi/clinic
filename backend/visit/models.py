@@ -26,3 +26,21 @@ class Visit(models.Model):
     room_id = models.CharField(max_length=50, null=True, blank=True)
     room_name = models.CharField(max_length=50, null=True, blank=True)
 
+
+
+
+class DoctorPrescription(models.Model):
+    class Types(models.TextChoices):
+        laboratory = 'laboratory', _('Laboratory')
+        pharmacy = 'pharmacy', _('Pharmacy')
+        paraclinic = 'paraclinic', _('Paraclinic')
+
+    type = models.CharField(choices=Types.choices, default=Types.paraclinic, max_length=30)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    used = models.BooleanField(default=False)
+    visit = models.ForeignKey(Visit,on_delete=models.CASCADE)
+
+class DoctorPic(models.Model):
+    image = models.FileField()
+    prescription = models.ForeignKey(DoctorPrescription,on_delete=models.CASCADE)

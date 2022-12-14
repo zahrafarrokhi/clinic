@@ -48,7 +48,7 @@ class LaboratoryResultPicSerializer(serializers.ModelSerializer):
 # patient
 class PatientPrescriptionSerializer(serializers.ModelSerializer):
     # pic = PharmacyPrescriptionPicSerializer(source="pharmacyprescriptionpic_set", read_only=True, many=True)
-    tests = TestPrescriptionSerializer(many=True)
+    tests = TestPrescriptionSerializer(many=True, read_only=True)
     results = LaboratoryResultPicSerializer(many=True, read_only=True, source="laboratoryresultpic_set")
 
     class Meta :
@@ -127,7 +127,7 @@ class PatientPaymentPrescriptionSerializer(serializers.ModelSerializer):
 class LaboratoryPrescriptionSerializer(serializers.ModelSerializer):
     patient = PatientSerializer(read_only=True)
     # pic relation with prscription( prescription =  models.ForeignKey(LaboratoryPrescription))
-    pic = PatientPrescriptionPicSerializer(many=True, source="patientprescriptionpic_set",read_only=True)
+    pic = PatientPrescriptionPicSerializer(many=True, source="images",read_only=True)
     # related_name="tests" , source and fieldname have the same name => we dont need source
     tests = TestPrescriptionSerializer(many=True)
     time = TimeSerializer(many=True)

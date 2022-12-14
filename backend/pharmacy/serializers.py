@@ -116,7 +116,7 @@ class PharmacyPre(serializers.ModelSerializer):
     patient = PatientSerializer(read_only=True)
     address = AddressSerializers(read_only=True)
     # PharmacyPrescription => PrescriptionPic
-    pic = PrescriptionPic(source="patientprescriptionpic_set",read_only=True, many=True)
+    pic = PrescriptionPic(source="images",read_only=True, many=True)
     pharmacy_pic = PharmacyPrescriptionPicSerializer(source="pharmacyprescriptionpic_set", read_only=True, many=True)
 
     class Meta:

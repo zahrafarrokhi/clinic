@@ -7,11 +7,11 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProfileModal from "../../../components/doctors/ProfileModal";
 import Navigation from "../../../components/navigation/Navigation";
-import { getVisitPatient } from "../../../lib/slices/visits";
+import { getVisitDoctor, getVisitPatient } from "../../../lib/slices/visits";
 
 import {
   getToken,
@@ -36,11 +36,13 @@ const Chat = (props) => {
   const visit = useSelector((state) => state.visitReducer?.visit);
   const patient = useSelector((state) => state.patientReducer?.patient);
   const router = useRouter();
+  const user = useSelector((state) => state.authReducer?.user);
+  const loadAction = useMemo(() => user?.type == 'patient'?getVisitPatient:getVisitDoctor, [user]);
   const { id } = router.query;
   const getvisit = async () => {
     try {
       await dispatch(
-        getVisitPatient({ patient_id: patient.id, pk: id })
+        loadAction({ patient_id: patient?.id, pk: id })
       ).unwrap();
     } catch (error) {}
   };
@@ -53,7 +55,7 @@ const Chat = (props) => {
 
   const Token = async () => {
     try {
-      await dispatch(getToken(patient.id)).unwrap();
+      await dispatch(getToken(patient?.id)).unwrap();
     } catch (error) {}
   };
   useEffect(() => {
@@ -67,7 +69,7 @@ const Chat = (props) => {
       await dispatch(
         sendVisitMessage({
           //url from redux
-          p_id: patient.id,
+          p_id: patient?.id,
           visit_id: id,
           //cred with rest(back beacuse body)
           text: text,
@@ -100,7 +102,7 @@ const Chat = (props) => {
       await dispatch(
         listMessages({
           //url from redux
-          p_id: patient.id,
+          p_id: patient?.id,
           visit_id: id,
         })
       ).unwrap();
@@ -108,11 +110,11 @@ const Chat = (props) => {
   };
 
   useEffect(() => {
-    if (id && patient?.id) lstMessages();
+    if (id && (patient?.id || user?.type !== patient)) lstMessages();
   }, [patient, id]);
 
   const upload = async(file)=>{
-    await dispatch(uploadFile({visit_id:visit.id,p_id:patient.id,payload: {file}})).unwrap();
+    await dispatch(uploadFile({visit_id:visit.id,p_id:patient?.id,payload: {file}})).unwrap();
    }
 
 
@@ -213,7 +215,7 @@ const Chat = (props) => {
           ))}
         </div>
 
-        <ChatInput send={sendmsg} upload={upload}/>
+        <ChatInput send={sendmsg} upload={upload} showPrescription={user?.type === 'doctor'}/>
       </div>
     </div>
   );

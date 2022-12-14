@@ -1,31 +1,48 @@
-
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, FormControlLabel, Radio, RadioGroup, styled, TextField, useRadioGroup } from '@mui/material';
-import { useRef, useState } from 'react';
-import Navigation from '../../components/navigation/Navigation';
-import AddIcon from '@mui/icons-material/Add';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  styled,
+  TextField,
+  useRadioGroup,
+} from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import Navigation from "../../components/navigation/Navigation";
+import AddIcon from "@mui/icons-material/Add";
 import AddressSelection from "../../components/ProfileFields/AddressSelection";
-import {CgDanger} from 'react-icons/cg'
-import Header from '../../components/pharmacy/Header';
-import { useDispatch, useSelector } from 'react-redux';
+import { CgDanger } from "react-icons/cg";
+import Header from "../../components/pharmacy/Header";
+import { useDispatch, useSelector } from "react-redux";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { createPrescription, createPrescriptionPic } from '../../lib/slices/laboratory';
-import { useRouter } from 'next/router';
+import {
+  createPrescription,
+  createPrescriptionPic,
+} from "../../lib/slices/laboratory";
+import { useRouter } from "next/router";
+import { loadPatientPrescriptions } from "../../lib/slices/visits";
+import Image from "next/image";
+import { convertStrToJalali } from "../../lib/utils";
 
 // label style
-const StyledFormControlLabel = styled((props) => <FormControlLabel {...props} />)(
-  ({ theme, checked }) => ({
-    '.MuiFormControlLabel-label': {
-      fontSize: '0.9em',
-      ...(checked && {
-        color: theme.palette.primary.main,
-      })
-    },
-  }),
-);
+const StyledFormControlLabel = styled((props) => (
+  <FormControlLabel {...props} />
+))(({ theme, checked }) => ({
+  ".MuiFormControlLabel-label": {
+    fontSize: "0.9em",
+    ...(checked && {
+      color: theme.palette.primary.main,
+    }),
+  },
+}));
 
 // label cotrol state with
 const CustomFormControlLabel = (props) => {
-  const { value, } = props;
+  const { value } = props;
   const checked = useRadioGroup();
   return (
     <StyledFormControlLabel
@@ -36,63 +53,85 @@ const CustomFormControlLabel = (props) => {
       // sx={[{
       //   color: checked.value === value ? "primary.main" : undefined,
       // }, props.sx]}
-
     />
   );
 };
 // panel
-const Panel = (props)=>{
-  const {selected, value, children, ...other} = props;
+const Panel = (props) => {
+  const { selected, value, children, ...other } = props;
   return (
     <div role="tabpanel" hidden={selected !== value} {...other}>
-      {selected === value && children} 
+      {selected === value && children}
     </div>
   );
-}
+};
 
 export default function New() {
   const [checked, setChecked] = useState("pic");
-  const [code,setCode] = useState("")
-  const [description,setDescription] = useState("")
-  const ref = useRef()
-  const [attachment,setAttachment]=useState([]);
+  const [code, setCode] = useState("");
+  const [description, setDescription] = useState("");
+  const ref = useRef();
+  const [attachment, setAttachment] = useState([]);
   const [addressId, setAddressId] = useState();
-  const router =useRouter()
+  const router = useRouter();
 
   // dialog
   const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
-    router.push('/laboratory/')
-
+    router.push("/laboratory/");
   };
 
+  // select pannel result
+  const [panelSelected, setPanelSelected] = useState();
+
   const patient = useSelector((state) => state.patientReducer?.patient);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const submit = async()=>{
+  const submit = async () => {
     try {
-      const response = await dispatch(createPrescription({
-        code,
-        description,
-        patient:patient.id,
-        address: addressId,
-
-      })).unwrap();
+      const response = await dispatch(
+        createPrescription({
+          code,
+          description,
+          patient: patient.id,
+          address: addressId,
+          doctor_prescription: panelSelected?.id,
+        })
+      ).unwrap();
       for (let pic of attachment) {
-        await dispatch(createPrescriptionPic({
-          prescription: response.data.id,
-          image: pic,
-        })).unwrap();
+        await dispatch(
+          createPrescriptionPic({
+            prescription: response.data.id,
+            image: pic,
+          })
+        ).unwrap();
       }
-      setOpen(true)
-    } catch(e) {
+      setOpen(true);
+    } catch (e) {}
+  };
 
-    }
-  }
+  const prescriptions = useSelector(
+    (state) => state?.visitReducer?.prescriptions
+  );
+  const loadPrescriptions = async () => {
+    try {
+      await dispatch(
+        loadPatientPrescriptions({
+          patient_id: patient?.id,
+          type: "laboratory",
+        })
+      ).unwrap();
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    loadPrescriptions();
+  }, []);
+
   return (
     <div className="px-6 py-4 w-full">
-      <Header state="send"/>
+      <Header state="send" />
       <RadioGroup
         className="flex flex-row gap-4 m-6"
         aria-labelledby="demo-controlled-radio-buttons-group"
@@ -115,118 +154,264 @@ export default function New() {
         />
       </RadioGroup>
 
+      <Panel
+        selected={checked}
+        value={"pres"}
+        className="flex flex-row flex-wrap gap-2"
+      >
+        {!panelSelected &&
+          prescriptions.map((item) => {
+            return (
+              <div className="rounded-lg border border-solid border-backgroundGray flex flex-row gap-2 justify-around p-4 h-[150px] w-[300px] max-w-full items-center">
+                <div className="relative h-[90%] w-1/4 overflow-hidden rounded-lg ">
+                  <Image src={item?.visit.doctor.image} layout="fill" />
+                </div>
+                <div className="flex flex-col gap-2 items-center">
+                  <div className="text-base font-bold text-primary">
+                    {item?.visit?.doctor.department.name}
+                  </div>
+                  <div className="text-base font-bold">
+                    {item?.visit?.doctor.first_name}{" "}
+                    {item?.visit?.doctor.last_name}
+                  </div>
+                  <div className="text-base text-gray">
+                    {convertStrToJalali(item?.created_at)}
+                  </div>
+                  <div className="text-sm ">
+                    <Button
+                      variant="contained"
+                      className="p-1"
+                      onClick={() => setPanelSelected(item)}
+                    >
+                      انتخاب
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        {panelSelected && (
+          <div className="flex flex-col mx-6 gap-4">
+            <TextField
+              label="کد رهگیری"
+              className="self-start"
+              size="small"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              // label top
+              InputLabelProps={{
+                shrink: true,
+              }}
+              // label top
 
+              InputProps={{
+                sx: {
+                  marginTop: "1em",
+                  "& legend": {
+                    display: "none",
+                  },
+                },
+              }}
+            ></TextField>
+            <div></div>
+            <div className="flex gap-2 overflow-auto w-full">
+              {panelSelected.image.map((item) => (
+                <div
+                  className="relative  max-w-full md:w-[400px] md:h-[300px] flex justify-center items-center "
+                  key={item}
+                >
+                  <Image
+                    src={item.image}
+                    alt=""
+                    layout="fill"
+                    className="max-w-[400px] max-h-[400px] rounded-lg"
+                  />
+                </div>
+              ))}
+            </div>
+            <TextField
+              label="توضیحات به آزمایشگاه"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              InputProps={{
+                sx: {
+                  marginTop: "1.5em",
+                  "& legend": {
+                    display: "none",
+                  },
+                },
+              }}
+              multiline
+              rows={5}
+            ></TextField>
+            <AddressSelection
+              addressId={addressId}
+              setAddressId={setAddressId}
+            />
 
-      <Panel selected={checked} value={"pres"}>Doc</Panel>
+            <div className="flex gap-2 items-center text-sm italic">
+              <CgDanger />
+              پس از تایید شما توسط آزمایشگاه بر اساس قوانین و مقررات هزینه
+              آزمایش برای شما پیامک میشود.
+            </div>
+            <div className="flex flex-row gap-2 items-center">
+              <Button
+                size="small"
+                variant="contained"
+                onClick={submit}
+                className="p-2 px-4"
+              >
+                ارسال درخواست
+              </Button>
 
-      <Panel selected={checked} value={"pic"} className="flex flex-col mx-6 gap-4">
+              <Dialog
+                open={open}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description"
+              >
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-slide-description">
+                    سفارش شما ثبت و به آزمایشگاه ارسال گردید.
+                    <br />
+                    نتیجه آن توسط پیامک و پنل کاربری اطلاع داده خواهد شد.
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleClose}>ادامه</Button>
+                </DialogActions>
+              </Dialog>
+            </div>
+          </div>
+        )}
+      </Panel>
 
-       <TextField 
+      <Panel
+        selected={checked}
+        value={"pic"}
+        className="flex flex-col mx-6 gap-4"
+      >
+        <TextField
           label="کد رهگیری"
           className="self-start"
           size="small"
           value={code}
-          onChange={(e)=>setCode(e.target.value)}
+          onChange={(e) => setCode(e.target.value)}
           // label top
           InputLabelProps={{
             shrink: true,
-
           }}
           // label top
 
           InputProps={{
             sx: {
-              marginTop: '1em',
-              '& legend': {
-                display: 'none'
-              }
-            }
+              marginTop: "1em",
+              "& legend": {
+                display: "none",
+              },
+            },
           }}
-         >
-
-       </TextField>
+        ></TextField>
         <div>
           <Button
             className="flex items-center gap-2"
             // color="grayBtn"
             onClick={() => ref.current.click()}
-
           >
-            <AddIcon className="text-lg p-1 w-8 h-8 rounded border border-solid border-primary"/>
+            <AddIcon className="text-lg p-1 w-8 h-8 rounded border border-solid border-primary" />
             افزودن عکس
           </Button>
-          </div>
-      <div className="flex gap-2 overflow-auto w-full">
-          <input type="file" hidden ref={ref} multiple onChange={(e)=>setAttachment([...attachment,...e.target.files])}/>
-          {attachment.map((item)=>
-          <div className="relative  max-w-full md:w-[400px] md:h-[300px] flex justify-center items-center " key={item}>
-            <img src={URL.createObjectURL(item)} alt="" className="max-w-[400px] max-h-[400px] rounded-lg"/>
-            <Button variant="outlined" onClick={()=>setAttachment(attachment.filter(i=>item !== i))}className="absolute left-1 bottom-1 rounded-full aspect-square p-2 min-w-fit" ><DeleteOutlineIcon className="text-xl "/></Button>
-
-          </div>
-          
-          )}
         </div>
-        <TextField 
+        <div className="flex gap-2 overflow-auto w-full">
+          <input
+            type="file"
+            hidden
+            ref={ref}
+            multiple
+            onChange={(e) => setAttachment([...attachment, ...e.target.files])}
+          />
+          {attachment.map((item) => (
+            <div
+              className="relative  max-w-full md:w-[400px] md:h-[300px] flex justify-center items-center "
+              key={item}
+            >
+              <img
+                src={URL.createObjectURL(item)}
+                alt=""
+                className="max-w-[400px] max-h-[400px] rounded-lg"
+              />
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setAttachment(attachment.filter((i) => item !== i))
+                }
+                className="absolute left-1 bottom-1 rounded-full aspect-square p-2 min-w-fit"
+              >
+                <DeleteOutlineIcon className="text-xl " />
+              </Button>
+            </div>
+          ))}
+        </div>
+        <TextField
           label="توضیحات به آزمایشگاه"
           value={description}
-          onChange={(e)=>setDescription(e.target.value)}
-          
+          onChange={(e) => setDescription(e.target.value)}
           InputLabelProps={{
             shrink: true,
-
           }}
           InputProps={{
             sx: {
-              marginTop: '1.5em',
-              '& legend': {
-                display: 'none'
-              }
-            }
+              marginTop: "1.5em",
+              "& legend": {
+                display: "none",
+              },
+            },
           }}
           multiline
           rows={5}
-         >
+        ></TextField>
+        <AddressSelection addressId={addressId} setAddressId={setAddressId} />
 
-       </TextField>
-      <AddressSelection addressId={addressId} setAddressId={setAddressId}/>
+        <div className="flex gap-2 items-center text-sm italic">
+          <CgDanger />
+          پس از تایید شما توسط آزمایشگاه بر اساس قوانین و مقررات هزینه آزمایش
+          برای شما پیامک میشود.
+        </div>
+        <div className="flex flex-row gap-2 items-center">
+          <Button
+            size="small"
+            variant="contained"
+            onClick={submit}
+            className="p-2 px-4"
+          >
+            ارسال درخواست
+          </Button>
 
-       <div className="flex gap-2 items-center text-sm italic">
-        <CgDanger />
-       پس از تایید شما توسط آزمایشگاه بر اساس قوانین و مقررات هزینه آزمایش برای شما پیامک میشود.
-       </div>
-       <div className="flex flex-row gap-2 items-center">
-        <Button size="small" variant="contained" onClick={submit} className="p-2 px-4">
-           ارسال درخواست  
-        </Button>
-       
-
-        <Dialog
-        open={open}
-        keepMounted
-        onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-         سفارش شما ثبت و به آزمایشگاه ارسال گردید.
-         <br />
-         
-          نتیجه آن توسط پیامک و پنل کاربری اطلاع داده خواهد شد. 
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-         
-          <Button onClick={handleClose}>ادامه</Button>
-        </DialogActions>
-      </Dialog>
-      </div>
+          <Dialog
+            open={open}
+            keepMounted
+            onClose={handleClose}
+            aria-describedby="alert-dialog-slide-description"
+          >
+            <DialogContent>
+              <DialogContentText id="alert-dialog-slide-description">
+                سفارش شما ثبت و به آزمایشگاه ارسال گردید.
+                <br />
+                نتیجه آن توسط پیامک و پنل کاربری اطلاع داده خواهد شد.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>ادامه</Button>
+            </DialogActions>
+          </Dialog>
+        </div>
       </Panel>
-      </div>
-      )
+    </div>
+  );
 }
-
 
 New.getLayout = (page) => {
   return <Navigation>{page}</Navigation>;

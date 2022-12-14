@@ -34,7 +34,7 @@ import TableContainer from "@mui/material/TableContainer";
 import { ArrowBackIos } from "@mui/icons-material";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loadVisitsPatient } from "../../lib/slices/visits";
+import { loadVisitsDoctor, loadVisitsPatient } from "../../lib/slices/visits";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -159,14 +159,17 @@ const Visits = () => {
   const dispatch = useDispatch();
   // route
   const router = useRouter()
+  const user = useSelector((state) => state.authReducer?.user);
+  const loadAction = useMemo(() => user?.type == 'patient'?loadVisitsPatient:loadVisitsDoctor, [user]);
+
   const lstVisits = useMemo(
     () =>
       throttle(async ({ search }) => {
         try {
           await dispatch(
-            loadVisitsPatient({
+            loadAction({
               // url params
-              patient_id: patient.id,
+              patient_id: patient?.id,
               // queryparam-> backend: state
               //ordering
               ordering: `${order === "asc" ? "" : "-"}${orderBy}`,
@@ -190,7 +193,7 @@ const Visits = () => {
           console.log(error);
         }
       }, 1000),
-    [patient, orderBy, order, status, offset, start, end]
+    [patient, orderBy, order, status, offset, start, end, loadAction]
   );
 
   useEffect(() => {

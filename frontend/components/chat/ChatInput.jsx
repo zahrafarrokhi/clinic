@@ -7,12 +7,13 @@ import { ImPause2 } from "react-icons/im";
 import MicRecorder from "mic-recorder-to-mp3";
 import { useDispatch, useSelector } from 'react-redux';
 import { uploadFile } from '../../lib/slices/chat';
+import CreatePrescription from './CreatePrescription';
 
 const recorder = new MicRecorder({ bitRate: 128 });
 
 export default function ChatInput(props) {
 
-  const {send,upload} = props;
+  const {send,upload, showPrescription} = props;
     //state text
     const [text, setText] = useState("");
    //recording
@@ -83,16 +84,19 @@ export default function ChatInput(props) {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end" >
-            <input type="file" ref={attach} multiple="multiple" hidden onChange={(e) => {
-              // one file 
-              // upload(e.target.files[0])
-              console.log(e)
-              //multiple file
-              
-              Array.from(e.target.files).map((e)=>upload(e))
-              
-            }}></input>
-            <IconButton onClick={()=>attach.current.click()}>   <AttachFileIcon /></IconButton>
+            <div className='flex flex-row gap-2'>
+              <input type="file" ref={attach} multiple="multiple" hidden onChange={(e) => {
+                // one file 
+                // upload(e.target.files[0])
+                console.log(e)
+                //multiple file
+                
+                Array.from(e.target.files).map((e)=>upload(e))
+                
+              }}></input>
+              <IconButton onClick={()=>attach.current.click()}>   <AttachFileIcon /></IconButton>
+              {showPrescription && <CreatePrescription />}
+            </div>
          
           </InputAdornment>
         ),

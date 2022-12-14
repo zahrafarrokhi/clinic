@@ -6,8 +6,9 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 
-from visit.models import Visit
-from visit.serializers import VisitSerializer
+from visit.models import Visit, DoctorPrescription
+from visit.serializers import VisitSerializer, ProfileSerializer, DoctorPrescriptionSerializer, DoctorPicSerializer, \
+    PatientPrescriptionSerializer
 
 
 # Create your views here.
@@ -36,4 +37,36 @@ class VisitView(
         queryset = Visit.objects.filter(
             Q(patient__user=self.request.user, patient=patient_id) | Q(doctor__user=self.request.user))
 
+        return queryset
+
+class ProfileView(mixins.RetrieveModelMixin,viewsets.GenericViewSet):
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = Visit.objects.filter(doctor=self.request.user.doctor)
+        return queryset
+
+
+# doctor create that
+class DoctorPrescriptionView(mixins.CreateModelMixin,viewsets.GenericViewSet):
+    serializer_class = DoctorPrescriptionSerializer
+    permission_classes = [IsAuthenticated]
+
+class DoctorPicView(mixins.CreateModelMixin,viewsets.GenericViewSet):
+    serializer_class = DoctorPicSerializer
+    permission_classes = [IsAuthenticated]
+
+# patient see list prescription
+class PatientPrescriptionView(mixins.ListModelMixin,viewsets.GenericViewSet):
+    serializer_class = PatientPrescriptionSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = {
+        'type': ['exact', 'in'],
+    }
+
+    def get_queryset(self):
+        patient_id = self.kwargs.get('patient_id', None)
+        queryset = DoctorPrescription.objects.filter(visit__patient__user=self.request.user, visit__patient=patient_id)
         return queryset
