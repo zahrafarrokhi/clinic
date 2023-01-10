@@ -4,7 +4,7 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import User, OTP, Token
+from .models import User, OTP
 from django.utils.translation import gettext_lazy as _
 
 
@@ -114,17 +114,8 @@ class CustomOTP(admin.ModelAdmin):
     )
 
 
-class CustomToken(admin.ModelAdmin):
-    readonly_fields = ('user', 'created_at', 'updated_at')
-    search_fields = ('user', 'exp_date', 'session')
-    list_display = ('user', 'exp_date', 'session')
-    ordering = ('created_at', 'user',)
-    fields = None
-    fieldsets = (
-        ('info', {'fields': ('user', 'device_info', 'session',)}),
-        ('times', {'fields': ('created_at', 'updated_at', 'exp_date')}),
-    )
+
 
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(OTP, CustomOTP)
-admin.site.register(Token, CustomToken)
+
