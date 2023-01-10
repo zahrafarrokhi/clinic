@@ -1,4 +1,4 @@
-from .models import User, OTP, Token
+from .models import User, OTP
 from rest_framework import serializers
 from django.utils import timezone
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
