@@ -3,17 +3,11 @@ from django.contrib.auth.models import AbstractUser, UserManager, BaseUserManage
 from django.utils.crypto import get_random_string
 from .settings import api_settings
 from django.utils.translation import gettext_lazy as _
-import uuid
 import string
 
 def generate_numeric_token():
     return get_random_string(length=api_settings.OTP_LENGTH,
                              allowed_chars=string.digits)
-
-
-def generate_uuid():
-    tok = uuid.uuid4().hex.upper()
-    return tok
 
 
 # Create your models here.
