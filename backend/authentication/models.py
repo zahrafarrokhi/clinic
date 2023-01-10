@@ -103,10 +103,3 @@ class OTP(models.Model):
       return str(f"{self.value} sent by {str(self.type)} to "
       f"{self.user.email if self.type == 'email' else self.user.phone_number}")
 
-class Token(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    exp_date = models.DateTimeField(blank=False, null=False)
-    session = models.CharField(default=generate_uuid, max_length=128)
-    device_info = models.JSONField(blank=True, null=True, default=dict)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
